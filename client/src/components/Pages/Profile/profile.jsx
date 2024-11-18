@@ -1,29 +1,22 @@
-import Options from "./options/options";
-import Feed from "./feed/feed";
-import Others from "./others/others";
+import Options from "../Home/options/options";
 import * as mainItems from "../../../constants/index";
 import UserPhoto from "../../../userPhoto";
 import SeperatingLine from "../../seperatingLine";
 import Navbar from "../../Header/navbar";
+import User from "./userProfile/user";
 
-
-function home() {
+function profile() {
   return (
-    <div className="flex flex-col bg-gray-100">
+    <div>
       <Navbar />
-      <div className="flex justify-center md:justify-between">
+      <div className="flex justify-center ">
         <Options
-          Class={"hidden md:flex"}
+          Class={"hidden lg:flex"}
           UserPhoto={UserPhoto}
           mainItems={mainItems}
           SeperatingLine={SeperatingLine}
         />
-        <Feed
-          UserPhoto={UserPhoto}
-          mainItems={mainItems}
-          SeperatingLine={SeperatingLine}
-        />
-        <Others
+        <User
           UserPhoto={UserPhoto}
           mainItems={mainItems}
           SeperatingLine={SeperatingLine}
@@ -32,5 +25,4 @@ function home() {
     </div>
   );
 }
-
-export default home;
+export default profile;

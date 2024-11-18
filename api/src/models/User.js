@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema(
       required: true, // Fixed 'require' to 'required'
       min: 6,
     },
+    profilePicture: {
+      type: String,
+      default: "",
+    },
     coverPic: {
       type: String,
       default: "",
@@ -36,7 +40,7 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    desc: {
+    bio: {
       type: String,
       max: 50,
     },

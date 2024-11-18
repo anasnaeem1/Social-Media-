@@ -14,6 +14,10 @@ export default {
       colors: {
         textColor: "#EB5A3E",
         seperatingLine: "#141F26",
+        buttonBg: "#A52E17",
+        textColor: "#0866FF",
+
+
       },
 
       backgroundColor: {

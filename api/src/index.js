@@ -8,12 +8,14 @@ import connectDB from "./db/index.js";
 import userRouter from "./routes/users.js";
 import authRouter from "./routes/auth.js";
 import postRouter from "./routes/posts.js";
+import cors from 'cors'
 
 const PORT = process.env.PORT || 8800;
 
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("common"));
+app.use(cors())
 
 // app.use("/", (req, res)=> {
 //     res.send("Home Page")

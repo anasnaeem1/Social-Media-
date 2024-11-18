@@ -2,44 +2,50 @@ import Gift from "../../../../assets/birthday-Gift.png";
 import BirhdayPic from "../../../../assets/birthday.jpg";
 import FriendList from "../friendList";
 
-function others({ mainItems }) {
-
+function Others({ mainItems }) {
   return (
     <>
-      <div className="w-[400px] h-full"> </div>
-      <div className="fixed right-0 top-[70px] w-[400px] border border-gray-300 ">
-        <div className="flex px-2 flex-col gap-3 h-screen overflow-y-auto">
-          {/* here you can see how many people have birthday today  */}
-          <div className="list-none flex items-center gap-1">
+    <div className="others-container"></div>
+      {/* Main Wrapper for the Sidebar */}
+      <div className="fixed right-0 top-[65px] others-container">
+        <div className="flex flex-col gap-5">
+          {/* Birthday Section */}
+          <div className="flex items-center gap-3 p-4 bg-gray-100 rounded-lg shadow-sm">
             <img
               src={Gift}
-              alt={`openBox`}
-              className="w-[4rem] h-[4rem] rounded-full"
+              alt="Birthday Gift"
+              className="w-[3.5rem] h-[3.5rem] rounded-full border border-gray-300"
             />
-            <li className="text-md">
-              <span className="font-semibold">Pola Foster</span> and{" "}
-              <span className="font-semibold">3 other friends</span> have a
-              birthday today
-            </li>{" "}
+            <span className="text-md">
+              <span className="font-semibold text-gray-800">Pola Foster</span>{" "}
+              and{" "}
+              <span className="font-semibold text-gray-800">
+                3 other friends
+              </span>{" "}
+              have a birthday today
+            </span>
           </div>
-          {/* here you can see the image for birthday section  */}
+
+          {/* Birthday Image Section */}
           <div className="flex justify-center items-center">
             <div
-              className="relative w-[370px] h-[300px] rounded-xl bg-cover bg-center flex items-center justify-start text-white"
+              className="relative w-full h-[300px] rounded-xl bg-cover bg-center overflow-hidden"
               style={{ backgroundImage: `url(${BirhdayPic})` }}
             >
-              <div className="absolute w-[370px] bg-gray-500 opacity-20 h-[300px] rounded-xl text-white">
-                {" "}
-              </div>
-              <div className="list-none flex z-10 flex-col text-4xl px-2">
-                <li className="font-extrabold font-[Montserrat]">cold</li>
-                <li className="font-extrabold font-[Montserrat]">smoooth</li>
-                <li className="font-extrabold font-[Montserrat]">$tasty,</li>
+              {/* Overlay */}
+              <div className="absolute w-full h-full bg-black opacity-40 rounded-xl"></div>
+
+              {/* Text on the Image */}
+              <div className="z-10 absolute top-[100px] left-3 text-gray-200 font-extrabold text-4xl">
+                <span className="block font-[Montserrat]">cold</span>
+                <span className="block font-[Montserrat]">smoooth</span>
+                <span className="block font-[Montserrat]">$tasty,</span>
               </div>
             </div>
           </div>
-          {/* here you can see the freindList*/}
-          <div>
+
+          {/* Friend List Section */}
+          <div className="mt-4">
             <FriendList mainItems={mainItems} />
           </div>
         </div>
@@ -47,4 +53,5 @@ function others({ mainItems }) {
     </>
   );
 }
-export default others;
+
+export default Others;

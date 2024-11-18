@@ -1,9 +1,9 @@
-import logoPic from "./assets/logo.png";
+// import logoPic from "./assets/logo.png";
 
 function logo() {
   return (
     <div style={{ fontFamily: "montserrat, sans-serif" }}>
-      <h1 className="text-3xl uppercase font-[600] ">social</h1>
+      <h1 className="text-3xl text-textColor uppercase font-[600] ">social</h1>
     </div>
     //   <div
     //   className="py-[40px] px-[100px] bg-cover bg-no-repeat"

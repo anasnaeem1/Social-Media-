@@ -1,18 +1,19 @@
 import FriendList from "../friendList";
 
-function options({ mainItems, SeperatingLine }) {
+function options({ mainItems, SeperatingLine, Class }) {
   const { Options } = mainItems;
   return (
     <>
-      <div className="w-[300px]"> </div>
-      <div className="fixed top-[70px] border left-0 w-[300px] h-[calc(100vh-70px)] ">
-        <div className="w-full h-full overflow-auto px-5 pt-5 flex flex-col gap-6">
+      <div className={`${Class} options-container`}></div>
+      {/* Add custom scrollbar styles */}
+      <div className={`${Class} fixed left-[1px] top-[65px] options-container`}>
+        <div className="pl-3 custom-scrollbar overflow-y-auto w-full pt-5 flex flex-col gap-6">
           <ul className="flex justify-center items-start flex-col gap-3">
             {Options.map((Option, id) => {
               return (
                 <div
                   key={id}
-                  className="flex items-center justify-center gap-4"
+                  className="flex flex-nowrap items-center justify-center gap-4 pr-4"
                 >
                   <li className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-sky-400 to-green-300 cursor-pointer text-black text-2xl">
                     {Option.icon}
@@ -36,4 +37,5 @@ function options({ mainItems, SeperatingLine }) {
     </>
   );
 }
+
 export default options;
