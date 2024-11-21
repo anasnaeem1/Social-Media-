@@ -1,7 +1,4 @@
-import User from "../assets/user.jpg";
-import Daniyal from "../assets/daniyal.jpg";
-import Huzaifa from "../assets/huzaifa.jpg";
-import Mark from "../assets/mark.jpeg";
+const PF = import.meta.env.VITE_PUBLIC_FOLDER;
 
 export const navItems = {
   logo: "social",
@@ -27,7 +24,6 @@ export const navItems = {
       link: "/",
     },
   ],
-  userPhoto: { User },
 };
 
 export const Options = [
@@ -85,14 +81,14 @@ export const Options = [
 export const Friends = [
   {
     id: 1,
-    pic: Daniyal,
+    pic: PF + "Person/daniyal.jpg",
     fname: "Daniyal",
     lname: "Shoaib",
     link: "/",
   },
   {
     id: 2,
-    pic: Huzaifa,
+    pic: PF + "Person/daniyal.jpg",
     fname: "Huzaifa ",
     lname: "Habib",
 
@@ -100,49 +96,49 @@ export const Friends = [
   },
   {
     id: 3,
-    pic: Mark,
+    pic: PF + "Person/daniyal.jpg",
     fname: "Tayyab",
     lname: "Shoukat",
     link: "/",
   },
   {
     id: 4,
-    pic: Daniyal,
+    pic: PF + "Person/daniyal.jpg",
     fname: "Mujeeb",
     lname: "Khan",
     link: "/",
   },
   {
     id: 5,
-    pic: Huzaifa,
+    pic: PF + "Person/daniyal.jpg",
     fname: "talha",
     lname: "moiz",
     link: "/",
   },
   {
     id: 6,
-    pic: Mark,
+    pic: PF + "Person/daniyal.jpg",
     fname: "Aleem",
     lname: "Khan",
     link: "/",
   },
   {
     id: 7,
-    pic: Daniyal,
+    pic: PF + "Person/daniyal.jpg",
     fname: "Peter ",
     lname: "Smith",
     link: "/",
   },
   {
     id: 8,
-    pic: Huzaifa,
+    pic: PF + "Person/daniyal.jpg",
     fname: "mark",
     lname: "Ken",
     link: "/",
   },
   {
     id: 9,
-    pic: Mark,
+    pic: PF + "Person/daniyal.jpg",
     fname: "yellow ",
     lname: "paul",
     link: "/",
@@ -180,6 +176,7 @@ export const Shares = [
   {
     id: 1,
     icon: <i className="ri-thumb-up-line"></i>,
+    liked: <i class="ri-thumb-up-fill"></i>,
     label: "Like",
     link: "/",
   },

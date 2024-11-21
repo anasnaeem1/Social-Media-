@@ -1,10 +1,13 @@
 import { navItems } from "../../constants/index.jsx";
 import UserPhoto from "../../userPhoto.jsx";
 import { Link } from "react-router-dom";
-
+import { AuthContext } from "../context/AuthContext.jsx"
 import Logo from "../../logo.jsx";
+import { useContext } from "react";
+
 
 function navbar() {
+  const {user} = useContext(AuthContext) 
   const { controls, controlsIcons } = navItems;
   return (
     <>

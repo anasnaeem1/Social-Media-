@@ -63,6 +63,44 @@
   }
 }
 
+@keyframes liked {
+  0% {
+    transform: translateY(0) rotate(0);
+    color: blue; /* Start with blue */
+  }
+
+  20% {
+    transform: translateY(-14px) rotate(-26deg);
+    color: rgb(0, 195, 255); /* Transition to light blue */
+  }
+
+  40% {
+    transform: translateY(-7px) rotate(-13deg);
+    color: rgb(0, 255, 170); /* Transition back to blue */
+  }
+
+  60% {
+    transform: translateY(0) rotate(0);
+    color: rgb(25, 255, 5); /* Transition back to light blue */
+  }
+  80% {
+    transform: translateY(-7px) rotate(-13deg);
+    color: rgb(5, 122, 255); /* Transition back to light blue */
+
+  }
+
+  100% {
+    transform: translateY(0) rotate(0);
+    color: blue; /* End with blue */
+  }
+}
+
+.likeAnimate {
+  /* transform: translateY(-12px) rotate(-24deg); */
+  color: rgb(0, 102, 255);
+  animation: liked 0.5s ease-in;
+}
+
 /* :root {
     background-color: black;
     color: white;

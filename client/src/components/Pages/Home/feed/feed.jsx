@@ -1,11 +1,18 @@
 import CreatePost from "./createPost/cPost";
-import { useEffect, useState, memo } from "react";
+import { useEffect, useState, memo, useContext } from "react";
 import Post from "./post/post";
 import axios from "axios";
+import PostSkeleton from "../../../Skeleton/postSkeleton";
+// import Skeleton from 'react-loading-skeleton'
+import "react-loading-skeleton/dist/skeleton.css";
+import { AuthContext } from "../../../context/AuthContext";
 
-function feed({ UserPhoto, mainItems, SeperatingLine , username }) {
+function feed({ UserPhoto, mainItems, SeperatingLine, username }) {
   const { ShareOptions } = mainItems;
   const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const {user} = useContext(AuthContext)
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -13,12 +20,14 @@ function feed({ UserPhoto, mainItems, SeperatingLine , username }) {
         const res = username
           ? await axios.get(
               "http://localhost:8800/api/posts/profile/" + username
-            ) 
+            )
           : await axios.get(
-              "http://localhost:8800/api/posts/timeline/673148ec2eb15da95ed0e4f3"
+              `http://localhost:8800/api/posts/timeline/${user._id}`
             );
-        console.log("Fetched posts:", res.data);
-        setPosts(res.data);
+        // console.log("Fetched posts:", res.data);
+        const randomizedPosts = res.data.sort(() => Math.random() - 0.5);
+        setPosts(randomizedPosts);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error at fetching", error);
       }
@@ -31,7 +40,7 @@ function feed({ UserPhoto, mainItems, SeperatingLine , username }) {
 
   return (
     <div
-      className={`flex pt-5 flex-col gap-10 overflow-x-hidden feed-container`}
+      className={`flex pt-5 items-center flex-col gap-10 overflow-x-hidden feed-container`}
     >
       {/* <input className="border border-black" placeholder="testing..." type="text" onChange={e => setText(e.target.value)} /> */}
       <CreatePost
@@ -39,6 +48,11 @@ function feed({ UserPhoto, mainItems, SeperatingLine , username }) {
         UserPhoto={UserPhoto}
         SeperatingLine={SeperatingLine}
       />
+      {isLoading &&
+        Array.from({ length: 5 }).map((_, index) => (
+          <PostSkeleton key={index} />
+        ))}
+
       {posts.map((post) => (
         <Post post={post} key={post.id} />
       ))}
