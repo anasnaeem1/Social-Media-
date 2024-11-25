@@ -6,6 +6,7 @@ import UserInfo from "./userInfo";
 function User({ username, user, UserPhoto, mainItems, SeperatingLine }) {
   const { Friends } = mainItems;
   const PF = import.meta.env.VITE_PUBLIC_FOLDER;
+  console.log(user)
 
   return (
     <div className="flex-[7]">
@@ -15,7 +16,9 @@ function User({ username, user, UserPhoto, mainItems, SeperatingLine }) {
           className="h-[300px] rounded-md mx-auto max-w-7xl w-full"
           style={{
             backgroundImage: `url(${
-              PF + user.coverPic || PF + "Person/noCover.jpg"
+              user.coverPic
+              ? PF + "Person/" + user.coverPic
+              : PF + "Person/noCover.jpg"
             })`,
             backgroundSize: "cover",
             backgroundPosition: "center",

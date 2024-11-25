@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import * as mainItems from "../../../../../constants/index";
 // import noAvatar from "../../../../../assets/noAvatar.jpg";
 // import noCover from "../../../../../assets/noCover.jpg";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { format } from "timeago.js";
 import PostSkeleton from "../../../../Skeleton/postSkeleton";
 import { AuthContext } from "../../../../context/AuthContext";
@@ -19,6 +19,8 @@ function post({ post }) {
   const [isLiked, setIsLiked] = useState(false);
   const [postUser, setUser] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const params = useParams();
+  // console.log(postUser.username)
 
   const likeHandler = async () => {
     const userId = user._id;
@@ -52,9 +54,11 @@ function post({ post }) {
     };
     fetchUser();
     if (post.likes.includes(user._id)) {
-      setIsLiked(true); // Set isLiked to true if the user has already liked the post
+      setIsLiked(true); // Set isLiked to true if the user has already liked the postzzzzz
     }
   }, [post.userId, post.likes, user._id]);
+
+  // console.log(post.img)
   return (
     <>
       {isLoading &&
@@ -66,18 +70,32 @@ function post({ post }) {
         {/* Post Header */}
         <div className="flex px-3 py-3 justify-between items-center gap-2 flex-wrap">
           <div className="flex items-center gap-2">
-            <Link to={`profile/${postUser.username}`}>
-              <img
-                src={`${
-                  postUser.profilePic
-                    ? PF + "Person/" + postUser.profilePic
-                    : PF + "Person/noAvatar.jpg"
-                }`}
-                
-                alt={`${Friends[1]} ${Friends[1]}`}
-                className="w-[3rem] h-[3rem] rounded-full"
-              />
-            </Link>
+            {params === `/profile/${postUser.username}` ? (
+              <div className="w-[3rem] h-[3rem] rounded-full">
+                <img
+                  src={`${
+                    postUser.profilePic
+                      ? PF + "Person/" + postUser.profilePic
+                      : PF + "Person/noAvatar.jpg"
+                  }`}
+                  alt={`${Friends[1]} ${Friends[1]}`}
+                  className="w-[3rem] h-[3rem] rounded-full"
+                />
+              </div>
+            ) : (
+              <Link to={`/profile/${postUser.username}`}>
+                <img
+                  src={`${
+                    postUser.profilePic
+                      ? PF + "Person/" + postUser.profilePic
+                      : PF + "Person/noAvatar.jpg"
+                  }`}
+                  alt={`${Friends[1]} ${Friends[1]}`}
+                  className="w-[3rem] h-[3rem] rounded-full"
+                />
+              </Link>
+            )}
+
             <div className="flex flex-col">
               <h1 className="cursor-pointer text-lg">{postUser.username}</h1>
               <span className="cursor-pointer text-sm text-gray-600">
@@ -96,8 +114,10 @@ function post({ post }) {
         </div>
 
         {/* Post Content */}
-        <div>
-          <p className="px-2 text-md ml-2 text-gray-800">{post?.desc}</p>
+        <div className="flex justify-start  ">
+          <p className="px-2 text-md font-medium ml-2 text-gray-800">
+            {post?.desc}
+          </p>
         </div>
 
         {/* Image Section */}
@@ -107,15 +127,20 @@ function post({ post }) {
           }  justify-center items-center`}
         >
           <div
-            // className={`${post.img ? "hidden" : "flex"} w-full h-[400px] `}
-            className={`w-full h-[365px] `}
+            className={`relative group ${
+              !post.img ? "hidden" : "flex"
+            } w-full h-[400px]`}
             style={{
-              backgroundImage: `url(${PF + "image1.jpg"})`,
+              backgroundImage: `url(${
+                post.img ? `${PF}PostImages/${post.img}` : ""
+              })`,
               backgroundSize: "cover",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
             }}
-          ></div>
+          >
+            <div className="absolute hover:hidden transition duration-1000  inset-0 bg-black opacity-5"></div>
+          </div>
         </div>
 
         {/* Like and Comments Section */}
@@ -160,7 +185,7 @@ function post({ post }) {
           {Shares.map((share, id) => {
             return (
               <div
-                onClick={share.id === 1 && likeHandler}
+                onClick={share.id === 1 ? likeHandler : undefined}
                 key={id}
                 className="cursor-pointer hover:bg-gray-200 rounded-xl transition-all duration-300 py-2 px-3 flex justify-center items-center gap-2"
               >

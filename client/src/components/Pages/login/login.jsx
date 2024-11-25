@@ -36,7 +36,7 @@ function login() {
         </div>
         <div className="bg-white w-[500px] rounded-xl flex justify-center items-center">
           <form
-            class="flex flex-col py-7 gap-4 w-[400px]"
+            className="flex flex-col py-7 gap-4 w-[400px]"
             onSubmit={handleSubmit}
           >
             <input

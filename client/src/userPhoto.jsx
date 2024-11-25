@@ -7,16 +7,17 @@ import { Link } from "react-router-dom";
 function user() {
   const PF = import.meta.env.VITE_PUBLIC_FOLDER;
   const { user } = useContext(AuthContext);
-  console.log(user)
+  // console.log(user)
   return (
-    <Link to={"/profile/" + user.username}>
+    <Link to={user ? "/profile/" + user.username : undefined}>
       <div
         className=" w-[50px] h-[50px] bg-cover bg-no-repeat rounded-full"
         style={{
           backgroundImage: `url(${
+            user?
             user.profilePic
               ? PF + "Person/" + user.profilePic
-              : PF + "Person/noAvatar.jpg"
+              : PF + "Person/noAvatar.jpg" : undefined
           })`,
           opacity: 1,
         }}

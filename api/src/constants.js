@@ -1,1 +1,1 @@
-export const DB_NAME = "socials"
+module.exports.DB_NAME = "socials";

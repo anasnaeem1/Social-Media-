@@ -3,9 +3,11 @@ import { AuthContext } from "../../../../context/AuthContext";
 import { useRef } from "react";
 import axios from "axios";
 
-function cPost({ ShareOptions, UserPhoto, SeperatingLine }) {
-  // const PF = import.meta.env.VITE_PUBLIC_FOLDER;
+function cPost({ ShareOptions, UserPhoto, SeperatingLine, postUser }) {
+  const PF = import.meta.env.VITE_PUBLIC_FOLDER;
   const { user } = useContext(AuthContext);
+
+  
   // const desc = useRef(desc);
   // const photoOrVideo = useRef(photoOrVideo)
 

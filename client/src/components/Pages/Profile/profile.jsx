@@ -1,4 +1,4 @@
-import Options from "../Home/options/options";
+import Options from "../options/options";
 import * as mainItems from "../../../constants/index";
 import UserPhoto from "../../../userPhoto";
 import SeperatingLine from "../../seperatingLine";
@@ -33,11 +33,9 @@ function profile() {
   }, [username]);
   return (
     <div>
-      <Navbar />
       <div className="flex justify-center ">
-        
-        <Options
-          Class={"hidden lg:flex"}
+      <Options
+          visibility="hidden lg:block"
           UserPhoto={UserPhoto}
           mainItems={mainItems}
           SeperatingLine={SeperatingLine}

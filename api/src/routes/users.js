@@ -1,6 +1,6 @@
-import bcrypt from "bcrypt";
-import express from "express";
-import User from "../models/User.js";
+const bcrypt = require("bcrypt");
+const express = require("express");
+const User = require("../models/User.js");
 const router = express.Router();
 
 // update a user
@@ -11,8 +11,7 @@ router.put("/:id", async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         req.body.password = await bcrypt.hash(req.body.password, salt);
       } catch (error) {
-        res.staus(500).json(err);
-        // console.log(error);
+        res.status(500).json(error); // Fix typo here
       }
     }
     try {
@@ -21,7 +20,6 @@ router.put("/:id", async (req, res) => {
       });
       res.status(200).json("account has been updated");
     } catch (error) {
-      // console.log(error);
       res.status(500).json(error);
     }
   } else {
@@ -36,11 +34,9 @@ router.delete("/:id", async (req, res) => {
       await User.findByIdAndDelete(req.params.id);
       res.status(200).json("account has been deleted");
     } catch (error) {
-      // console.log(error);
       res.status(500).json("error alert");
     }
   } else {
-    // console.log("you can update delete your account");
     res.status(403).json("you can delete only your account");
   }
 });
@@ -61,7 +57,6 @@ router.get("/", async (req, res) => {
 });
 
 // Follow a user
-
 router.put("/:id/follow", async (req, res) => {
   if (req.body.userId !== req.params.id) {
     const user = await User.findById(req.params.id);
@@ -88,7 +83,6 @@ router.put("/:id/follow", async (req, res) => {
 });
 
 // Unfollow a user
-
 router.put("/:id/unfollow", async (req, res) => {
   if (req.body.userId !== req.params.id) {
     const user = await User.findById(req.params.id);
@@ -115,4 +109,4 @@ router.put("/:id/unfollow", async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router; // Corrected export

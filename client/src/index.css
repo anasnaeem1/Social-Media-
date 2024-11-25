@@ -34,11 +34,6 @@
   height: calc(100vh - 65px);
   padding-left: 1rem;
 }
-.fixed-options-container {
-  width: 20%;
-  height: calc(100vh - 65px);
-  padding-left: 1rem;
-}
 
 .others-container {
   width: 26%;

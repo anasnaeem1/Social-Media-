@@ -1,23 +1,23 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
     username: {
       type: String,
-      required: true, // Fixed 'require' to 'required'
+      required: true,
       min: 3,
       max: 20,
-      unique: true, // Fixed 'uniqw' to 'unique'
+      unique: true,
     },
     email: {
       type: String,
-      required: true, // Fixed 'require' to 'required'
+      required: true,
       max: 50,
-      unique: true, // Fixed 'uniqw' to 'unique'
+      unique: true,
     },
     password: {
       type: String,
-      required: true, // Fixed 'require' to 'required'
+      required: true,
       min: 6,
     },
     profilePic: {
@@ -29,12 +29,14 @@ const userSchema = new mongoose.Schema(
       default: "",
     },
     followers: {
-      type: Array,
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "User", // Reference to User model
       default: [],
     },
     followings: {
-      type: Array,
-      default: [], // Changed from "" to []
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "User", // Reference to User model
+      default: [],
     },
     isAdmin: {
       type: Boolean,
@@ -54,10 +56,10 @@ const userSchema = new mongoose.Schema(
     },
     relationship: {
       type: Number,
-      enum: [1, 2, 3],
+      enum: [1, 2, 3], // 1: Single, 2: In a relationship, 3: It's complicated
     },
   },
   { timestamps: true }
 );
 
-export default mongoose.model("User", userSchema);
+module.exports = mongoose.model("User", userSchema);

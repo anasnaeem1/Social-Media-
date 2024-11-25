@@ -176,7 +176,7 @@ export const Shares = [
   {
     id: 1,
     icon: <i className="ri-thumb-up-line"></i>,
-    liked: <i class="ri-thumb-up-fill"></i>,
+    liked: <i className="ri-thumb-up-fill"></i>,
     label: "Like",
     link: "/",
   },

@@ -12,8 +12,9 @@ function feed({ UserPhoto, mainItems, SeperatingLine, username }) {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const {user} = useContext(AuthContext)
+  const { user } = useContext(AuthContext);
 
+  // Fetching Timeline Posts
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -36,42 +37,40 @@ function feed({ UserPhoto, mainItems, SeperatingLine, username }) {
     fetchPosts();
   }, []);
 
-  // if (!posts) return null;
-
   return (
     <div
       className={`flex pt-5 items-center flex-col gap-10 overflow-x-hidden feed-container`}
     >
-      {/* <input className="border border-black" placeholder="testing..." type="text" onChange={e => setText(e.target.value)} /> */}
-      <CreatePost
+      {username ? (
+        username === user.username && (
+          <CreatePost
+            ShareOptions={ShareOptions}
+            UserPhoto={UserPhoto}
+            SeperatingLine={SeperatingLine}
+          />
+        )
+      ) : (
+        <CreatePost
+          ShareOptions={ShareOptions}
+          UserPhoto={UserPhoto}
+          SeperatingLine={SeperatingLine}
+        />
+      )}
+
+      {/* <CreatePost
         ShareOptions={ShareOptions}
         UserPhoto={UserPhoto}
         SeperatingLine={SeperatingLine}
-      />
+      /> */}
+
       {isLoading &&
         Array.from({ length: 5 }).map((_, index) => (
           <PostSkeleton key={index} />
         ))}
 
       {posts.map((post) => (
-        <Post post={post} key={post.id} />
+        <Post post={post} key={post._id} />
       ))}
-
-      {/*
-      <Post
-        Shares={Shares}
-        Friends={Friends}
-        ShareOptions={ShareOptions}
-        UserPhoto={UserPhoto}
-        SeperatingLine={SeperatingLine}
-      />
-      <Post
-        Shares={Shares}
-        Friends={Friends}
-        ShareOptions={ShareOptions}
-        UserPhoto={UserPhoto}
-        SeperatingLine={SeperatingLine}
-      /> */}
     </div>
   );
 }
