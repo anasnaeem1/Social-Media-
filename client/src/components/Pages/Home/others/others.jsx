@@ -7,7 +7,7 @@ function Others({ mainItems }) {
     <>
       <div className="others-container"></div>
       {/* Main Wrapper for the Sidebar */}
-      <div className="fixed right-0 top-[65px] custom-scrollbar overflow-y-auto others-container">
+      <div className="fixed right-0  top-[65px] custom-scrollbar overflow-y-scroll others-container">
         <div className="flex flex-col  gap-5">
           {/* Birthday Section */}
           <div className="flex items-center gap-3 p-4 bg-gray-100 rounded-lg shadow-sm">

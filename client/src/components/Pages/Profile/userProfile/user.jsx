@@ -9,7 +9,7 @@ import axios from "axios";
 
 function User({
   isLoading,
-  username,
+  userId,
   profileUser,
   UserPhoto,
   mainItems,
@@ -88,7 +88,7 @@ function User({
                 backgroundPosition: "center",
               }}
             >
-              {username !== currentUser.username && (
+              {userId !== currentUser._id && (
                 <svg
                   className="absolute top-0 left-0 h-[209px] w-[209px] transform -translate-y-[8px] -translate-x-[8px] rotate-[90deg]"
                   xmlns="http://www.w3.org/2000/svg"
@@ -117,7 +117,7 @@ function User({
                 </svg>
               )}
 
-              {username !== currentUser.username && (
+              {userId !== currentUser._id && (
                 <div
                   onClick={handleFollow}
                   className="absolute left-1/2 bottom-[-15px] transform -translate-x-1/2 cursor-pointer w-10 h-10 bg-white rounded-full flex justify-center items-center"
@@ -139,7 +139,7 @@ function User({
       <div className="flex flex-col-reverse lg:flex-row mx-auto justify-center gap-6 px-6 mt-[210px] max-w-7xl">
         <div className="flex-grow">
           <Feed
-            username={username}
+            userId={userId}
             UserPhoto={UserPhoto}
             mainItems={mainItems}
             SeperatingLine={SeperatingLine}

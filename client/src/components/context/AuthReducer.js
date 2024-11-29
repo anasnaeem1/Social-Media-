@@ -17,7 +17,7 @@ const AuthReducer = (state, action) => {
       return {
         user: null,
         isFetching: false,
-        error: action.payload, // Store the error message in the state
+        error: action.payload, 
       };
     case "FOLLOW":
       console.log("Before FOLLOW:", state.user.followings);
@@ -46,6 +46,24 @@ const AuthReducer = (state, action) => {
         user: null, // Reset user state to null
         isFetching: false,
         error: false,
+      };
+      case "SEARCH_START":
+      return {
+        ...state,
+        isFetching: true,
+        error: false,
+      };
+    case "SEARCH_SUCCESS":
+      return {
+        ...state,
+        isFetching: false,
+        SearchedUser: action.payload, // Only update SearchedUser
+      };
+    case "SEARCH_FAILURE":
+      return {
+        ...state,
+        isFetching: false,
+        error: true,
       };
     default:
       return state;

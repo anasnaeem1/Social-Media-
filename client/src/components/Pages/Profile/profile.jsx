@@ -13,23 +13,24 @@ import { useParams } from "react-router";
 function profile() {
   const PA = import.meta.env.VITE_PUBLIC_API;
   const [user, setUser] = useState({});
-  const username = useParams().username;
+  const userId = useParams().id;
   const [isLoading, setIsLoading] = useState(true);
+
+  // console.log(userId)
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get(`${PA}/api/users?username=${username}`);
-
+        const res = await axios.get(`${PA}/api/users?userId=${userId}`);
         setUser(res.data);
         setIsLoading(false);
-        // console.log(res.data);
+        console.log(res.data);
       } catch (error) {
         console.log("Error at fetching", error);
       }
     };
     fetchUser();
-  }, [username]);
+  }, [userId]);
   return (
     <div>
       <div className="flex justify-center ">
@@ -41,7 +42,7 @@ function profile() {
         />
         <User
           isLoading={isLoading}
-          username={username}
+          userId={userId}
           profileUser={user}
           UserPhoto={UserPhoto}
           mainItems={mainItems}

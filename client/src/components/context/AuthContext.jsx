@@ -3,6 +3,7 @@ import AuthReducer from "./AuthReducer";
 
 const INITIAL_STATE = {
   user: JSON.parse(localStorage.getItem("user")) || null,
+  SearchedUser : null,
   isFetching: false,
   error: false,
 };
@@ -24,6 +25,7 @@ export const AuthContextProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         user: state.user,
+        SearchedUser: state.SearchedUser, // Include SearchedUser here
         isFetching: state.isFetching,
         error: state.error,
         dispatch,
@@ -33,3 +35,4 @@ export const AuthContextProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+

@@ -7,7 +7,7 @@ import PostSkeleton from "../../../Skeleton/postSkeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { AuthContext } from "../../../context/AuthContext";
 
-function feed({ UserPhoto, mainItems, SeperatingLine, username }) {
+function feed({ UserPhoto, mainItems, SeperatingLine, userId }) {
   const { ShareOptions } = mainItems;
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -15,12 +15,13 @@ function feed({ UserPhoto, mainItems, SeperatingLine, username }) {
   const PA = import.meta.env.VITE_PUBLIC_API;
 
   // Fetching Timeline Posts
+  console.log(userId)
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = username
+        const res = userId
           ? await axios.get(
-              `${PA}/api/posts/profile/` + username
+              `${PA}/api/posts/profile/` + userId
             )
           : await axios.get(
               `${PA}/api/posts/timeline/${user._id}`
@@ -35,14 +36,14 @@ function feed({ UserPhoto, mainItems, SeperatingLine, username }) {
     };
 
     fetchPosts();
-  }, [username]);
+  }, [userId]);
 
   return (
     <div
       className={`flex pt-5 items-center flex-col gap-10 overflow-x-hidden feed-container`}
     >
-      {username ? (
-        username === user.username && (
+      {userId ? (
+        userId === user._id && (
           <CreatePost
             ShareOptions={ShareOptions}
             UserPhoto={UserPhoto}

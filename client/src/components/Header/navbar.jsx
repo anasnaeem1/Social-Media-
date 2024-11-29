@@ -2,19 +2,53 @@ import { navItems } from "../../constants/index.jsx";
 import UserPhoto from "../../userPhoto.jsx";
 import { Link, useNavigate } from "react-router-dom"; // Use useNavigate
 import Logo from "../../logo.jsx";
-import { useContext } from "react";
+import { useContext, useCallback, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { Logout } from "../context/AuthActions.js"; // Import the Logout action
+import { useRef } from "react";
+// import axios from "axios";
+import { searchUser } from "../../apiCalls.js";
 
 function Navbar() {
-  const {dispatch, user } = useContext(AuthContext);
   const { controlsIcons } = navItems;
+  const { dispatch, SearchedUser, user } = useContext(AuthContext);
+  const searchedUsername = useRef();
   const navigate = useNavigate();
 
   const handleGetOut = () => {
-    dispatch(Logout()); // Dispatch the logout action to reset the user state
-    navigate("/login"); // Navigate to the login page
+    dispatch(Logout());
+    navigate("/login");
   };
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+
+    const username = searchedUsername.current.value;
+    if (username) {
+      try {
+        await searchUser(username, dispatch);
+      } catch (err) {
+        console.log("Error during search", err);
+      }
+    } else {
+      console.log("Search input is not available");
+    }
+  };
+
+  const handleClearInput = () => {
+    searchedUsername.current.value = "";
+  };
+
+  useEffect(() => {
+    if (SearchedUser && SearchedUser[0] && SearchedUser[0].username) {
+      const username = searchedUsername.current.value;
+      if (SearchedUser[0].username === username) {
+        navigate(`/search/${SearchedUser[0].id}`);
+        searchedUsername.current.value = ""
+      } else {
+      }
+    }
+  }, [SearchedUser, navigate]);
 
   return (
     <>
@@ -23,8 +57,10 @@ function Navbar() {
         style={{ fontFamily: "montserrat, sans-serif" }}
         className=" border-b z-[9999] bg-white fixed top-0 text-black w-full flex justify-between items-center px-3 h-[65px]"
       >
-        <div>
-          <Link to={"/"}>
+        <div onClick={handleClearInput}>
+          <Link
+            to="/"
+          >
             <Logo />
           </Link>
         </div>
@@ -32,15 +68,33 @@ function Navbar() {
         {/* Search Bar */}
         <div>
           <i className="flex lg:hidden items-center justify-center ri-search-line text-lg w-11 h-11 bg-BgColor text-white rounded-full"></i>
-          <div className="hidden lg:flex bg-white items-center border border-gray-300 rounded-full px-6 py-2 space-x-2">
-            <i className="ri-search-line text-gray-400"></i>
-            <div className="relative">
+          <div className="hidden lg:flex items-center px-2 py-2">
+            <form
+              onSubmit={handleSearch}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleSearch(e);
+                }
+              }}
+              className="relative flex"
+            >
+              {/* Search Input */}
               <input
-                type="search"
+                ref={searchedUsername}
+                type="text"
                 placeholder="Search..."
-                className="focus:outline-none text-black bg-transparent transition-all duration-300 ease-in-out w-[250px] focus:w-[300px]"
+                className="border-gray-300 border focus:outline-none transition-all duration-300 text-black bg-transparent w-full px-3 py-2 rounded-full"
               />
-            </div>
+
+              {/* Search Button */}
+              <button
+                type="submit"
+                className="border-gray-300 border absolute right-0 top-0 bottom-0 bg-blue-500 hover:bg-blue-600 text-white rounded-r-full px-4 flex items-center justify-center"
+              >
+                <i className="ri-search-line text-lg"></i>
+              </button>
+            </form>
           </div>
         </div>
 

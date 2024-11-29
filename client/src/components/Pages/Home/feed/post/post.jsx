@@ -18,7 +18,7 @@ function post({ post }) {
   const { Friends, Shares } = mainItems;
   const [likes, setLikes] = useState(post.likes.length);
   const [isLiked, setIsLiked] = useState(false);
-  const [postUser, setUser] = useState({});
+  const [postUser, setPostUser] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const params = useParams();
   // console.log(postUser.username)
@@ -47,7 +47,7 @@ function post({ post }) {
           `${PA}/api/users?userId=${post.userId}`
         );
 
-        setUser(res.data);
+        setPostUser(res.data);
         setIsLoading(false);
       } catch (error) {
         console.log("Error at fetching", error);
@@ -71,7 +71,7 @@ function post({ post }) {
         {/* Post Header */}
         <div className="flex px-3 py-3 justify-between items-center gap-2 flex-wrap">
           <div className="flex items-center gap-2">
-            {params === `/profile/${postUser.username}` ? (
+            {params === `/profile/${postUser._id}` ? (
               <div className="w-[3rem] h-[3rem] rounded-full">
                 <img
                   src={`${
@@ -84,7 +84,7 @@ function post({ post }) {
                 />
               </div>
             ) : (
-              <Link to={`/profile/${postUser.username}`}>
+              <Link to={`/profile/${postUser._id}`}>
                 <img
                   src={`${
                     postUser.profilePic
@@ -128,19 +128,18 @@ function post({ post }) {
           }  justify-center items-center`}
         >
           <div
-            className={`relative group ${
+            className={` ${
               !post.img ? "hidden" : "flex"
             } w-full h-[400px]`}
             style={{
               backgroundImage: `url(${
-                post.img ? `${PF}/PostImages${post.img}` : ""
+                post.img ? `${PF}/PostImages/${post.img}` : ""
               })`,
               backgroundSize: "cover",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
             }}
           >
-            <div className="absolute hover:hidden transition duration-1000  inset-0 bg-black opacity-5"></div>
           </div>
         </div>
 

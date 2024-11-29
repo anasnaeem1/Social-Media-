@@ -9,7 +9,7 @@ function user() {
   const { user } = useContext(AuthContext);
   // console.log(user)
   return (
-    <Link to={user ? "/profile/" + user.username : undefined}>
+    <Link to={user ? "/profile/" + user._id : undefined}>
       <div
         className=" w-[50px] h-[50px] bg-cover bg-no-repeat rounded-full"
         style={{

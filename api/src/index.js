@@ -40,7 +40,7 @@ app.use(
   })
 );
 
-app.use("/api/users", userRouter);  
+app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/posts", postRouter);
 app.use("/api", uploadRouter); // Mount the upload router

@@ -30,3 +30,18 @@ export const Unfollow = (userId) => ({
 export const Logout = () => ({
   type: "LOGOUT",
 });
+
+// Action for Search
+export const SearchStart = (username) => ({
+  type: "SEARCH",
+});
+
+export const SearchSuccess = (user) => ({
+  type: "SEARCH_SUCCESS",
+  payload: user,
+});
+
+export const SearchFailure = (error) => ({
+  type: "SEARCH_FAILURE",
+  payload: error,
+});

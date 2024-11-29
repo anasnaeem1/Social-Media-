@@ -35,7 +35,7 @@ function friendList() {
         ) : friendList.length > 0 ? (
           friendList.map((Friend) => (
             <Link
-              to={`/profile/${Friend.username}`}
+              to={`/profile/${Friend._id}`}
               key={Friend.id}
               className="flex items-center gap-4"
             >
