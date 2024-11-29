@@ -4,6 +4,15 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      animation: {
+        'spin-border': 'spinBorder 1.5s linear infinite',
+      },
+      keyframes: {
+        spinBorder: {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
+        },
+      },
       screen: {
         sm: "640px",
         md: "768px",
@@ -16,10 +25,7 @@ export default {
         seperatingLine: "#141F26",
         buttonBg: "#A52E17",
         textColor: "#0866FF",
-
-
       },
-
       backgroundColor: {
         buttonBg: "#A52E17",
         BgColor: "#0866FF",

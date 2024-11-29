@@ -2,12 +2,12 @@ import FriendList from "../Home/friendList";
 
 function options({ mainItems, SeperatingLine, visibility }) {
   const { Options } = mainItems;
+
   return (
     <>
       <div className={`${visibility} options-container`}></div>
-      {/* Add custom scrollbar styles */}
-      <div className={`${visibility} fixed left-[1px] top-[65px] options-container`}>
-        <div className="pl-3 custom-scrollbar overflow-y-auto w-full pt-5 flex flex-col gap-6">
+      <div className={`${visibility} fixed left-[1px] custom-scrollbar overflow-y-auto top-[65px] options-container`}>
+        <div className="pl-3 w-full pt-5 flex flex-col gap-6">
           <ul className="flex justify-center items-start flex-col gap-3">
             {Options.map((Option, id) => {
               return (

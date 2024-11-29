@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 function register() {
   const [showPass, setShowPass] = useState(false);
   const [showCPass, setShowCPass] = useState(false);
+  const PA = import.meta.env.VITE_PUBLIC_FOLDER;
 
   const handleShowPass = (e) => {
     e.preventDefault();
@@ -34,8 +35,9 @@ function register() {
         email: email.current.value,
         password: password.current.value,
       };
+
       try {
-        await axios.post("http://localhost:8800/api/auth/register", user);
+        await axios.post( `${PA}/api/auth/register`, user);
         navigate("/login");
       } catch (error) {
         alert("Registration failed. Please try again!");

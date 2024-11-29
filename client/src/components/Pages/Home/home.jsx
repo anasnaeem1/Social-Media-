@@ -8,7 +8,7 @@ import Options from "../options/options";
 function home() {
   return (
     <>
-      <div className="flex justify-between">
+      <div className="flex justify-center md:justify-between ">
         <Options
           visibility="hidden md:block"
           UserPhoto={UserPhoto}

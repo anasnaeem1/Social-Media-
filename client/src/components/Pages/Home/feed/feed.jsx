@@ -11,8 +11,8 @@ function feed({ UserPhoto, mainItems, SeperatingLine, username }) {
   const { ShareOptions } = mainItems;
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
   const { user } = useContext(AuthContext);
+  const PA = import.meta.env.VITE_PUBLIC_API;
 
   // Fetching Timeline Posts
   useEffect(() => {
@@ -20,10 +20,10 @@ function feed({ UserPhoto, mainItems, SeperatingLine, username }) {
       try {
         const res = username
           ? await axios.get(
-              "http://localhost:8800/api/posts/profile/" + username
+              `${PA}/api/posts/profile/` + username
             )
           : await axios.get(
-              `http://localhost:8800/api/posts/timeline/${user._id}`
+              `${PA}/api/posts/timeline/${user._id}`
             );
         // console.log("Fetched posts:", res.data);
         const randomizedPosts = res.data.sort(() => Math.random() - 0.5);
@@ -35,7 +35,7 @@ function feed({ UserPhoto, mainItems, SeperatingLine, username }) {
     };
 
     fetchPosts();
-  }, []);
+  }, [username]);
 
   return (
     <div

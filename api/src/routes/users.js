@@ -109,4 +109,27 @@ router.put("/:id/unfollow", async (req, res) => {
   }
 });
 
+router.get("/friends/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if(user){
+     const friends = await Promise.all(
+      user.followings.map((friendId)=> User.findById(friendId))
+     )
+      const friendList = friends.map((friend)=> ({
+        _id:friend.id,
+        username:friend.username,
+        profilePic:friend.profilePic
+      }))
+      res.status(200).json(friendList)
+    }
+    else{
+      res.status(400).json("user not found")
+    }
+  } catch (error) {
+    res.status(500).json("friendsList Not Found")
+  }
+  
+});
+
 module.exports = router; // Corrected export

@@ -36,7 +36,7 @@
 }
 
 .others-container {
-  width: 26%;
+  width: 30%;
   height: 100vh;
   padding: 1rem;
   overflow-y: auto;
@@ -81,7 +81,6 @@
   80% {
     transform: translateY(-7px) rotate(-13deg);
     color: rgb(5, 122, 255); /* Transition back to light blue */
-
   }
 
   100% {
@@ -96,7 +95,36 @@
   animation: liked 0.5s ease-in;
 }
 
+@keyframes loading-start {
+  0% {
+    stroke-dashoffset: 472;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes loading-end {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 472;
+  }
+}
+
+.loading-start {
+  animation: loading-start 1s ease-in-out forwards; /* Infinite for continuous rotation */
+}
+
+.loading-end {
+  animation: loading-end 1s ease-in-out forwards; /* Infinite for continuous rotation */
+
+}
+
+
+
 /* :root {
-    background-color: black;
-    color: white;
+    background-color: rgb(245, 244, 244);
+    color: black;
 } */

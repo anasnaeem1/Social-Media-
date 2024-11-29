@@ -12,6 +12,7 @@ import { AuthContext } from "../../../../context/AuthContext";
 
 function post({ post }) {
   const PF = import.meta.env.VITE_PUBLIC_FOLDER;
+  const PA = import.meta.env.VITE_PUBLIC_API
   // console.log(PF)
   const { user } = useContext(AuthContext);
   const { Friends, Shares } = mainItems;
@@ -25,7 +26,7 @@ function post({ post }) {
   const likeHandler = async () => {
     const userId = user._id;
     try {
-      await axios.put(`http://localhost:8800/api/posts/${post._id}/like`, {
+      await axios.put(`${PA}/api/posts/${post._id}/like`, {
         userId: userId,
       });
       if (isLiked) {
@@ -43,7 +44,7 @@ function post({ post }) {
     const fetchUser = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8800/api/users?userId=${post.userId}`
+          `${PA}/api/users?userId=${post.userId}`
         );
 
         setUser(res.data);
@@ -132,7 +133,7 @@ function post({ post }) {
             } w-full h-[400px]`}
             style={{
               backgroundImage: `url(${
-                post.img ? `${PF}PostImages/${post.img}` : ""
+                post.img ? `${PF}/PostImages${post.img}` : ""
               })`,
               backgroundSize: "cover",
               backgroundPosition: "center",

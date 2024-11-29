@@ -1,17 +1,24 @@
 import { navItems } from "../../constants/index.jsx";
 import UserPhoto from "../../userPhoto.jsx";
-import { Link } from "react-router-dom";
-// import { AuthContext } from "../context/AuthContext.jsx"
+import { Link, useNavigate } from "react-router-dom"; // Use useNavigate
 import Logo from "../../logo.jsx";
-// import { useContext } from "react";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext.jsx";
+import { Logout } from "../context/AuthActions.js"; // Import the Logout action
 
+function Navbar() {
+  const {dispatch, user } = useContext(AuthContext);
+  const { controlsIcons } = navItems;
+  const navigate = useNavigate();
 
-function navbar() {
-  // const {user} = useContext(AuthContext)
-  const { controls, controlsIcons } = navItems;
+  const handleGetOut = () => {
+    dispatch(Logout()); // Dispatch the logout action to reset the user state
+    navigate("/login"); // Navigate to the login page
+  };
+
   return (
     <>
-      <div className="w-full h-[65px] "> </div>
+      <div className="w-full h-[65px] "></div>
       <header
         style={{ fontFamily: "montserrat, sans-serif" }}
         className=" border-b z-[9999] bg-white fixed top-0 text-black w-full flex justify-between items-center px-3 h-[65px]"
@@ -22,12 +29,11 @@ function navbar() {
           </Link>
         </div>
 
-
         {/* Search Bar */}
         <div>
           <i className="flex lg:hidden items-center justify-center ri-search-line text-lg w-11 h-11 bg-BgColor text-white rounded-full"></i>
-          <div className="hidden lg:flex  bg-white items-center border border-gray-300 rounded-full px-6 py-2 space-x-2">
-            <i className=" ri-search-line text-gray-400"></i>
+          <div className="hidden lg:flex bg-white items-center border border-gray-300 rounded-full px-6 py-2 space-x-2">
+            <i className="ri-search-line text-gray-400"></i>
             <div className="relative">
               <input
                 type="search"
@@ -42,13 +48,19 @@ function navbar() {
           {/* Controls */}
           <div>
             <ul className="flex gap-2 text-lg">
-              {controls.map((control, index) => {
-                return (
-                  <div key={index} className="hidden sm:flex">
-                    <li className="text-md">{control.label}</li>
-                  </div>
-                );
-              })}
+              <Link
+                to={user ? "/profile/" + user.username : undefined}
+                className="hidden sm:flex"
+              >
+                <li className="text-md">Home</li>
+              </Link>
+
+              <Link to="/" className="hidden sm:flex">
+                <li className="text-md">Timeline</li>
+              </Link>
+              <button className="cursor-pointer" onClick={handleGetOut}>
+                Get Out
+              </button>
             </ul>
           </div>
 
@@ -77,4 +89,5 @@ function navbar() {
     </>
   );
 }
-export default navbar;
+
+export default Navbar;
