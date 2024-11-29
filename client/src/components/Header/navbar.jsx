@@ -44,7 +44,7 @@ function Navbar() {
       const username = searchedUsername.current.value;
       if (SearchedUser[0].username === username) {
         navigate(`/search/${SearchedUser[0].id}`);
-        searchedUsername.current.value = ""
+        searchedUsername.current.value= ""
       } else {
       }
     }
