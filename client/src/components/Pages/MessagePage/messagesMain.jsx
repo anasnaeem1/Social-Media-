@@ -60,7 +60,7 @@ function ChatApp() {
     if (user) {
       fetchConvos();
     }
-  }, [user]);
+  }, [user]); 
 
   return (
     <div className="flex h-[calc(100vh-65px)]">
