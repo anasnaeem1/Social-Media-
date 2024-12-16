@@ -1,0 +1,183 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgb(172, 171, 171);
+  border-radius: 10px;
+  display: none;
+  transition: display 0.3s ease;
+}
+
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  display: block;
+  background: rgb(163, 162, 162);
+}
+
+/* Default layout for larger screens */
+.options-container {
+  width: 20%;
+  height: calc(100vh - 65px);
+  padding-left: 1rem;
+}
+
+.others-container {
+  width: 30%;
+  height: 90vh;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+@media (max-width: 1024px) {
+  .others-container {
+    display: none;
+    width: 35%; /* Adjust the width for medium screens */
+  }
+  .feed-container {
+    margin-right: 80px;
+  }
+}
+
+@media (max-width: 767px) {
+  .feed-container {
+    margin-right: 0;
+  }
+}
+
+@keyframes liked {
+  0% {
+    transform: translateY(0) rotate(0);
+    color: rgb(255, 0, 0); /* Start with blue */
+  }
+
+  20% {
+    transform: translateY(-14px) rotate(-26deg);
+    color: rgb(0, 195, 255); /* Transition to light blue */
+  }
+
+  40% {
+    transform: translateY(-7px) rotate(-13deg);
+    color: rgb(0, 255, 170); /* Transition back to blue */
+  }
+
+  60% {
+    transform: translateY(0) rotate(0);
+    color: rgb(25, 255, 5); /* Transition back to light blue */
+  }
+  80% {
+    transform: translateY(-7px) rotate(-13deg);
+    color: rgb(255, 43, 5); /* Transition back to light blue */
+  }
+
+  100% {
+    transform: translateY(0) rotate(0);
+    color: rgb(255, 0, 0); /* End with blue */
+  }
+}
+
+.likeAnimate {
+  /* transform: translateY(-12px) rotate(-24deg); */
+  color: rgb(255, 0, 0);
+  animation: liked 0.5s ease-in;
+}
+
+@keyframes loading-start {
+  0% {
+    stroke-dashoffset: 472;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes loading-end {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 472;
+  }
+}
+@keyframes fadeInUp {
+  0% {
+    transform: translateY(20px); /* Start slightly lower */
+  }
+  100% {
+    transform: translateY(0); /* Move to the original position */
+  }
+}
+
+.message {
+  animation: fadeInUp 0.2s ease-out;
+}
+
+.loading-start {
+  animation: loading-start 1s ease-in-out forwards; /* Infinite for continuous rotation */
+}
+
+.loading-end {
+  animation: loading-end 1s ease-in-out forwards; /* Infinite for continuous rotation */
+}
+
+.reload-slidein {
+  transform: translateY(70px); /* Initial position */
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(70px);
+  }
+}
+
+.skeleton-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow: hidden;
+}
+
+.skeleton-header,
+.skeleton-content,
+.skeleton-image {
+  display: block;
+}
+
+.skeleton-header {
+  height: 4rem; /* Matches actual header height */
+}
+
+.skeleton-image {
+  flex-shrink: 0;
+}
+.message-container {
+  @apply flex self-start max-w-[75%] py-3 px-4 rounded-lg mb-4 gap-2 shadow-md transition-transform;
+}
+.sender-message {
+  @apply self-end flex-row-reverse bg-blue-900 text-white;
+}
+.receiver-message {
+  @apply bg-white text-black;
+}
+
+/* :root {
+    background-color: rgb(245, 244, 244);
+    color: black;
+} */
