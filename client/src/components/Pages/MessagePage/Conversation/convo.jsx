@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 
-function convo({ convoId, setConvoLoading, conversation }) {
+function convo({ onlineUsers, convoId, setConvoLoading, conversation }) {
   const [user, setUser] = useState({});
   const [userLoading, setUserLoading] = useState(false);
   // const [userLoading, setUserLoading] = useState(false);
@@ -13,6 +13,7 @@ function convo({ convoId, setConvoLoading, conversation }) {
   const PF = import.meta.env.VITE_PUBLIC_FOLDER;
   const PA = import.meta.env.VITE_PUBLIC_API;
   const [latestMessage, setLatestMessage] = useState(null);
+  const [isOnline, setIsOnline] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState(null);
 
   useEffect(() => {
@@ -37,6 +38,14 @@ function convo({ convoId, setConvoLoading, conversation }) {
     };
     fetchUser();
   }, []);
+
+  // useEffect(() => {
+  //   if (user._id) {
+  //     const isOnline = onlineUsers.includes(user._id);
+  //     console.log(isOnline);
+  //     // setIsOnline(onlineUsers.includes(user._id));
+  //   }
+  // }, [user._id, currentUser._id]);
 
   useEffect(() => {
     const fetchLatestMessage = async () => {
@@ -64,6 +73,7 @@ function convo({ convoId, setConvoLoading, conversation }) {
       {/* User Photo */}
       <div className="relative flex-shrink-0">
         <UserPhoto
+        onlineUsers={onlineUsers}
           userId={user._id}
           user={user}
           className="w-12 h-12 rounded-full border-2 border-gray-200 shadow-md hover:scale-105 transition-transform duration-200 ease-in-out"
@@ -87,7 +97,13 @@ function convo({ convoId, setConvoLoading, conversation }) {
       </Link>
 
       {/* Arrow Icon */}
-      <div className="text-gray-400 hover:text-gray-600 transition-colors duration-200">
+      <div
+        className={`${
+          onlineUsers.some((userObj) => userObj.userId === user._id)
+            ? "text-blue-500"
+            : "text-gray-400"
+        }  hover:text-gray-600 transition-colors duration-200`}
+      >
         <i className="ri-arrow-right-s-line text-xl"></i>
       </div>
     </div>

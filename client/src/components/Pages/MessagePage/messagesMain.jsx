@@ -14,12 +14,11 @@ function ChatApp() {
   const PA = import.meta.env.VITE_PUBLIC_API;
   const { convoId } = useParams();
   const [arrivalMessage, setArrivalMessage] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState([]);
 
   useEffect(() => {
-    // Initialize socket connection on component mount
     socket.current = io("ws://localhost:8900");
 
-    // Set up listener for incoming messages
     socket.current.on("getMessage", (data) => {
       // console.log("Received message:", data);
       setArrivalMessage({
@@ -29,13 +28,10 @@ function ChatApp() {
       });
     });
 
-    // Add user to socket for receiving messages
-    // if (user) {
     socket.current.emit("addUser", user._id);
     socket.current.on("getUsers", (users) => {
-      console.log("Active users:", users);
+      setOnlineUsers(users)
     });
-    // }
 
     return () => {
       // Clean up and disconnect socket when component is unmounted or message component is closed
@@ -60,7 +56,7 @@ function ChatApp() {
     if (user) {
       fetchConvos();
     }
-  }, [user]); 
+  }, [user]);
 
   return (
     <div className="flex h-[calc(100vh-65px)]">
@@ -73,6 +69,7 @@ function ChatApp() {
         {/* <h1>{arrivalMessage && arrivalMessage.text}</h1> */}
         {conversations.length > 0 ? (
           <Coverstations
+          onlineUsers={onlineUsers}
             arrivalMessage={arrivalMessage}
             socket={socket}
             setConvoLoading={setConvoLoading}
@@ -89,6 +86,7 @@ function ChatApp() {
       <div className="flex-grow overflow-hidden">
         {convoId ? (
           <Messages
+          onlineUsers={onlineUsers}
             arrivalMessage={arrivalMessage}
             socket={socket}
             conversations={conversations}

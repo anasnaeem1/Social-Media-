@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "./context/AuthContext";
 import { Link } from "react-router-dom";
 
-function userPhoto({ userId, user }) {
+function userPhoto({ userId, user, onlineUsers }) {
   const PF = import.meta.env.VITE_PUBLIC_FOLDER;
   const { user: currentUser } = useContext(AuthContext);
   const [followed, setFollowed] = useState(false);
@@ -18,7 +18,7 @@ function userPhoto({ userId, user }) {
   }, [currentUser.followings, user]);
 
   return (
-    <div className="flex flex-col justify-start items-center">
+    <div className="flex flex-col justify-start items-center relative">
       <Link to={`/profile/${userId}`}>
         <div
           className="relative w-[58px] h-[58px] border-[3px] border-white rounded-full"
@@ -62,6 +62,12 @@ function userPhoto({ userId, user }) {
           )}
         </div>
       </Link>
+      {onlineUsers &&
+      onlineUsers.some((userObj) => userObj.userId === user._id) ? (
+        <div className="absolute bottom-1 right-[-4px] h-5 w-5 border-[3px] border-white bg-green-400 rounded-full"></div>
+      ) : (
+        ""
+      )}
     </div>
   );
 }
