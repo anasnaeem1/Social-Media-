@@ -1,5 +1,5 @@
 const AuthReducer = (state, action) => {
-  console.log("AuthReducer action:", action.type, "Payload:", action.payload);
+  // console.log("AuthReducer action:", action.type, "Payload:", action.payload);
   switch (action.type) {
     case "LOGIN_START":
       return {
@@ -23,9 +23,9 @@ const AuthReducer = (state, action) => {
         error: action.payload,
       };
     case "FOLLOW":
-      console.log("Before FOLLOW:", state.user.followings);
+      // console.log("Before FOLLOW:", state.user.followings);
       const updatedFollowings = [...state.user.followings, action.payload];
-      console.log("After FOLLOW:", updatedFollowings);
+      // console.log("After FOLLOW:", updatedFollowings);
       return {
         ...state,
         user: {
@@ -78,12 +78,12 @@ const AuthReducer = (state, action) => {
       };
     case "RELOAD":
       return {
-        ...state, // Ensure other parts of the state remain unchanged
+        ...state,
         reload: action.payload,
       };
     case "UNRELOAD":
       return {
-        ...state, // Ensure other parts of the state remain unchanged
+        ...state,
         reload: action.payload,
       };
 

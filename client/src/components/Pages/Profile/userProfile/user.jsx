@@ -39,7 +39,7 @@ function User({
         profileUser._id.toString()
       );
       setFollowed(isFollowed);
-      console.log("Includes:", isFollowed);
+      // console.log("Includes:", isFollowed);
     }
   }, [currentUser.followings, profileUser._id]);
 
@@ -66,7 +66,7 @@ function User({
           const res = await axios.get(
             `${PA}/api/convos/${profileUser._id}/${currentUser._id}`
           );
-          console.log(res.data);
+          // console.log(res.data);
           if (res.data) {
             setConvo(res.data);
           }
@@ -91,7 +91,7 @@ function User({
             userId: currentUser._id,
           }
         );
-        console.log(res.data);
+        // console.log(res.data);
         if (res.data) {
           dispatch({ type: "UNFOLLOW", payload: profileUser._id });
         }
@@ -124,7 +124,7 @@ function User({
 
   useEffect(()=>{
     if(updateBoxVisibility){
-      console.log(updateBoxVisibility)
+      // console.log(updateBoxVisibility)
     }
   })
 
@@ -146,7 +146,7 @@ function User({
       });
 
       const uniqueFileName = uploadResponse.data;
-      console.log("Received unique filename:", uniqueFileName);
+      // console.log("Received unique filename:", uniqueFileName);
 
       const newProfilePic = {
         userId: currentUser._id,
@@ -180,12 +180,12 @@ function User({
               img: profilePicResponse.data.profilePic,
             };
 
-            console.log("Submitting new post...");
+            // console.log("Submitting new post...");
             const postResponse = await axios.post(
               "http://localhost:8801/api/posts/",
               newPost
             );
-            console.log(postResponse.data)
+            // console.log(postResponse.data)
           } catch (error) {
             console.error(error);
           }
@@ -222,7 +222,7 @@ function User({
     };
     try {
       const makingConvo = await axios.post(`${PA}/api/convos`, data);
-      console.log(makingConvo.data);
+      // console.log(makingConvo.data);
       // setMakingConvo(true);
 
       if (makingConvo.data.convoId) {

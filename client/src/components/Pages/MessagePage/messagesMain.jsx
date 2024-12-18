@@ -18,25 +18,13 @@ function ChatApp() {
 
   useEffect(() => {
     socket.current = io("ws://localhost:8900");
-
     socket.current.on("getMessage", (data) => {
-      // console.log("Received message:", data);
       setArrivalMessage({
         senderId: data.senderId,
         text: data.text,
         createdAt: Date.now(),
       });
     });
-
-    socket.current.emit("addUser", user._id);
-    socket.current.on("getUsers", (users) => {
-      setOnlineUsers(users)
-    });
-
-    return () => {
-      // Clean up and disconnect socket when component is unmounted or message component is closed
-      socket.current.disconnect();
-    };
   }, []);
 
   useEffect(() => {
@@ -69,9 +57,9 @@ function ChatApp() {
         {/* <h1>{arrivalMessage && arrivalMessage.text}</h1> */}
         {conversations.length > 0 ? (
           <Coverstations
-          onlineUsers={onlineUsers}
+            onlineUsers={onlineUsers}
             arrivalMessage={arrivalMessage}
-            socket={socket}
+            socket={socket ? socket : ""}
             setConvoLoading={setConvoLoading}
             conversations={conversations}
             userId={user._id}
@@ -86,7 +74,7 @@ function ChatApp() {
       <div className="flex-grow overflow-hidden">
         {convoId ? (
           <Messages
-          onlineUsers={onlineUsers}
+            onlineUsers={onlineUsers}
             arrivalMessage={arrivalMessage}
             socket={socket}
             conversations={conversations}

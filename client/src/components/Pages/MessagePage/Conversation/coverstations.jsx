@@ -13,11 +13,8 @@ function Conversations({
   userId,
 }) {
   const { user } = useContext(AuthContext);
-  console.log(onlineUsers);
+  // console.log(onlineUsers);
 
-  // const PF = import.meta.env.VITE_PUBLIC_FOLDER;
-  // const PA = import.meta.env.VITE_PUBLIC_API;
-  // console.log(conversations);
 
   return (
     <div

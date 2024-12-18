@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
-import UserPhoto from "../../../userPhoto";
+import MessageBox from "./messgeBox";
 import { io } from "socket.io-client";
 
 function Messages({
@@ -9,7 +9,6 @@ function Messages({
   onlineUsers,
   userId,
   conversations,
-  socket,
   arrivalMessage,
 }) {
   const PF = import.meta.env.VITE_PUBLIC_FOLDER;
@@ -21,26 +20,49 @@ function Messages({
   const [convo, setConvo] = useState([]);
   const PA = import.meta.env.VITE_PUBLIC_API;
   const message = useRef();
+  const socket = useRef();
   const messagesEndRef = useRef(null);
+  const [inboxOpen, setInboxOpen] = useState([]);
   const [messageSent, setMessageSent] = useState(
     onlineUsers.some((userObj) => userObj.userId === user._id)
   );
 
+  // useEffect(() => {
+  //   return () => {
+  //     console.log(user);
+  //   };
+  // }, [user]);
+
   useEffect(() => {
-    // Only update messageSent if it is currently false
+    socket.current = io("ws://localhost:8900");
+
+    socket.current.emit("visitInbox", {
+      userId,
+      convoId,
+    });
+
+    socket.current.on("getVisitInbox", (visitInbox) => {
+      console.log("People who are in the inbox:", visitInbox);
+      setInboxOpen(visitInbox);
+    });
+
+    return () => {
+      if (socket.current) {
+        socket.current.disconnect();
+      }
+    };
+  }, [userId, convoId, user]);
+
+  useEffect(() => {
     if (!messageSent) {
       const isOnline = onlineUsers.some(
         (userObj) => userObj.userId === user._id
       );
       if (isOnline) {
-        setMessageSent(true); // Once true, it will not change again
+        setMessageSent(true);
       }
     }
   }, [onlineUsers, user._id, messageSent]);
-
-  // useEffect(() => {
-
-  // }, []);
 
   useEffect(() => {
     const fetchConvo = async () => {
@@ -115,6 +137,72 @@ function Messages({
     }
   }, [arrivalMessage, convo, convoId]);
 
+  useEffect(() => {
+    const updatingSeen = async () => {
+      if (user && messages && Array.isArray(inboxOpen)) {
+        const updatedInbox = inboxOpen.find(
+          (entry) => entry.userId === user._id && entry.convoId === convoId
+        );
+
+        // Check if the inbox is open for the user
+        if (!updatedInbox) return;
+
+        try {
+          const updatedMessages = [];
+          for (const message of messages) {
+            if (message.seen) continue;
+            try {
+              if (message._id) {
+                const response = await axios.put(
+                  `${PA}/api/messages/${message._id}/seen`
+                );
+
+                if (response.status === 200) {
+                  updatedMessages.push({
+                    ...message,
+                    seen: true, // Update the `seen` status locally
+                  });
+                } else {
+                  console.error(
+                    `Failed to update message ${message._id}:`,
+                    response.data.message
+                  );
+                }
+              }
+            } catch (error) {
+              console.error(
+                `Error updating message ${message._id} as seen:`,
+                error.response?.data?.message || error.message
+              );
+            }
+          }
+
+          // Update the messages state with seen messages
+          if (updatedMessages.length > 0) {
+            setMessages((prevMessages) =>
+              prevMessages.map(
+                (msg) => updatedMessages.find((um) => um._id === msg._id) || msg
+              )
+            );
+          }
+        } catch (error) {
+          console.error("Unexpected error during updating messages:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    updatingSeen();
+  }, [userId, convoId, user, inboxOpen, messages]);
+
+  //   _id : "676302d0d060a378ba0e2ec5",
+  //   convoId : "6754e4931720fdc23a7c015a",
+  //   seen :   true,
+  //   senderId: "673a3277a42f1c300d399772",
+  //   text: "hello",
+  //   createdAt:" 2024-12-18T17:13:52.235+00:00",}
+
   const handleMsgSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -160,70 +248,12 @@ function Messages({
           </div>
         ) : messages.length > 0 ? (
           messages.map((msg, index) => (
-            <div
+            <MessageBox
+              socket={socket}
               key={index}
-              className={`flex ${
-                userId === msg.senderId
-                  ? "self-end flex-row-reverse"
-                  : "self-start"
-              } w-fit max-w-[800px] py-3 px-4 rounded-lg mb-6 gap-2 shadow-md transition-transform transform hover:scale-[1.02]`}
-              style={{
-                background:
-                  userId === msg.senderId
-                    ? "#1e40af"
-                    : "rgba(255, 255, 255, 0.9)",
-                color: userId === msg.senderId ? "white" : "black",
-              }}
-            >
-              {userId !== msg.senderId && (
-                <UserPhoto
-                  userId={user._id}
-                  user={user}
-                  className="w-8 h-8 rounded-full shadow-sm"
-                />
-              )}
-              <div className="flex flex-col break-words max-w-full">
-                <h1
-                  className={`font-semibold text-sm ${
-                    userId === msg.senderId ? "text-white" : "text-gray-800"
-                  }`}
-                >
-                  {userId === msg.senderId ? "You" : user.username}
-                </h1>
-                <p
-                  className={`text-base leading-6 ${
-                    userId === msg.senderId ? "text-white" : "text-gray-700"
-                  }`}
-                >
-                  {msg.text}
-                </p>
-                <div className="text-right mt-1 flex justify-between items-center">
-                  <p
-                    className={`text-xs ${
-                      userId === msg.senderId
-                        ? "text-gray-300"
-                        : "text-gray-500"
-                    }`}
-                  >
-                    {msg.createdAt
-                      ? new Date(msg.createdAt).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })
-                      : "Just now"}
-                  </p>
-                  {userId === msg.senderId ? messageSent ? (
-                    <span className="text-gray-300">
-                      <i className="ri-check-double-line"></i>
-                    </span>
-                  ) : (
-                    <span className="text-gray-300">
-                      <i className="ri-check-line"></i>
-                    </span>
-                  ):""}
-                </div>
-              </div>
-            </div>
+              senderId={msg.senderId}
+              msg={msg}
+            />
           ))
         ) : (
           <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-white py-1.5 px-3 rounded-md shadow-sm text-gray-700 border border-gray-200">
@@ -258,27 +288,3 @@ function Messages({
 }
 
 export default Messages;
-
-// {
-//   _id: "675f44cab8d6c943fd6768d0",
-//   convoId: "6751ef3b015093a8a666d029",
-//   senderId: "673a3277a42f1c300d399772",
-//   text: "hey",
-//   createdAt: "2024-12-15T21:06:18.496Z",
-// },
-
-// {
-//   _id: "675f2e7bb8d6c943fd6761bb",
-//   convoId: "6751ef3b015093a8a666d029",
-//   senderId: "673a3277a42f1c300d399772",
-//   text: "trying again",
-//   createdAt: "2024-12-15T19:31:07.431Z",
-// },
-
-// {
-//   _id: "675f2e3db8d6c943fd6761b9",
-//   convoId: "6751ef3b015093a8a666d029",
-//   senderId: "673a3277a42f1c300d399772",
-//   text: "hello",
-//   createdAt: "2024-12-15T19:30:05.041Z",
-// },

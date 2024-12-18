@@ -23,7 +23,7 @@ function profile() {
       try {
         const res = await axios.get(`${PA}/api/users?userId=${userId}`);
         setUser(res.data);
-        console.log(res.data);
+        // console.log(res.data);
       } catch (error) {
         console.log("Error at fetching", error);
       }

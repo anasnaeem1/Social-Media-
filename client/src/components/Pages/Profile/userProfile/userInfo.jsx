@@ -20,7 +20,7 @@ function UserInfo({ profileUser, userId }) {
           const res = await axios.get(
             `${PA}/api/users/friends/${profileUser._id}`
           );
-          console.log(res.data);
+          // console.log(res.data);
           // if(res.data) => {}
           setFriendList(res.data);
           setIsLoading(false);

@@ -47,9 +47,9 @@ router.get("/:userId/userId", async (req, res) => {
       members: { $in: [req.params.userId] },
     });
     if (conversation.length === 0) {
-      return res.status(404).json("No conversations found for this user");
-    }
-    res.status(200).json(conversation);
+        return res.status(404).json({message: "No message found"});
+      }
+      res.status(200).json(conversation);
   } catch (error) {
     res.status(500).json({
       error: "Fetching user conversations failed",

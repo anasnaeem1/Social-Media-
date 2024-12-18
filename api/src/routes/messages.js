@@ -5,7 +5,6 @@ const Convo = require("../models/Convo.js");
 // import User from "../routes/users.js"
 // const User = require("../models/User.js");
 
-//create a post
 router.post("/", async (req, res) => {
   const newMessage = new Message({
     convoId: req.body.convoId,
@@ -35,6 +34,24 @@ router.get("/:convoId", async (req, res) => {
   }
 });
 
+// Delete all message of conversation
+router.delete("/:convoId", async (req, res) => {
+  try {
+    const deletedMessages = await Message.deleteMany({
+      convoId: req.params.convoId,
+    });
+
+    if (deletedMessages.deletedCount > 0) {
+      res.status(200).json(deletedMessages);
+    } else {
+      res.status(404).json("no message found in this conversation");
+    }
+  } catch (error) {
+    res.status(500).json("convo found failed");
+  }
+});
+
+// Get a latestMesage of conversation
 router.get("/:SenderId/:ReceiverId/latestMessage", async (req, res) => {
   try {
     const conversation = await Convo.findOne({
@@ -51,11 +68,10 @@ router.get("/:SenderId/:ReceiverId/latestMessage", async (req, res) => {
 
     if (!latestMessage) {
       return res
-        .status(404)
+        .status(200)
         .json({ message: "No messages found in this conversation." });
     }
 
-    // Respond with the latest message
     res.status(200).json(latestMessage);
   } catch (error) {
     console.error("Error fetching the latest message:", error);
@@ -63,5 +79,25 @@ router.get("/:SenderId/:ReceiverId/latestMessage", async (req, res) => {
   }
 });
 
+router.put("/:messageId/seen", async (req, res) => {
+  try {
+    const message = await Message.findById(req.params.messageId);
+
+    if (!message) {
+      return res.status(404).json({ message: "Message not found." });
+    }
+
+    if (!message.seen) {
+      message.seen = true;
+      await message.save();
+      res.status(200).json({ message: message });
+    } else {
+      res.status(200).json("Already Seen");
+    }
+  } catch (error) {
+    console.error("Error updating the message:", error);
+    res.status(500).json({ message: "Failed to update the message." });
+  }
+});
 
 module.exports = router;

@@ -27,7 +27,11 @@ function convo({ onlineUsers, convoId, setConvoLoading, conversation }) {
           // console.log(sender);
           if (sender) {
             const res = await axios.get(`${PA}/api/users?userId=${sender}`);
-            setUser(res.data);
+            if (!res.data) {  
+              console.log("No message Found");
+            } else {
+              setUser(res.data);
+            }
           }
         }
       } catch (error) {
@@ -39,41 +43,43 @@ function convo({ onlineUsers, convoId, setConvoLoading, conversation }) {
     fetchUser();
   }, []);
 
-  // useEffect(() => {
-  //   if (user._id) {
-  //     const isOnline = onlineUsers.includes(user._id);
-  //     console.log(isOnline);
-  //     // setIsOnline(onlineUsers.includes(user._id));
-  //   }
-  // }, [user._id, currentUser._id]);
-
   useEffect(() => {
     const fetchLatestMessage = async () => {
       try {
         setLoadingMessage(true);
-        if (user._id) {
+        if (user._id && currentUser._id) {
           const res = await axios.get(
             `${PA}/api/messages/${currentUser._id}/${user._id}/latestMessage`
           );
-          // console.log(res.data.text);
-          setLatestMessage(res.data.text);
+  
+          if (!res.data || !res.data.text) {
+            setLatestMessage("No messages yet.");
+          } else {
+            setLatestMessage(res.data.text);
+          }
         }
       } catch (error) {
-        console.error("Error fetching the latest message:", error);
+        if (error.response && error.response.status === 404) {
+          console.warn("No messages found (404).");
+          setLatestMessage("No messages yet.");
+        } else {
+          console.error("Error fetching the latest message:", error.message);
+        }
       } finally {
         setLoadingMessage(false);
       }
     };
-
+  
     fetchLatestMessage();
   }, [user._id, currentUser._id]);
+  
 
   return (
     <div className="flex items-center gap-4 w-full border p-3 rounded-md shadow-sm hover:shadow-lg bg-white transition-all duration-200 ease-in-out cursor-pointer">
       {/* User Photo */}
       <div className="relative flex-shrink-0">
         <UserPhoto
-        onlineUsers={onlineUsers}
+          onlineUsers={onlineUsers}
           userId={user._id}
           user={user}
           className="w-12 h-12 rounded-full border-2 border-gray-200 shadow-md hover:scale-105 transition-transform duration-200 ease-in-out"

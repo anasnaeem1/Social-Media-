@@ -3104,6 +3104,11 @@ slash@^3.0.0:
   resolved "https://registry.npmjs.org/slash/-/slash-3.0.0.tgz"
   integrity sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==
 
+socket-client@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/socket-client/-/socket-client-1.0.0.tgz"
+  integrity sha512-9Q5nwYFFL+055kJ2XUQHMO6Np3c8RgHCl9c7Bf/QvW0jCXxbB5bcwY4WGetawA6lPvFirLwlm3d93Q3wVbp5qQ==
+
 socket.io-client@^4.8.1:
   version "4.8.1"
   resolved "https://registry.npmjs.org/socket.io-client/-/socket.io-client-4.8.1.tgz"

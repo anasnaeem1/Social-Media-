@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 function register() {
   const [showPass, setShowPass] = useState(false);
   const [showCPass, setShowCPass] = useState(false);
-  const PA = import.meta.env.VITE_PUBLIC_FOLDER;
+  const PA = import.meta.env.VITE_PUBLIC_API;
 
   const handleShowPass = (e) => {
     e.preventDefault();
