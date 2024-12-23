@@ -5,6 +5,7 @@ import Post from "../Home/feed/post/post";
 import { AuthContext } from "../../context/AuthContext";
 import UserPhoto from "../../userPhoto";
 import UserInfoSkeleton from "../../Skeleton/searchUserInfoSkeleton";
+import { getUser } from "../../../apiCalls";
 
 function Search() {
   const { dispatch, user: currentUser } = useContext(AuthContext);
@@ -24,12 +25,11 @@ function Search() {
     setPostsIsLoading(true);
   }, [userId]);
 
-  // Fetch user data
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get(`${PA}/api/users?userId=${userId}`);
-        setUser(res.data);
+        const user = await getUser(userId, 0);
+        setUser(user);
         setUserIsLoading(false);
       } catch (error) {
         console.log("Error at fetching user:", error);
@@ -54,7 +54,6 @@ function Search() {
     fetchPosts();
   }, [userId]);
 
-  // Check if current user follows the searched user
   useEffect(() => {
     if (user._id && Array.isArray(currentUser.followings)) {
       const normalizedFollowings = currentUser.followings.map((id) =>

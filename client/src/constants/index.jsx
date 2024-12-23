@@ -28,55 +28,16 @@ export const navItems = {
 
 export const Options = [
   { id: 1, label: "Feed", icon: <i className="ri-rss-fill"></i>, link: "/" },
-  {
-    id: 2,
-    label: "Chats",
-    icon: <i className="ri-message-2-fill"></i>,
-    link: "/",
-  },
-  {
-    id: 3,
-    label: "Videos",
-    icon: <i className="ri-play-circle-fill"></i>,
-    link: "/",
-  },
-  {
-    id: 4,
-    label: "Groups",
-    icon: <i className="ri-group-fill"></i>,
-    link: "/",
-  },
-  {
-    id: 5,
-    label: "Bookmarks",
-    icon: <i className="ri-bookmark-fill"></i>,
-    link: "/",
-  },
-  {
-    id: 6,
-    label: "Question",
-    icon: <i className="ri-questionnaire-fill"></i>,
-    link: "/",
-  },
-  {
-    id: 7,
-    label: "Jobs",
-    icon: <i className="ri-briefcase-fill"></i>,
-    link: "/",
-  },
-  {
-    id: 8,
-    label: "Events",
-    icon: <i className="ri-calendar-event-fill"></i>,
-    link: "/",
-  },
-  {
-    id: 9,
-    label: "Courses",
-    icon: <i className="ri-graduation-cap-fill"></i>,
-    link: "/",
-  },
+  { id: 2, label: "Chats", icon: <i className="ri-message-2-fill"></i>, link: "/messages" },
+  { id: 3, label: "Videos", icon: <i className="ri-play-circle-fill"></i>, link: "/videos" },
+  { id: 4, label: "Groups", icon: <i className="ri-group-fill"></i>, link: "/groups" },
+  { id: 5, label: "Bookmarks", icon: <i className="ri-bookmark-fill"></i>, link: "/bookmarks" },
+  { id: 6, label: "Question", icon: <i className="ri-questionnaire-fill"></i>, link: "/questions" },
+  { id: 7, label: "Jobs", icon: <i className="ri-briefcase-fill"></i>, link: "/jobs" },
+  { id: 8, label: "Events", icon: <i className="ri-calendar-event-fill"></i>, link: "/events" },
+  { id: 9, label: "Courses", icon: <i className="ri-graduation-cap-fill"></i>, link: "/courses" },
 ];
+
 
 export const Friends = [
   {

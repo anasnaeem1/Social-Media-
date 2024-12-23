@@ -9,26 +9,74 @@ import { io } from "socket.io-client";
 function ChatApp() {
   const [conversations, setConversations] = useState([]);
   const [convoLoading, setConvoLoading] = useState(true);
+  const [arrivalMessage, setArrivalMessage] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState([]);
   const socket = useRef();
   const { user } = useContext(AuthContext);
   const PA = import.meta.env.VITE_PUBLIC_API;
   const { convoId } = useParams();
-  const [arrivalMessage, setArrivalMessage] = useState(null);
-  const [onlineUsers, setOnlineUsers] = useState([]);
+
 
   useEffect(() => {
-    socket.current = io("ws://localhost:8900");
-    socket.current.on("getMessage", (data) => {
-      setArrivalMessage({
-        senderId: data.senderId,
-        text: data.text,
-        createdAt: Date.now(),
-      });
+    // Initialize socket connection
+    socket.current = io("ws://localhost:8900", {
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+      transports: ["websocket", "polling"],
     });
-  }, []);
+  
+    const setupSocketListeners = () => {
+      // Handle incoming messages
+      socket.current.on("getMessage", (data) => { 
+        console.log("Message received:", data);
+        if (data) {
+          setArrivalMessage({
+            senderId: data.senderId,
+            text: data.text,
+            createdAt: Date.now(),
+          });
+        }
+      });
+
+      socket.current.on("getUsers", (users) => {
+        setOnlineUsers(users);  
+      });
+  
+      // Handle connection errors
+      socket.current.on("connect_error", (error) => {
+        console.error("Socket connection error:", error);
+      });
+    };
+  
+    // Set up listeners
+    setupSocketListeners();
+  
+    // Handle socket connection
+    socket.current.on("connect", () => {
+      console.log("Connected to socket server:", socket.current.id);
+      socket.current.emit("addUser", user._id); // Register user
+    });
+  
+    socket.current.on("reconnect", () => {
+      console.log("Reconnected to socket server:", socket.current.id);
+      socket.current.emit("addUser", user._id); // Re-register user on reconnect
+    });
+  
+    return () => {
+      // Cleanup all listeners on unmount
+      socket.current.off("getMessage");
+      socket.current.off("getUsers");
+      socket.current.off("connect");
+      socket.current.off("connect_error");
+      socket.current.off("reconnect");
+      socket.current.disconnect();
+    };
+  }, [user._id]);
+  
+  
 
   useEffect(() => {
-    // Fetch conversations for the current user
     const fetchConvos = async () => {
       setConvoLoading(true);
       try {
@@ -54,12 +102,11 @@ function ChatApp() {
           convoId ? "hidden md:block" : ""
         } w-full md:w-[350px] border bg-gray-50`}
       >
-        {/* <h1>{arrivalMessage && arrivalMessage.text}</h1> */}
         {conversations.length > 0 ? (
           <Coverstations
             onlineUsers={onlineUsers}
             arrivalMessage={arrivalMessage}
-            socket={socket ? socket : ""}
+            socket={socket}
             setConvoLoading={setConvoLoading}
             conversations={conversations}
             userId={user._id}
@@ -75,7 +122,7 @@ function ChatApp() {
         {convoId ? (
           <Messages
             onlineUsers={onlineUsers}
-            arrivalMessage={arrivalMessage}
+            arrivalMessage={arrivalMessage && arrivalMessage}
             socket={socket}
             conversations={conversations}
             userId={user._id}

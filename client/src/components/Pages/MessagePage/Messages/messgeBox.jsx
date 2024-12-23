@@ -2,14 +2,14 @@ import { useContext, useEffect, useState } from "react";
 import UserPhoto from "../../../userPhoto";
 import { AuthContext } from "../../../context/AuthContext";
 
-function messgeBox({ senderId, socket, msg, messageSent }) {
-  const { user } = useContext(AuthContext);
-  const userId = user?._id;
+function messgeBox({ senderId, user, socket, msg, messageSent }) {
+  const { user: currentUser } = useContext(AuthContext);
+  const userId = currentUser?._id;
 
   return (
     <div
       className={`flex  ${
-        user._id === senderId ? "self-end flex-row-reverse" : "self-start"
+        userId === senderId ? "self-end flex-row-reverse" : "self-start"
       } w-fit max-w-[800px] py-3 px-4 rounded-lg mb-6 gap-2 shadow-md transition-transform transform hover:scale-[1.02]`}
       style={{
         background:
@@ -19,7 +19,7 @@ function messgeBox({ senderId, socket, msg, messageSent }) {
     >
       {userId !== senderId && (
         <UserPhoto
-          userId={user._id}
+          userId={msg._senderId}
           user={user}
           className="w-8 h-8 rounded-full shadow-sm"
         />

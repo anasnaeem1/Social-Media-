@@ -57,6 +57,7 @@ export const Reload = (reload) => ({
   type: "RELOAD",
   payload: reload,
 });
+
 export const UnReload = (unreload) => ({
   type: "UNRELOAD",
   payload: unreload,
@@ -67,6 +68,12 @@ export const ShowOverlay = () => ({
   type: "SHOW_OVERLAY",
 });
 
+
 export const HideOverlay = () => ({
   type: "HIDE_OVERLAY",
+});
+
+export const YourNewMessage = (message) => ({
+  type: "YOUR_NEW_MESSAGE",
+  payload: message,
 });

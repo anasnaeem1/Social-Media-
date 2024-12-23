@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import * as mainItems from "../../../../../constants/index";
 import { Link, useParams } from "react-router-dom";
 import { format } from "timeago.js";
-import PostSkeleton from "../../../../Skeleton/postSkeleton";
+// import PostSkeleton from "../../../../Skeleton/postSkeleton";
 import { AuthContext } from "../../../../context/AuthContext";
 import UserPhoto from "../../../../userPhoto";
 import CurrentUserPhoto from "../../../../currentUserPhoto";
@@ -121,7 +121,7 @@ function Post({ post }) {
       {/* Image Section */}
       {post.img && (
         <div
-          className="w-full h-[300px] bg-contain bg-no-repeat bg-center"
+          className="w-full h-[300px] bg-cover bg-no-repeat bg-center"
           style={{
             backgroundImage: `url(${post.img ? `${PF}/${post.img}` : ""})`,
           }}

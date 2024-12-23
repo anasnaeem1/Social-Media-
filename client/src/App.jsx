@@ -26,7 +26,7 @@ function App() {
     if (user) {
       socket.current.emit("addUser", user._id);
       socket.current.on("getUsers", (users) => {
-        console.log("Online users:", users);
+        // console.log("Online users:", users);
       });
     }
     return () => {

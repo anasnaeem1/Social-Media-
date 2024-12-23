@@ -8,6 +8,7 @@ const INITIAL_STATE = {
   isOverlayVisible: false, // Overlay visibility state
   isFetching: false,
   error: false,
+  yourNewMessage:null
 };
 
 export const AuthContext = createContext(INITIAL_STATE);

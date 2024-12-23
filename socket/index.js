@@ -7,6 +7,7 @@ const io = require("socket.io")(8900, {
 let users = [];
 let visitInbox = [];
 
+// Utility functions
 const addUser = (userId, socketId) => {
   if (!users.some((user) => user.userId === userId)) {
     users.push({ userId, socketId });
@@ -18,15 +19,12 @@ const addUserOnVisitInbox = (userId, convoId, socketId) => {
     (entry) => entry.userId === userId && entry.convoId === convoId
   );
 
-  if (userExists) {
-    return; // Do not add the same user to the visitInbox again
+  if (!userExists) {
+    visitInbox.push({ userId, convoId, socketId });
   }
-  visitInbox.push({ userId, convoId, socketId });
 };
 
-const getUser = (userId) => {
-  return users.find((user) => user.userId === userId);
-};
+const getUser = (userId) => users.find((user) => user.userId === userId);
 
 const removeUser = (socketId) => {
   users = users.filter((user) => user.socketId !== socketId);
@@ -36,56 +34,51 @@ const removeUserFromInbox = (socketId) => {
   visitInbox = visitInbox.filter((user) => user.socketId !== socketId);
 };
 
-// When User Connects
 io.on("connection", (socket) => {
-  console.log("A user connected: " + socket.id);
-  io.emit("welcome", "hello this is socket server");
+  console.log("A user connected:", socket.id);
 
-  // Add user on connection
+  // Add user to active users
   socket.on("addUser", (userId) => {
     addUser(userId, socket.id);
+    console.log("User added:", userId, socket.id);
     io.emit("getUsers", users);
   });
 
-  // Handle visitInbox event
+  // Handle user visiting inbox
   socket.on("visitInbox", ({ userId, convoId }) => {
     if (userId && convoId) {
       addUserOnVisitInbox(userId, convoId, socket.id);
+      console.log(`User ${userId} is visiting inbox ${convoId}`);
       io.emit("getVisitInbox", visitInbox);
     }
   });
 
-  // Handle message sending
+  // Handle sending messages
   socket.on("sendMessage", ({ recieverId, senderId, text }) => {
-    console.log("sendMessage event received:", { recieverId, senderId, text });
-    const user = getUser(recieverId);
-    if (user) {
-      console.log("Receiver found:", user);
-      io.to(user.socketId).emit("getMessage", { senderId, text });
+    console.log("Message sent:", { recieverId, senderId, text });
+    if (text && text.trim() !== "" ) {
+      const receiver = getUser(recieverId); 
+      if (receiver) {
+        console.log(`Delivering message to ${ receiver.socketId}`);
+        io.to(receiver.socketId).emit("getMessage", { senderId, text });
+      } else {
+        console.error("Receiver not found or not connected");
+      }
     } else {
-      console.error("Receiver not found or not connected");
+      console.error("Message text is empty or invalid");
     }
   });
 
-  // Handle user disconnecting from visitInbox
+  // Handle user disconnecting from inbox
   socket.on("disconnectUserFromInbox", () => {
-    console.log("A user disconnected from inbox");
-    removeUserFromInbox(socket.id);  // Remove from visitInbox
+    console.log("User disconnected from inbox:", socket.id);
+    removeUserFromInbox(socket.id);
     io.emit("getVisitInbox", visitInbox);
   });
 
-  // Handle user disconnection
-  socket.on("disconnectUser", () => {
-    console.log("A user disconnected");
-    removeUser(socket.id);  // Remove from users
-    removeUserFromInbox(socket.id);  // Remove from visitInbox
-    io.emit("getUsers", users);
-    io.emit("getVisitInbox", visitInbox);
-  });
-
-  // Handle disconnection
+  // Handle user disconnecting
   socket.on("disconnect", () => {
-    console.log("User disconnected: " + socket.id);
+    console.log("User disconnected:", socket.id);
     removeUser(socket.id);
     removeUserFromInbox(socket.id);
     io.emit("getUsers", users);

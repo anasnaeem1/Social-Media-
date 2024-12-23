@@ -23,7 +23,7 @@ function Feed({ currentUserPhoto, mainItems, SeperatingLine, userId }) {
       let res;
       if (userId) {
         res = await axios.get(`${PA}/api/posts/profile/${userId}`);
-        setPosts(res.data);
+        setPosts(res.data, );
         setHasMore(false);
       } else {
         res = await axios.get(
@@ -62,10 +62,10 @@ function Feed({ currentUserPhoto, mainItems, SeperatingLine, userId }) {
 
   const handleLoadMore = () => {
     if (hasMore && !isFetching) {
-      setPage((prev) => prev + 1); // Increment page to fetch next set of posts
+      setPage((prev) => prev + 1);    
     }
   };
-
+  
   return (
     <div className="relative">
       {/* Show loading indicator */}
@@ -99,7 +99,10 @@ function Feed({ currentUserPhoto, mainItems, SeperatingLine, userId }) {
         {posts.length > 0 ? (
           posts.map((post) => <Post post={post} key={post._id} />)
         ) : (
-          <PostSkeleton />
+          <>
+            <PostSkeleton />
+            <PostSkeleton />
+          </>
         )}
 
         {/* Load More Button */}

@@ -3,6 +3,7 @@ import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
 import MessageBox from "./messgeBox";
 import { io } from "socket.io-client";
+import Conversations from "../Conversation/coverstations";
 
 function Messages({
   convoId,
@@ -12,7 +13,11 @@ function Messages({
   arrivalMessage,
 }) {
   const PF = import.meta.env.VITE_PUBLIC_FOLDER;
-  const { user: currentUser } = useContext(AuthContext);
+  const {
+    dispatch,
+    yourNewMessage,
+    user: currentUser,
+  } = useContext(AuthContext);
   const [user, setUser] = useState({});
   const [messages, setMessages] = useState([]);
   const [userLoading, setUserLoading] = useState(false);
@@ -27,12 +32,7 @@ function Messages({
     onlineUsers.some((userObj) => userObj.userId === user._id)
   );
 
-  // useEffect(() => {
-  //   return () => {
-  //     console.log(user);
-  //   };
-  // }, [user]);
-
+  // Check if otherUser is in the inbox?
   useEffect(() => {
     socket.current = io("ws://localhost:8900");
 
@@ -42,7 +42,7 @@ function Messages({
     });
 
     socket.current.on("getVisitInbox", (visitInbox) => {
-      console.log("People who are in the inbox:", visitInbox);
+      // console.log("People who are in the inbox:", visitInbox);
       setInboxOpen(visitInbox);
     });
 
@@ -53,6 +53,7 @@ function Messages({
     };
   }, [userId, convoId, user]);
 
+  // check How Many people are online 
   useEffect(() => {
     if (!messageSent) {
       const isOnline = onlineUsers.some(
@@ -64,6 +65,7 @@ function Messages({
     }
   }, [onlineUsers, user._id, messageSent]);
 
+  // Fetching Conversations 
   useEffect(() => {
     const fetchConvo = async () => {
       if (userId) {
@@ -82,6 +84,7 @@ function Messages({
     fetchConvo();
   }, [userId, convoId]);
 
+  // Fetching Other User 
   useEffect(() => {
     const fetchUser = async () => {
       setUserLoading(true);
@@ -105,6 +108,7 @@ function Messages({
     }
   }, [convoId, convo, currentUser]);
 
+  // Fetching Messages 
   useEffect(() => {
     const fetchMessages = async () => {
       try {
@@ -124,19 +128,25 @@ function Messages({
     }
   }, [convoId]);
 
+  // Clearing message input 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Setting Arrival Messages
   useEffect(() => {
-    // console.log(convo?.members.includes(user._id))
     if (arrivalMessage) {
-      convo?.members.includes(arrivalMessage.senderId) &&
-        setMessages((prevMessages) => [arrivalMessage, ...prevMessages]);
-      // console.log(messages);
-    }
-  }, [arrivalMessage, convo, convoId]);
+      const isDuplicate = messages.some(
+        (msg) => msg.createdAt === arrivalMessage.createdAt
+      );
 
+      if (!isDuplicate && convo?.members?.includes(arrivalMessage.senderId)) {
+        setMessages((prevMessages) => [arrivalMessage, ...prevMessages]);
+      }
+    }
+  }, [arrivalMessage, convo, convoId, messages]);
+
+  // Updating Message Seen Feature 
   useEffect(() => {
     const updatingSeen = async () => {
       if (user && messages && Array.isArray(inboxOpen)) {
@@ -196,13 +206,7 @@ function Messages({
     updatingSeen();
   }, [userId, convoId, user, inboxOpen, messages]);
 
-  //   _id : "676302d0d060a378ba0e2ec5",
-  //   convoId : "6754e4931720fdc23a7c015a",
-  //   seen :   true,
-  //   senderId: "673a3277a42f1c300d399772",
-  //   text: "hello",
-  //   createdAt:" 2024-12-18T17:13:52.235+00:00",}
-
+  // Handle message submit 
   const handleMsgSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -222,11 +226,22 @@ function Messages({
           recieverId,
           text: message.current.value,
         });
+        dispatch({
+          type: "YOUR_NEW_MESSAGE",
+          payload: {
+            convoId: convoId,
+            senderId: currentUser._id,
+            text: message.current.value,
+          },
+        });
       }
 
       if (message.current.value.trim() !== "") {
         const msgResponse = await axios.post(`${PA}/api/messages`, newMessage);
-        setMessages((prevMessages) => [msgResponse.data, ...prevMessages]);
+        if (msgResponse.data) {
+          setMessages((prevMessages) => [msgResponse.data, ...prevMessages]);
+          dispatch({ type: "YOUR_NEW_MESSAGE", payload: newMessage.text });
+        }
         message.current.value = "";
       } else {
         console.log("Message is empty or only contains spaces");
@@ -249,6 +264,7 @@ function Messages({
         ) : messages.length > 0 ? (
           messages.map((msg, index) => (
             <MessageBox
+              user={user}
               socket={socket}
               key={index}
               senderId={msg.senderId}

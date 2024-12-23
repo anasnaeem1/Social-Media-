@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const Message = require("../models/Message.js");
-const Convo = require("../models/Convo.js");
+const Convo = require("../models/Convo"); // Ensure the correct path to your model
+const Message = require("../models/Message"); // Ensure the correct path to your model
+
 // import User from "../routes/users.js"
 // const User = require("../models/User.js");
 
@@ -100,4 +101,28 @@ router.put("/:messageId/seen", async (req, res) => {
   }
 });
 
+router.get("/:convoId/unSeen", async (req, res) => {
+  try {
+    const conversation = await Convo.findById(req.params.convoId);
+    if (!conversation) {
+      return res.status(404).json({ message: "Conversation not found" });
+    }
+
+    const unseenMessages = await Message.find({
+      convoId: req.params.convoId,
+      seen: false,
+    });
+
+    if (unseenMessages.length > 0) {
+      res.status(200).json(unseenMessages);
+    } else {
+      res.status(404).json({ message: "No unseen messages found" });
+    }
+  } catch (error) {
+    console.error("Error fetching unseen messages:", error);
+    res.status(500).json({ message: "Failed to fetch unseen messages" });
+  }
+});
+
 module.exports = router;
+

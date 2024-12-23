@@ -30,3 +30,35 @@ export const searchUser = async (Username, dispatch) => {
     dispatch({ type: "SEARCH_FAILURE", payload: error });
   }
 };
+
+export const submittingPost = async (userId, desc, img) => {
+  const PA = import.meta.env.VITE_PUBLIC_API;
+  const newPost = {
+    userId: userId,
+    desc: desc,
+    img: img,
+  };
+  try {
+    const postResponse = await axios.post(`${PA}/api/posts/`, newPost);
+    return postResponse.data; 
+  } catch (error) {
+    console.error(error);
+    throw error;    
+  }
+};
+
+export const getUser = async (userId, username) => {
+  const PA = import.meta.env.VITE_PUBLIC_API;
+  try {
+    if (userId) {
+      const res = await axios.get(`${PA}/api/users?userId=${userId}`);
+      return res.data;
+    } else if (username) {
+      const res = await axios.get(`${PA}/api/users?username=${username}`);
+      return res.data; 
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};

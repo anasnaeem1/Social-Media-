@@ -60,7 +60,6 @@ router.get("/mutuals", async (req, res) => {
   const userId = req.query.userId;
   const username = req.query.username;
 
-
   try {
     // Fetch the current user based on userId or username
     const user = userId
@@ -69,7 +68,6 @@ router.get("/mutuals", async (req, res) => {
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
-      
     }
     console.log("Fetching user:", userId || username);
     console.log("User found:", user);
@@ -107,12 +105,10 @@ router.get("/mutuals", async (req, res) => {
 
     res.status(200).json(sanitizedMutuals);
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        error: "Failed to fetch mutual friends",
-        details: error.message,
-      });
+    res.status(500).json({
+      error: "Failed to fetch mutual friends",
+      details: error.message,
+    });
   }
 });
 
@@ -190,4 +186,24 @@ router.get("/friends/:id", async (req, res) => {
   }
 });
 
-module.exports = router; // Corrected export
+// // Geting User DOB and some info
+// router.get("/:id/DOB", async (req, res) => {
+//   try {
+//     const user = await User.findById(req.params.id);
+//     if (user) {
+//       const userInfo = {
+//         DOB: user.DOB,
+//         username: user.username,
+//         profilePic: user.profilePic,
+//         createdAt: user.createdAt,
+//       };
+//       res.status(200).json(userInfo);
+//     } else {
+//       res.status(400).json("user not found");
+//     }
+//   } catch (error) {
+//     res.status(500).json("friendsList Not Found");
+//   }
+// });
+
+module.exports = router;

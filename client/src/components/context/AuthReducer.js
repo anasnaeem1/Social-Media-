@@ -1,3 +1,5 @@
+import { YourNewMessage } from "./AuthActions";
+
 const AuthReducer = (state, action) => {
   // console.log("AuthReducer action:", action.type, "Payload:", action.payload);
   switch (action.type) {
@@ -96,6 +98,11 @@ const AuthReducer = (state, action) => {
       return {
         ...state,
         isOverlayVisible: false, // Hide the overlay
+      };
+    case "YOUR_NEW_MESSAGE":
+      return {
+        ...state,
+        yourNewMessage: action.payload, // Correctly updating the state
       };
 
     default:

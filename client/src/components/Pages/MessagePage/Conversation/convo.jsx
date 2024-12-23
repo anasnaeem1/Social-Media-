@@ -5,16 +5,35 @@ import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 
-function convo({ onlineUsers, convoId, setConvoLoading, conversation }) {
+function convo({
+  onlineUsers,
+  arrivalMessage,
+  convoId,
+  setConvoLoading,
+  conversation,
+}) {
   const [user, setUser] = useState({});
   const [userLoading, setUserLoading] = useState(false);
   // const [userLoading, setUserLoading] = useState(false);
-  const { user: currentUser } = useContext(AuthContext);
+  const { user: currentUser, yourNewMessage } = useContext(AuthContext);
   const PF = import.meta.env.VITE_PUBLIC_FOLDER;
   const PA = import.meta.env.VITE_PUBLIC_API;
   const [latestMessage, setLatestMessage] = useState(null);
   const [isOnline, setIsOnline] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState(null);
+  const [isUserInConversation, setIsUserInConversation] = useState(false);
+  const [arrivalMessages, setArrivalMessages] = useState([]);
+
+  useEffect(() => {
+    if (arrivalMessage) {
+      setArrivalMessages((prev) => [arrivalMessage, ...prev]);
+    }
+  }, [arrivalMessage]);
+
+  // if(arrivalMessages.length > 0 ) {
+  // console.log(arrivalMessages);
+  // }
+
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -27,7 +46,7 @@ function convo({ onlineUsers, convoId, setConvoLoading, conversation }) {
           // console.log(sender);
           if (sender) {
             const res = await axios.get(`${PA}/api/users?userId=${sender}`);
-            if (!res.data) {  
+            if (!res.data) {
               console.log("No message Found");
             } else {
               setUser(res.data);
@@ -41,9 +60,10 @@ function convo({ onlineUsers, convoId, setConvoLoading, conversation }) {
       }
     };
     fetchUser();
-  }, []);
+  }, [conversation]);
 
   useEffect(() => {
+    // console.log(arrivalMessage)
     const fetchLatestMessage = async () => {
       try {
         setLoadingMessage(true);
@@ -51,7 +71,7 @@ function convo({ onlineUsers, convoId, setConvoLoading, conversation }) {
           const res = await axios.get(
             `${PA}/api/messages/${currentUser._id}/${user._id}/latestMessage`
           );
-  
+
           if (!res.data || !res.data.text) {
             setLatestMessage("No messages yet.");
           } else {
@@ -69,14 +89,13 @@ function convo({ onlineUsers, convoId, setConvoLoading, conversation }) {
         setLoadingMessage(false);
       }
     };
-  
+
     fetchLatestMessage();
   }, [user._id, currentUser._id]);
-  
 
   return (
     <div className="flex items-center gap-4 w-full border p-3 rounded-md shadow-sm hover:shadow-lg bg-white transition-all duration-200 ease-in-out cursor-pointer">
-      {/* User Photo */}
+      {/* User Photo */}  
       <div className="relative flex-shrink-0">
         <UserPhoto
           onlineUsers={onlineUsers}
@@ -89,14 +108,44 @@ function convo({ onlineUsers, convoId, setConvoLoading, conversation }) {
       {/* Conversation Info */}
       <Link to={`/messages/${conversation._id}`} className="flex-1">
         <div className="flex flex-col">
-          <p className="text-black font-semibold text-base">{user.username}</p>
-          {latestMessage ? (
+          <div className="flex justify-between">
+            <p className="text-black font-semibold text-base">
+              {user.username}
+            </p>
+            {arrivalMessages[0]?.senderId &&
+              conversation?.members.includes(arrivalMessages[0].senderId) && (
+                <p className="text-blue-500 font-normal text-sm">
+                  {arrivalMessages.length} messages
+                </p>
+              )}
+          </div>
+
+          {/* Display latest message based on priority */}
+          {arrivalMessages[0]?.senderId &&
+          conversation?.members.includes(arrivalMessages[0].senderId) ? (
+            /* Show the latest arrival message */
+            <p className="text-gray-600 text-sm truncate">
+              {arrivalMessages[0].text.length > 23
+                ? `${arrivalMessages[0].text.slice(0, 23)}...` // Limit to 23 characters
+                : arrivalMessages[0].text}
+            </p>
+          ) : yourNewMessage?.convoId === conversation._id &&
+            yourNewMessage?.senderId === currentUser?._id ? (
+            /* Show yourNewMessage if convoId matches */
+            <p className="text-gray-600 text-sm truncate">
+              {yourNewMessage.text.length > 23
+                ? `${yourNewMessage.text.slice(0, 23)}...` // Limit to 23 characters
+                : yourNewMessage.text}
+            </p>
+          ) : latestMessage ? (
+            /* Default to latestMessage */
             <p className="text-gray-600 text-sm truncate">
               {latestMessage.length > 23
-                ? `${latestMessage.slice(0, 23)}...` // Limit to 50 characters and add ellipsis
+                ? `${latestMessage.slice(0, 23)}...` // Limit to 23 characters
                 : latestMessage}
             </p>
           ) : (
+            /* Placeholder text if no messages */
             <p className="text-gray-400 text-sm">No messages yet</p>
           )}
         </div>

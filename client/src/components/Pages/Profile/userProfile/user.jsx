@@ -30,6 +30,7 @@ function User({
   const [updateBoxVisibility, setUpdateBoxVisibility] = useState(false);
   const navigate = useNavigate();
 
+  //Check currentUser follows this ProfileUser
   useEffect(() => {
     if (profileUser._id) {
       const normalizedFollowings = currentUser.followings.map((id) =>
@@ -43,12 +44,12 @@ function User({
     }
   }, [currentUser.followings, profileUser._id]);
 
-  // Navigation guard
+  //Handle stop navigating while followLoading
   useEffect(() => {
     const handleBeforeUnload = (event) => {
       if (followLoading) {
         event.preventDefault();
-        event.returnValue = ""; // For legacy browsers
+        event.returnValue = "";
       }
     };
     window.addEventListener("beforeunload", handleBeforeUnload);
@@ -81,6 +82,8 @@ function User({
     }
   }, [profileUser]);
 
+
+  // Handle Follow 
   const handleFollow = async () => {
     setFollowLoading(true);
     try {
@@ -113,6 +116,7 @@ function User({
     }
   };
 
+  // Handle profile Change 
   const handleProfilePicChange = (e) => {
     const selectedPic = e.target.files[0];
     if (selectedPic) {
@@ -128,6 +132,7 @@ function User({
     }
   })
 
+  // Adding profilePicture And Deleting Previous Ones
   const handleProfilePictureUpdate = async (e) => {
     e.preventDefault();
 
@@ -199,6 +204,7 @@ function User({
     }
   };
 
+  // Closing File And close uploading process 
   const handleCloseFile = (e) => {
     setProfilePicFile(null); // Reset the file state to null
     setUpdateBoxVisibility(false)
@@ -209,11 +215,13 @@ function User({
     }
   };
 
+  // Handling Edit button Visibility 
   const handleEditVisiblity = (e) => {
     e.preventDefault();
     setEditVisibility((prev) => !prev);
   };
 
+  // Handle Message 
   const handleConvo = async (e) => {
     e.preventDefault();
     const data = {
@@ -222,9 +230,7 @@ function User({
     };
     try {
       const makingConvo = await axios.post(`${PA}/api/convos`, data);
-      // console.log(makingConvo.data);
-      // setMakingConvo(true);
-
+      
       if (makingConvo.data.convoId) {
         navigate(`/messages/${makingConvo.data.convoId}`);
       } else {
@@ -330,7 +336,7 @@ function User({
                         enctype="multipart/form-data"
                         onChange={handleProfilePicChange}
                         type="file"
-                        id="uploadButton"
+                        id="uploadProfilePicBtn"
                         accept=".png,.jpg,.jpeg"
                         className="hidden"
                       />

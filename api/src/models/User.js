@@ -46,6 +46,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       max: 50,
     },
+    DOB: {
+      type: String,
+    required: true,
+    },
     city: {
       type: String,
       max: 50,
