@@ -1,23 +1,34 @@
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { submittingPost } from "../../../../../apiCalls";
 import { AuthContext } from "../../../../context/AuthContext";
 import CurrentUserPhoto from "../../../../currentUserPhoto";
 
-function cPost({ ShareOptions, SeperatingLine }) {
+function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
   const PF = import.meta.env.VITE_PUBLIC_FOLDER;
   const PA = import.meta.env.VITE_PUBLIC_API;
   const { user } = useContext(AuthContext);
   const [postFile, setPostFile] = useState(null);
-  const [previewImg, setPreviewImg] = useState(null); // For previewing the uploaded image
+  const [previewImg, setPreviewImg] = useState(null);
   const desc = useRef();
 
-  const handlePostFileChange = (e) => {
-    const selectedPostPic = e.target.files[0];
-    if (selectedPostPic) {
+  console.log("userId", userId);
+
+  const handlePostFileChange = (g) => {
+    const selectedPostPic = g.target.files[0];
+    if (!userId) {
       setPostFile(selectedPostPic);
       setPreviewImg(URL.createObjectURL(selectedPostPic));
-      console.log("File selected:", selectedPostPic);
+      // console.log("File selected:", selectedPostPic);
+    } else {
+      if (!cPostFile) {
+        return;
+      }
+      if (selectedPostPic && cPostFile) {
+        setPostFile(selectedPostPic);
+        setPreviewImg(URL.createObjectURL(selectedPostPic));
+        // console.log("File selected:", selectedPostPic);
+      }
     }
   };
 
@@ -44,8 +55,12 @@ function cPost({ ShareOptions, SeperatingLine }) {
       const uniqueFileName = uploadResponse.data;
       console.log("Received unique filename:", uniqueFileName);
 
-      const newPost = submittingPost(user._id, desc.current.value, uniqueFileName)
-      console.log(newPost)
+      const newPost = submittingPost(
+        user._id,
+        desc.current.value,
+        uniqueFileName
+      );
+      console.log(newPost);
     } catch (error) {
       console.error(
         "An error occurred:",
@@ -78,7 +93,7 @@ function cPost({ ShareOptions, SeperatingLine }) {
       </div>
 
       {/* Display uploaded image preview with edit/remove options */}
-      {previewImg && (
+      {previewImg && postFile && (
         <div className="relative w-full h-[250px] bg-contain bg-no-repeat bg-center border rounded-md overflow-hidden">
           <div
             className="w-full h-[300px] bg-contain bg-no-repeat bg-center"
@@ -86,13 +101,13 @@ function cPost({ ShareOptions, SeperatingLine }) {
           ></div>
           <div className="absolute top-2 right-2 flex gap-2">
             <label
-              htmlFor="uploadButton"
+              htmlFor="-uploadButtonForPostFile"
               className="text-white bg-blue-600 py-1 px-2 text-sm rounded cursor-pointer shadow hover:bg-blue-700"
             >
               Edit
               <input
                 type="file"
-                id="uploadButton"
+                id="uploadButtonForPostFile"
                 accept=".png,.jpg,.jpeg"
                 onChange={handlePostFileChange}
                 className="hidden"

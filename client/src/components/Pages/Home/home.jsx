@@ -10,7 +10,6 @@ function home({ reload }) {
     <>
       <div className="flex justify-center md:justify-between ">
         <Options
-          visibility="hidden md:block"
           currentUserPhoto={currentUserPhoto}
           mainItems={mainItems}
           SeperatingLine={SeperatingLine}

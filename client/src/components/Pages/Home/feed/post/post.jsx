@@ -56,115 +56,112 @@ function Post({ post }) {
 
   return (
     <div className="bg-white mx-2 shadow-md border border-gray-200 rounded-lg flex flex-col gap-3 max-w-[540px] w-full">
-      {/* Post Header */}
-      <div className="flex px-4 py-3 justify-between items-center">
-        <div className="flex items-center gap-3">
-          {/* User Photo */}
-          {isLoading ? (
-            <div className="w-[50px] h-[50px] bg-gray-300 rounded-full animate-pulse"></div>
-          ) : params === `/profile/${postUser._id}` ? (
-            postUser._id === user._id ? (
-              <CurrentUserPhoto />
-            ) : (
-              <UserPhoto userId={post.userId} user={postUser} />
-            )
-          ) : postUser._id === user._id ? (
+    {/* Post Header */}
+    <div className="flex px-4 py-3 justify-between items-center">
+      <div className="flex items-center gap-3">
+        {/* User Photo */}
+        {isLoading ? (
+          <div className="w-[40px] h-[40px] bg-gray-300 rounded-full animate-pulse"></div>
+        ) : params === `/profile/${postUser._id}` ? (
+          postUser._id === user._id ? (
             <CurrentUserPhoto />
           ) : (
             <UserPhoto userId={post.userId} user={postUser} />
+          )
+        ) : postUser._id === user._id ? (
+          <CurrentUserPhoto />
+        ) : (
+          <UserPhoto userId={post.userId} user={postUser} />
+        )}
+  
+        {/* User Info */}
+        <div>
+          {isLoading ? (
+            <div className="w-[120px] h-[12px] mb-1 bg-gray-300 rounded-md animate-pulse"></div>
+          ) : (
+            <h1 className="cursor-pointer text-sm font-semibold text-gray-800">
+              {postUser.username}
+            </h1>
           )}
-
-          {/* User Info */}
-          <div className="flex flex-col">
-            {/* User Info */}
-            <div className="flex flex-col">
-              {/* Username Skeleton */}
-              {isLoading ? (
-                <div className="w-[130px] h-[14px] mb-2 bg-gray-300 rounded-md animate-pulse"></div>
-              ) : (
-                <h1 className="cursor-pointer text-lg font-semibold text-gray-800">
-                  {postUser.username}
-                </h1>
-              )}
-
-              {/* CreatedAt Skeleton */}
-              {isLoading ? (
-                <div className="w-[100  px] h-[13px] bg-gray-300 rounded-md animate-pulse"></div>
-              ) : (
-                <span className="cursor-pointer text-sm text-gray-500 mt-1">
-                  {" "}
-                  {/* Add margin-top to increase spacing */}
-                  {format(post.createdAt)}
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-        {/* Action Buttons */}
-        <div className="flex gap-3">
-          <button className="flex justify-center items-center hover:bg-gray-200 w-10 h-10 rounded-full text-xl">
-            <i className="ri-more-line"></i>
-          </button>
-          <button className="flex justify-center items-center hover:bg-gray-200 w-10 h-10 rounded-full text-xl">
-            <i className="ri-close-line"></i>
-          </button>
+  
+          {isLoading ? (
+            <div className="w-[80px] h-[10px] bg-gray-300 rounded-md animate-pulse"></div>
+          ) : (
+            <span className="text-xs text-gray-500">{format(post.createdAt)}</span>
+          )}
         </div>
       </div>
-
-      {/* Post Content */}
-      {post?.desc && (
-        <div className="px-4 text-md font-medium text-gray-800">
-          {post.desc}
-        </div>
-      )}
-
-      {/* Image Section */}
-      {post.img && (
-        <div
-          className="w-full h-[300px] bg-cover bg-no-repeat bg-center"
-          style={{
-            backgroundImage: `url(${post.img ? `${PF}/${post.img}` : ""})`,
-          }}
-        ></div>
-      )}
-
-      {/* Like and Comments Section */}
-      {likes > 0 && (
-        <div className="flex justify-between px-4 py-3 items-center">
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1 text-xl">
-              {likes > 1 && <span>👍</span>}
-              {likes > 2 && <span className="text-red-600">❤️</span>}
-              {likes > 3 && <span>😂</span>}
-            </div>
-            <div className="flex items-center gap-1 text-sm text-gray-600">
-              <span>{likes}</span>
-              <span>people like this</span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Share Buttons Section */}
-      <div className="flex justify-around px-4 py-3">
-        {Shares.map((share, id) => (
-          <button
-            key={id}
-            onClick={share.id === 1 ? likeHandler : undefined}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-all"
-          >
-            <span
-              className={`${
-                share.id === 1 && isLiked && "likeAnimate"
-              } transition-all duration-300 text-2xl `}
-            >
-              {share.id === 1 && isLiked ? share.liked : share.icon}
-            </span>
-            <span className="text-sm font-medium">{share.label}</span>
-          </button>
-        ))}
+      {/* Action Buttons */}
+      <div className="flex gap-2">
+        <button className="flex justify-center items-center hover:bg-gray-100 w-8 h-8 rounded-full text-xl">
+          <i className="ri-more-line"></i>
+        </button>
+        <button className="flex justify-center items-center hover:bg-gray-100 w-8 h-8 rounded-full text-xl">
+          <i className="ri-close-line"></i>
+        </button>
       </div>
     </div>
+  
+    {/* Post Content */}
+    {post?.desc && (
+      <div className="px-4 text-sm font-medium text-gray-800">{post.desc}</div>
+    )}
+  
+ {/* Image Section */}
+{post.img && (
+  <Link to={`/photo/${[post.img]}`}>
+    <div
+      className="w-full h-[240px] bg-cover bg-no-repeat bg-center rounded-md"
+      style={{
+        backgroundImage: `url(${post.img ? `${PF}${post.img}` : ""})`,
+      }}
+    ></div>
+  </Link>
+)}
+
+{/* Like and Comments Section */}
+{likes > 0 && (
+  <div className="flex items-center justify-between px-4">
+    <div className="flex items-center gap-2">
+      {/* Emoji Logic */}
+      <div className="flex items-center text-base">
+        <span className="text-lg">{likes >= 1 && "👍"}</span>
+        <span className="text-lg ">{likes >= 2 && "❤️"}</span>
+        <span className="text-lg">{likes >= 3 && "😮"}</span>
+      </div>
+      <span className="text-xs text-gray-600 font-medium">
+        {likes === 1 ? "1 person likes this" : `${likes} people like this`}
+      </span>
+    </div>
+    <button className="text-xs text-blue-500 font-medium hover:underline">
+      View comments
+    </button>
+  </div>
+)}
+
+  
+    {/* Share Buttons Section */}
+    <div className="flex justify-around px-4 py-3">
+      {Shares.map((share, id) => (
+        <button
+          key={id}
+          onClick={share.id === 1 ? likeHandler : undefined}
+          className="flex items-center gap-2 px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 transition-all"
+        >
+          <span
+            className={`${
+              share.id === 1 && isLiked && "likeAnimate"
+            } transition-all duration-300 text-lg`}
+          >
+            {share.id === 1 && isLiked ? share.liked : share.icon}
+          </span>
+          <span className="text-xs font-medium">{share.label}</span>
+        </button>
+      ))}
+      
+    </div>
+  </div>
+  
   );
 }
 

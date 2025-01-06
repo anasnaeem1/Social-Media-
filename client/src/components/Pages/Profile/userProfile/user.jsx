@@ -7,7 +7,6 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-// import CurrentUser from "../../../currentUserPhoto";
 
 function User({
   profileLoading,
@@ -24,13 +23,14 @@ function User({
   const [followed, setFollowed] = useState(false);
   const [editVisibility, setEditVisibility] = useState(false);
   const [convo, setConvo] = useState(null);
-  const [newConvo, setNewConvo] = useState(null);
+  // const [newConvo, setNewConvo] = useState(null);
   const [followLoading, setFollowLoading] = useState(false);
   const [profilePicFile, setProfilePicFile] = useState(null);
   const [updateBoxVisibility, setUpdateBoxVisibility] = useState(false);
+  const [cPostFile, setCPostFile] = useState(true);
   const navigate = useNavigate();
 
-  //Check currentUser follows this ProfileUser
+  // Check currentUser follows this ProfileUser
   useEffect(() => {
     if (profileUser._id) {
       const normalizedFollowings = currentUser.followings.map((id) =>
@@ -82,8 +82,7 @@ function User({
     }
   }, [profileUser]);
 
-
-  // Handle Follow 
+  // Handle Follow
   const handleFollow = async () => {
     setFollowLoading(true);
     try {
@@ -116,21 +115,18 @@ function User({
     }
   };
 
-  // Handle profile Change 
+  // Handle profile picture change
   const handleProfilePicChange = (e) => {
     const selectedPic = e.target.files[0];
-    if (selectedPic) {
-      setProfilePicFile(selectedPic);
-      setUpdateBoxVisibility(true)
-      dispatch({ type: "SHOW_OVERLAY" });
-    }
+    setProfilePicFile(selectedPic || null);
+    setUpdateBoxVisibility(!!selectedPic);
+    dispatch({ type: "SHOW_OVERLAY" });
   };
 
-  useEffect(()=>{
-    if(updateBoxVisibility){
-      // console.log(updateBoxVisibility)
-    }
-  })
+  // Update cPostFile whenever profilePicFile changes
+  useEffect(() => {
+    setCPostFile(!profilePicFile); // true if profilePicFile is null, false otherwise
+  }, [profilePicFile]);
 
   // Adding profilePicture And Deleting Previous Ones
   const handleProfilePictureUpdate = async (e) => {
@@ -204,10 +200,10 @@ function User({
     }
   };
 
-  // Closing File And close uploading process 
-  const handleCloseFile = (e) => {
-    setProfilePicFile(null); // Reset the file state to null
-    setUpdateBoxVisibility(false)
+  // Closing File And close uploading process
+  const handleCloseFile = () => {
+    setProfilePicFile(null);
+    setUpdateBoxVisibility(false);
     const fileInput = document.getElementById("uploadButton");
     if (fileInput) {
       fileInput.value = ""; // Reset the file input field value
@@ -215,13 +211,13 @@ function User({
     }
   };
 
-  // Handling Edit button Visibility 
+  // Handling Edit button Visibility
   const handleEditVisiblity = (e) => {
     e.preventDefault();
     setEditVisibility((prev) => !prev);
   };
 
-  // Handle Message 
+  // Handle Message
   const handleConvo = async (e) => {
     e.preventDefault();
     const data = {
@@ -230,7 +226,7 @@ function User({
     };
     try {
       const makingConvo = await axios.post(`${PA}/api/convos`, data);
-      
+
       if (makingConvo.data.convoId) {
         navigate(`/messages/${makingConvo.data.convoId}`);
       } else {
@@ -274,7 +270,7 @@ function User({
                     userId === currentUser._id
                       ? "border-[3px] border-white"
                       : ""
-                  } relative h-[170px] w-[170px] md:h-[150px] md:w-[150px] rounded-full shadow-lg mx-auto md:mx-0`}
+                  } relative border-[2px] border-white h-[170px] w-[170px] md:h-[150px] md:w-[150px] rounded-full shadow-lg mx-auto md:mx-0`}
                   style={{
                     backgroundImage: `url(${
                       profileUser.profilePic
@@ -287,7 +283,7 @@ function User({
                 >
                   {userId !== currentUser._id && (
                     <svg
-                      className="absolute top-0 left-0 h-[156px] w-[156px] transform -translate-y-[3px] -translate-x-[3px] rotate-[90deg]"
+                      className="absolute top-0 left-0 h-[156px] w-[156px] transform -translate-y-[4px] -translate-x-[5px] rotate-[90deg]"
                       xmlns="http://www.w3.org/2000/svg"
                       version="1.1"
                       viewBox="0 0 160 160"
@@ -343,7 +339,7 @@ function User({
 
                       {/* Profile Picture Update */}
                       <label
-                        htmlFor="uploadButton"
+                        htmlFor="uploadProfilePicBtn"
                         className="flex items-center gap-2 hover:text-blue-600 transition cursor-pointer"
                       >
                         <i className="text-lg ri-image-edit-line text-gray-500"></i>
@@ -420,6 +416,7 @@ function User({
         <div className="flex flex-col-reverse lg:flex-row mx-auto justify-center gap-6 px-6 max-w-7xl">
           <div className="flex-grow">
             <Feed
+              cPostFile={cPostFile}
               userId={userId}
               UserPhoto={UserPhoto}
               mainItems={mainItems}

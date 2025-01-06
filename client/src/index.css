@@ -35,6 +35,13 @@
   padding-left: 1rem;
 }
 
+@media (max-width: 1280px) { /* xl breakpoint */
+  .options-container {
+    width: 150px; /* Fixed width for smaller screens */
+  }
+}
+
+
 .others-container {
   width: 30%;
   height: 90vh;

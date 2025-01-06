@@ -6,7 +6,13 @@ import axios from "axios";
 import PostSkeleton from "../../../Skeleton/postSkeleton";
 import { AuthContext } from "../../../context/AuthContext";
 
-function Feed({ currentUserPhoto, mainItems, SeperatingLine, userId }) {
+function Feed({
+  currentUserPhoto,
+  cPostFile,
+  mainItems,
+  SeperatingLine,
+  userId,
+}) {
   const { ShareOptions } = mainItems;
   const { reload, user, dispatch } = useContext(AuthContext);
   const PA = import.meta.env.VITE_PUBLIC_API;
@@ -23,7 +29,7 @@ function Feed({ currentUserPhoto, mainItems, SeperatingLine, userId }) {
       let res;
       if (userId) {
         res = await axios.get(`${PA}/api/posts/profile/${userId}`);
-        setPosts(res.data, );
+        setPosts(res.data);
         setHasMore(false);
       } else {
         res = await axios.get(
@@ -62,10 +68,10 @@ function Feed({ currentUserPhoto, mainItems, SeperatingLine, userId }) {
 
   const handleLoadMore = () => {
     if (hasMore && !isFetching) {
-      setPage((prev) => prev + 1);    
+      setPage((prev) => prev + 1);
     }
   };
-  
+
   return (
     <div className="relative">
       {/* Show loading indicator */}
@@ -77,11 +83,13 @@ function Feed({ currentUserPhoto, mainItems, SeperatingLine, userId }) {
         </div>
       )}
 
-      <div className="flex pt-5 items-center flex-col gap-10 overflow-x-hidden feed-container">
+      <div className="flex pt-5 items-center flex-col px-3 gap-10 overflow-x-hidden feed-container">
         {/* CreatePost section */}
         {userId ? (
           userId === user._id && (
             <CreatePost
+              userId={userId}
+              cPostFile={cPostFile}
               ShareOptions={ShareOptions}
               currentUserPhoto={currentUserPhoto}
               SeperatingLine={SeperatingLine}
@@ -89,6 +97,8 @@ function Feed({ currentUserPhoto, mainItems, SeperatingLine, userId }) {
           )
         ) : (
           <CreatePost
+            userId={userId}
+            cPostFile={cPostFile}
             ShareOptions={ShareOptions}
             currentUserPhoto={currentUserPhoto}
             SeperatingLine={SeperatingLine}

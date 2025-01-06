@@ -38,7 +38,7 @@ function profile() {
     <div>
       <div className="flex justify-center ">
         <Options
-          visibility="hidden lg:block"
+        userId={userId}
           CurrentUserPhoto={CurrentUserPhoto}
           mainItems={mainItems}
           SeperatingLine={SeperatingLine}

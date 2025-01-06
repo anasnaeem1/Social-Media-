@@ -53,7 +53,7 @@ function Messages({
     };
   }, [userId, convoId, user]);
 
-  // check How Many people are online 
+  // check How Many people are online
   useEffect(() => {
     if (!messageSent) {
       const isOnline = onlineUsers.some(
@@ -65,7 +65,7 @@ function Messages({
     }
   }, [onlineUsers, user._id, messageSent]);
 
-  // Fetching Conversations 
+  // Fetching Conversations
   useEffect(() => {
     const fetchConvo = async () => {
       if (userId) {
@@ -84,7 +84,7 @@ function Messages({
     fetchConvo();
   }, [userId, convoId]);
 
-  // Fetching Other User 
+  // Fetching Other User
   useEffect(() => {
     const fetchUser = async () => {
       setUserLoading(true);
@@ -108,7 +108,7 @@ function Messages({
     }
   }, [convoId, convo, currentUser]);
 
-  // Fetching Messages 
+  // Fetching Messages
   useEffect(() => {
     const fetchMessages = async () => {
       try {
@@ -128,7 +128,7 @@ function Messages({
     }
   }, [convoId]);
 
-  // Clearing message input 
+  // Clearing message input
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -146,12 +146,12 @@ function Messages({
     }
   }, [arrivalMessage, convo, convoId, messages]);
 
-  // Updating Message Seen Feature 
+  // Updating Message Seen Feature
   useEffect(() => {
     const updatingSeen = async () => {
       if (user && messages && Array.isArray(inboxOpen)) {
         const updatedInbox = inboxOpen.find(
-          (entry) => entry.userId === user._id && entry.convoId === convoId
+          (person) => person.userId === user._id && person.convoId === convoId
         );
 
         // Check if the inbox is open for the user
@@ -206,7 +206,7 @@ function Messages({
     updatingSeen();
   }, [userId, convoId, user, inboxOpen, messages]);
 
-  // Handle message submit 
+  // Handle message submit
   const handleMsgSubmit = async (e) => {
     e.preventDefault();
     try {

@@ -2,18 +2,28 @@ import { navItems } from "../../constants/index.jsx";
 import UserPhoto from "../currentUserPhoto.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../../logo.jsx";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { Logout } from "../context/AuthActions.js";
 import CurrentUserPhoto from "../currentUserPhoto.jsx";
 import { searchUser } from "../../apiCalls.js";
+import { useParams } from "react-router-dom";
 
 function Navbar() {
   const { controlsIcons } = navItems;
   const { reload, isOverlayVisible, dispatch, SearchedUser, user } =
     useContext(AuthContext);
+  const PF = import.meta.env.VITE_PUBLIC_FOLDER;
   const searchedUsername = useRef();
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
   const navigate = useNavigate();
+  const params = useParams();
+  const [isMenuClicked, setIsMenuClicked] = useState(false);
+
+  const handleMenuClick = () => {
+    setIsMenuClicked(true);
+    setTimeout(() => setIsMenuClicked(false), 200); // Reset the state after 0.3 seconds
+  };
 
   const handleGetOut = () => {
     dispatch(Logout());
@@ -53,9 +63,14 @@ function Navbar() {
     dispatch({ type: "RELOAD", payload: true });
   };
 
+  const handleMenu = (e) => {
+    e.preventDefault();
+    setIsMenuVisible((prev) => !prev);
+  };
+
   return (
     <>
-      <div className="w-full h-[65px] "></div>
+      <div className={`${params === "/photo" ? "hidden" : "block"} w-full h-[65px]`}></div>
       {isOverlayVisible && (
         <div className="fixed top-0 left-0 right-0 h-[65px] bg-black opacity-5 z-[9999] pointer-events-none"></div>
       )}
@@ -123,9 +138,6 @@ function Navbar() {
               <Link to="/" className="hidden sm:flex">
                 <li className="text-md">Timeline</li>
               </Link>
-              <button className="cursor-pointer" onClick={handleGetOut}>
-                Get Out
-              </button>
             </ul>
           </div>
 
@@ -160,7 +172,100 @@ function Navbar() {
               </li>
             </ul>
           </div>
-          <CurrentUserPhoto />
+          <div className="cursor-pointer flex flex-col justify-start items-center relative">
+            <Link onClick={handleMenu}>
+              <div
+                onClick={handleMenuClick}
+                className={`w-[50px] h-[50px] bg-cover bg-no-repeat rounded-full transition-all duration-300 ${
+                  isMenuClicked
+                    ? "scale-90 shadow-inner opacity-70"
+                    : "scale-100 shadow-none opacity-100"
+                }`}
+                style={{
+                  backgroundImage: `url(${
+                    user
+                      ? user.profilePic
+                        ? `${PF}/${user.profilePic}`
+                        : `${PF}/noAvatar.png`
+                      : undefined
+                  })`,
+                }}
+              ></div>
+            </Link>
+            <div className="absolute bottom-1 flex items-center justify-center right-[-4px] h-5 w-5 border-[3px] border-white bg-white rounded-full">
+              <i className="text-lg text-gray-400 ri-arrow-down-s-line"></i>
+            </div>
+            {isMenuVisible && (
+              <div className="border shadow-2xl absolute top-[61px] right-0 bg-white rounded-xl w-[350px] overflow-hidden">
+                {/* User Profile */}
+                <div className="flex items-center px-4 py-4 bg-gray-50 hover:bg-gray-100 transition-colors">
+                  <CurrentUserPhoto />
+                  <span className="ml-4 text-gray-800 text-lg font-semibold">
+                    {user.username}
+                  </span>
+                </div>
+                <hr className="border-gray-200" />
+
+                {/* Setting And Privacy */}
+                <div className="flex items-center px-4 py-3 hover:bg-gray-100 transition-colors">
+                  <span className="flex items-center justify-center text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow-md rounded-full h-[45px] w-[45px]">
+                    <i className="ri-settings-2-fill text-2xl"></i>
+                  </span>
+                  <span className="ml-4 text-gray-700 text-lg font-medium">
+                    Setting & Privacy
+                  </span>
+                </div>
+
+                {/* Help & Support */}
+                <div className="flex items-center px-4 py-3 hover:bg-gray-100 transition-colors">
+                  <span className="flex items-center justify-center text-white bg-gradient-to-r from-green-500 to-green-700 shadow-md rounded-full h-[45px] w-[45px]">
+                    <i className="ri-question-fill text-2xl"></i>
+                  </span>
+                  <span className="ml-4 text-gray-700 text-lg font-medium">
+                    Help & Support
+                  </span>
+                </div>
+
+                {/* Display & Accessibility */}
+                <div className="flex items-center px-4 py-3 hover:bg-gray-100 transition-colors">
+                  <span className="flex items-center justify-center text-white bg-gradient-to-r from-purple-500 to-purple-700 shadow-md rounded-full h-[45px] w-[45px]">
+                    <i className="ri-moon-fill text-2xl"></i>
+                  </span>
+                  <span className="ml-4 text-gray-700 text-lg font-medium">
+                    Display & Accessibility
+                  </span>
+                </div>
+
+                {/* Give Feedback */}
+                <div className="flex items-center px-4 py-3 hover:bg-gray-100 transition-colors">
+                  <span className="flex items-center justify-center text-white bg-gradient-to-r from-yellow-500 to-yellow-700 shadow-md rounded-full h-[45px] w-[45px]">
+                    <i className="ri-feedback-fill text-2xl"></i>
+                  </span>
+                  <div className="ml-4">
+                    <span className="text-gray-700 text-md font-medium">
+                      Give Feedback
+                    </span>
+                    <span className="block text-gray-500 text-sm font-light">
+                      CTRL + B
+                    </span>
+                  </div>
+                </div>
+
+                {/* Logout */}
+                <div
+                  onClick={handleGetOut}
+                  className="flex items-center px-4 py-3 hover:bg-gray-100 transition-colors"
+                >
+                  <span className="flex items-center justify-center text-white bg-gradient-to-r from-red-500 to-red-700 shadow-md rounded-full h-[45px] w-[45px]">
+                    <i className="ri-logout-box-r-fill text-2xl"></i>
+                  </span>
+                  <span className="ml-4 text-gray-700 text-lg font-medium">
+                    Logout
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </header>
     </>

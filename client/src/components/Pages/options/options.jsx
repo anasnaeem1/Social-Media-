@@ -1,14 +1,14 @@
 import { Link } from "react-router-dom";
 import FriendList from "../Home/friendList";
 
-function options({ mainItems, SeperatingLine, visibility }) {
+function options({ mainItems, SeperatingLine, userId }) {
   const { Options } = mainItems;
 
   return (
     <>
-      <div className={`${visibility} options-container`}></div>
+      <div className={`${userId ? "hidden lg:block" : "hidden md:block" } options-container`}></div>
       <div
-        className={`${visibility} fixed left-[1px] custom-scrollbar overflow-y-auto top-[65px] options-container`}
+        className={`${userId ? "hidden lg:block" : "hidden md:block" } fixed left-[1px] custom-scrollbar overflow-y-auto top-[65px] options-container`}
       >
         <div className="pl-3 w-full pt-5 flex flex-col gap-6">
           <ul className="flex justify-center items-start flex-col gap-3">
