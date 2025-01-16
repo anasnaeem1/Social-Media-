@@ -6,7 +6,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { SkeletonTheme } from "react-loading-skeleton";
-import { AuthContext } from "./components/context/AuthContext";
+import { UserContext } from "./components/context/UserContext";
 import io from "socket.io-client";
 import Home from "./components/Pages/Home/home";
 import ViewPhoto from "./components/Pages/viewPhoto/viewPhoto";
@@ -16,10 +16,9 @@ import Login from "./components/Pages/login/login";
 import Register from "./components/Pages/Register/register";
 import Navbar from "./components/Header/navbar";
 import MessagesPage from "./components/Pages/MessagePage/messagesMain";
-import ScrollToTop from "./components/scrollToTop";
 
 function App() {
-  const { user } = useContext(AuthContext);
+  const { user } = useContext(UserContext);
   const socket = useRef(null);
 
   useEffect(() => {
@@ -44,17 +43,36 @@ function App() {
     >
       <SkeletonTheme baseColor="#D4D9E1" highlightColor="#dde2e9">
         <Router>
-          {user ? <ScrollToTop /> : undefined}
-          {user ? <Navbar /> : undefined}
+          {user && <Navbar />}
           <Routes>
             <Route
               path="/"
               element={!user ? <Navigate to="/register" /> : <Home />}
-            />
+            >
+              <Route
+                path=":postId"
+                element={!user ? <Navigate to="/register" /> : <Home />}
+              >
+                <Route
+                  path=":commentId"
+                  element={!user ? <Navigate to="/register" /> : <Home />}
+                />
+              </Route>
+            </Route>
             <Route
-              path="/profile/:id"
+              path="/profile/:userId"
               element={!user ? <Navigate to="/register" /> : <Profile />}
-            />
+            >
+              <Route
+                path=":postId"
+                element={!user ? <Navigate to="/register" /> : <Profile />}
+              >
+                <Route
+                  path=":commentId"
+                  element={!user ? <Navigate to="/register" /> : <Profile />}
+                />
+              </Route>
+            </Route>
             <Route
               path="/search/:id"
               element={!user ? <Navigate to="/register" /> : <Search />}

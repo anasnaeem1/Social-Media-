@@ -1,20 +1,23 @@
 import { createContext, useEffect, useReducer } from "react";
-import AuthReducer from "./AuthReducer";
+import UserReducer from "./UserReducer";
 
 const INITIAL_STATE = {
   user: JSON.parse(localStorage.getItem("user")) || null,
   SearchedUser: null,
   reload: false,
-  isOverlayVisible: false, // Overlay visibility state
+  uploadProfileBox: false,
+  commentBox: false,
+  newComment: null,
+  newPost: null,
   isFetching: false,
   error: false,
   yourNewMessage:null
 };
 
-export const AuthContext = createContext(INITIAL_STATE);
+export const UserContext = createContext(INITIAL_STATE);
 
-export const AuthContextProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(AuthReducer, INITIAL_STATE);
+export const UserContextProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(UserReducer, INITIAL_STATE);
 
   useEffect(() => {
     if (state.user) {
@@ -25,13 +28,13 @@ export const AuthContextProvider = ({ children }) => {
   }, [state.user]);
 
   return (
-    <AuthContext.Provider
+    <UserContext.Provider
       value={{
         ...state, // Spread to include all state properties
         dispatch,
       }}
     >
       {children}
-    </AuthContext.Provider>
+    </UserContext.Provider>
   );
 };

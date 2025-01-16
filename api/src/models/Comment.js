@@ -6,9 +6,15 @@ const commentSchema = new mongoose.Schema(
         type: String,
         required: true,
       },
+      img: {
+        type: String,
+      },
       postId: {
         type: String,
         required: true,
+      },
+      likes: {
+        type: Array,
       },
       text: {
         type: String,

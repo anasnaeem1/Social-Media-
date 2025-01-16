@@ -3,13 +3,13 @@ import "./index.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import { AuthContextProvider } from "./components/context/AuthContext";
+import { UserContextProvider } from "./components/context/UserContext";
 
 // Remove or comment out the StrictMode wrapper to stop the double render
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <AuthContextProvider>
+  <UserContextProvider>
     <App />
-  </AuthContextProvider>
+  </UserContextProvider>
 );
 
 // ReactDOM.createRoot(document.getElementById("root")).render(<App />);

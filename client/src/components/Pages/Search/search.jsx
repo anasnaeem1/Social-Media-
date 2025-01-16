@@ -2,13 +2,13 @@ import { useParams, Link } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import Post from "../Home/feed/post/post";
-import { AuthContext } from "../../context/AuthContext";
+import { UserContext } from "../../context/UserContext";
 import UserPhoto from "../../userPhoto";
 import UserInfoSkeleton from "../../Skeleton/searchUserInfoSkeleton";
 import { getUser } from "../../../apiCalls";
 
 function Search() {
-  const { dispatch, user: currentUser } = useContext(AuthContext);
+  const { dispatch, user: currentUser } = useContext(UserContext);
   const PF = import.meta.env.VITE_PUBLIC_FOLDER;
   const PA = import.meta.env.VITE_PUBLIC_API;
   const [userIsLoading, setUserIsLoading] = useState(true);

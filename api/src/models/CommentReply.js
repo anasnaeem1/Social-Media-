@@ -6,6 +6,12 @@ const commentReplySchema = new mongoose.Schema(
         type: String,
         required: true,
       },
+      img : {
+        type: String,
+      },
+      likes: {
+        type: Array,
+      },
       commentId: {
         type: String,
         required: true,

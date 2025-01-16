@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import Coverstations from "./Conversation/coverstations";
 import Messages from "./Messages/messages";
-import { AuthContext } from "../../context/AuthContext";
+import { UserContext } from "../../context/UserContext";
 import axios from "axios";
 import { io } from "socket.io-client";
 
@@ -12,7 +12,7 @@ function ChatApp() {
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const socket = useRef();
-  const { user } = useContext(AuthContext);
+  const { user } = useContext(UserContext);
   const PA = import.meta.env.VITE_PUBLIC_API;
   const { convoId } = useParams();
 
@@ -40,7 +40,7 @@ function ChatApp() {
       });
 
       socket.current.on("getUsers", (users) => {
-        setOnlineUsers(users);  
+        setOnlineUsers(users);
       });
   
       // Handle connection errors

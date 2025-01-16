@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { AuthContext } from "../../../context/AuthContext";
+import { UserContext } from "../../../context/UserContext";
 import MessageBox from "./messgeBox";
 import { io } from "socket.io-client";
 import Conversations from "../Conversation/coverstations";
@@ -17,7 +17,7 @@ function Messages({
     dispatch,
     yourNewMessage,
     user: currentUser,
-  } = useContext(AuthContext);
+  } = useContext(UserContext);
   const [user, setUser] = useState({});
   const [messages, setMessages] = useState([]);
   const [userLoading, setUserLoading] = useState(false);
@@ -240,7 +240,7 @@ function Messages({
         const msgResponse = await axios.post(`${PA}/api/messages`, newMessage);
         if (msgResponse.data) {
           setMessages((prevMessages) => [msgResponse.data, ...prevMessages]);
-          dispatch({ type: "YOUR_NEW_MESSAGE", payload: newMessage.text });
+          // dispatch({ type: "YOUR_NEW_MESSAGE", payload: newMessage.text });
         }
         message.current.value = "";
       } else {

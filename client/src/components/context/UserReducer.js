@@ -1,4 +1,4 @@
-import { YourNewMessage } from "./AuthActions";
+import { YourNewMessage } from "./UserActions";
 
 const AuthReducer = (state, action) => {
   // console.log("AuthReducer action:", action.type, "Payload:", action.payload);
@@ -89,20 +89,43 @@ const AuthReducer = (state, action) => {
         reload: action.payload,
       };
 
-    case "SHOW_OVERLAY":
+    case "SHOW_UPLOADPROFILEBOX":
       return {
         ...state,
-        isOverlayVisible: true, // Set overlay to visible
+        uploadProfileBox: true, // Set overlay to visible
       };
-    case "HIDE_OVERLAY":
+    case "HIDE_UPLOADPROFILEBOX":
       return {
         ...state,
-        isOverlayVisible: false, // Hide the overlay
+        uploadProfileBox: false, // Hide the overlay
+      };
+
+    case "SHOW_COMMENTSBOX":
+      return {
+        ...state,
+        commentBox: true, // Set overlay to visible
+      };
+    case "HIDE_COMMENTSBOX":
+      return {
+        ...state,
+        commentBox: false, // Hide the overlay
       };
     case "YOUR_NEW_MESSAGE":
       return {
         ...state,
-        yourNewMessage: action.payload, // Correctly updating the state
+        yourNewMessage: action.payload, 
+      };
+
+    case "YOUR_NEW_COMMENT":
+      return {
+        ...state,
+        yourNewMessage: action.payload, 
+      };
+
+    case "YOUR_NEW_POST":
+      return {
+        ...state,
+        yourNewMessage: action.payload, 
       };
 
     default:

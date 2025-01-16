@@ -1,6 +1,6 @@
 import { useContext, useState, useRef } from "react";
 import { loginCall } from "../../../apiCalls";
-import { AuthContext } from "../../context/AuthContext";
+import { UserContext } from "../../context/UserContext";
 import { CircularProgress } from "@mui/material";
 import { Link } from "react-router-dom";
 
@@ -14,7 +14,7 @@ function login() {
 
   const email = useRef();
   const password = useRef();
-  const { user, isFetching, error, dispatch } = useContext(AuthContext);
+  const { user, isFetching, error, dispatch } = useContext(UserContext);
 
   
   const handleSubmit = (e) => {

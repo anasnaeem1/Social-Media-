@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "./context/AuthContext";
+import { UserContext } from "./context/UserContext";
 import { Link } from "react-router-dom";
 
 function userPhoto({ userId, user, onlineUsers }) {
   const PF = import.meta.env.VITE_PUBLIC_FOLDER;
-  const { user: currentUser } = useContext(AuthContext);
+  const { user: currentUser } = useContext(UserContext);
   const [followed, setFollowed] = useState(false);
 
   useEffect(() => {

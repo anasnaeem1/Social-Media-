@@ -1,11 +1,11 @@
 import { useContext, useState, useEffect } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { UserContext } from "../../context/UserContext";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import UserPhoto from "../../userPhoto";
 
 function FriendList() {
-  const { user } = useContext(AuthContext);
+  const { user } = useContext(UserContext);
   const [friendList, setFriendList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const PF = import.meta.env.VITE_PUBLIC_FOLDER;

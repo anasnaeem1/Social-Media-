@@ -3,7 +3,7 @@ import UserPhoto from "../../../userPhoto";
 import CurrentUserPhoto from "../../../currentUserPhoto";
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../../context/AuthContext";
+import { UserContext } from "../../../context/UserContext";
 
 function convo({
   onlineUsers,
@@ -15,7 +15,7 @@ function convo({
   const [user, setUser] = useState({});
   const [userLoading, setUserLoading] = useState(false);
   // const [userLoading, setUserLoading] = useState(false);
-  const { user: currentUser, yourNewMessage } = useContext(AuthContext);
+  const { user: currentUser, yourNewMessage } = useContext(UserContext);
   const PF = import.meta.env.VITE_PUBLIC_FOLDER;
   const PA = import.meta.env.VITE_PUBLIC_API;
   const [latestMessage, setLatestMessage] = useState(null);

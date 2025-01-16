@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import FriendList from "../../Home/friendList";
-import { AuthContext } from "../../../context/AuthContext";
+import { UserContext } from "../../../context/UserContext";
 import Convo from "./convo";
 
 function Conversations({
@@ -12,7 +12,7 @@ function Conversations({
   conversations,
   userId,
 }) {
-  const { user } = useContext(AuthContext);
+  const { user } = useContext(UserContext);
   // console.log(onlineUsers);
 
 

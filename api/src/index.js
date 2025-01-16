@@ -12,8 +12,9 @@ const uploadRouter = require("./routes/fileUpload.js");
 const deleteRouter = require("./routes/fileDelete.js");
 const convosRouter = require("./routes/convos.js");
 const commentsRouter = require("./routes/comments.js");
-const commentRepliesRouter = require("./routes/commentRepliesRouter.js");
+const commentReplies = require("./routes/commentReplies.js");
 const messagesRouter = require("./routes/messages.js");
+const search = require("./routes/search.js")
 // const { console } = require("inspector");
 
 // Configure environment variables
@@ -50,7 +51,8 @@ app.use("/api/auth", authRouter);
 app.use("/api/posts", postRouter);
 app.use("/api/convos", convosRouter);
 app.use("/api/comments", commentsRouter);
-app.use("/api/commentsReplies", commentRepliesRouter);
+app.use("/api/commentsReplies", commentReplies);
+app.use("/api/search", search);
 app.use("/api/messages", messagesRouter);
 app.use("/api/uploads", uploadRouter);
 app.use("/api/delete", deleteRouter);

@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "./context/AuthContext";
+import { UserContext } from "./context/UserContext";
 import axios from "axios";
 import UserPhoto from "./userPhoto";
 import { Link } from "react-router-dom";
 
 function FollowSuggestion() {
-  const { user, dispatch } = useContext(AuthContext);
+  const { user, dispatch } = useContext(UserContext);
   const [mutualFriends, setMutualFriends] = useState([]);
   const [loadingFriends, setLoadingFriends] = useState(true);
   const PF = import.meta.env.VITE_PUBLIC_FOLDER;
@@ -22,7 +22,6 @@ function FollowSuggestion() {
             const sanitizedResponse = res.data.filter(
               (e) => e._id !== user._id
             );
-            // Add `isFollowed` property to each friend
             const friendsWithFollowState = sanitizedResponse.map((friend) => ({
               ...friend,
               isFollowed: user.followings.includes(friend._id),

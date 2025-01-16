@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../../../context/AuthContext";
+import { UserContext } from "../../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 
 function UserInfo({ profileUser, userId }) {
@@ -9,7 +9,7 @@ function UserInfo({ profileUser, userId }) {
   const [isLoading, setIsLoading] = useState(true);
   // const [makingConvo, setMakingConvo] = useState(false);
 
-  const { user } = useContext(AuthContext);
+  const { user } = useContext(UserContext);
   const PF = import.meta.env.VITE_PUBLIC_FOLDER;
   const PA = import.meta.env.VITE_PUBLIC_API;
 

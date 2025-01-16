@@ -3,8 +3,8 @@ import UserPhoto from "../currentUserPhoto.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../../logo.jsx";
 import { useContext, useEffect, useRef, useState } from "react";
-import { AuthContext } from "../context/AuthContext.jsx";
-import { Logout } from "../context/AuthActions.js";
+import { UserContext } from "../context/UserContext.jsx";
+import { Logout } from "../context/UserActions.js";
 import CurrentUserPhoto from "../currentUserPhoto.jsx";
 import { searchUser } from "../../apiCalls.js";
 import { useParams } from "react-router-dom";
@@ -12,7 +12,7 @@ import { useParams } from "react-router-dom";
 function Navbar() {
   const { controlsIcons } = navItems;
   const { reload, isOverlayVisible, dispatch, SearchedUser, user } =
-    useContext(AuthContext);
+    useContext(UserContext);
   const PF = import.meta.env.VITE_PUBLIC_FOLDER;
   const searchedUsername = useRef();
   const [isMenuVisible, setIsMenuVisible] = useState(false);
@@ -25,7 +25,7 @@ function Navbar() {
     setTimeout(() => setIsMenuClicked(false), 200); // Reset the state after 0.3 seconds
   };
 
-  const handleGetOut = () => {
+  const handleLogOut = () => {
     dispatch(Logout());
     navigate("/login");
   };
@@ -37,6 +37,7 @@ function Navbar() {
     if (username) {
       try {
         await searchUser(username, dispatch);
+        setIsMenuVisible(false);
       } catch (err) {
         console.log("Error during search", err);
       }
@@ -60,6 +61,7 @@ function Navbar() {
   }, [SearchedUser]);
 
   const handleReload = () => {
+    setIsMenuVisible(false);
     dispatch({ type: "RELOAD", payload: true });
   };
 
@@ -68,9 +70,19 @@ function Navbar() {
     setIsMenuVisible((prev) => !prev);
   };
 
+  const handleUserProfile = (e) => {
+    e.preventDefault()
+    navigate(`/profile/${user._id}`)
+    setIsMenuVisible(false)
+  } 
+
   return (
     <>
-      <div className={`${params === "/photo" ? "hidden" : "block"} w-full h-[65px]`}></div>
+      <div
+        className={`${
+          params === "/photo" ? "hidden" : "block"
+        }  h-[65px]`}
+      ></div>
       {isOverlayVisible && (
         <div className="fixed top-0 left-0 right-0 h-[65px] bg-black opacity-5 z-[9999] pointer-events-none"></div>
       )}
@@ -196,14 +208,14 @@ function Navbar() {
               <i className="text-lg text-gray-400 ri-arrow-down-s-line"></i>
             </div>
             {isMenuVisible && (
-              <div className="border shadow-2xl absolute top-[61px] right-0 bg-white rounded-xl w-[350px] overflow-hidden">
+              <div onClick={handleUserProfile} className="border shadow-2xl absolute top-[61px] right-0 bg-white rounded-xl w-[350px] overflow-hidden">
                 {/* User Profile */}
-                <div className="flex items-center px-4 py-4 bg-gray-50 hover:bg-gray-100 transition-colors">
-                  <CurrentUserPhoto />
-                  <span className="ml-4 text-gray-800 text-lg font-semibold">
-                    {user.username}
-                  </span>
-                </div>
+                  <div className="flex items-center px-4 py-4 bg-gray-50 hover:bg-gray-100 transition-colors">
+                    <CurrentUserPhoto />
+                    <span className="ml-4 text-gray-800 text-lg font-semibold">
+                      {user.username}
+                    </span>
+                  </div>
                 <hr className="border-gray-200" />
 
                 {/* Setting And Privacy */}
@@ -253,7 +265,7 @@ function Navbar() {
 
                 {/* Logout */}
                 <div
-                  onClick={handleGetOut}
+                  onClick={handleLogOut}
                   className="flex items-center px-4 py-3 hover:bg-gray-100 transition-colors"
                 >
                   <span className="flex items-center justify-center text-white bg-gradient-to-r from-red-500 to-red-700 shadow-md rounded-full h-[45px] w-[45px]">

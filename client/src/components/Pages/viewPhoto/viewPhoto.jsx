@@ -11,14 +11,14 @@ function ViewPhoto() {
       className="overflow-x-hidden relative w-full bg-black bg-opacity-90 flex items-center justify-center"
     >
       {/* Fullscreen Image */}
-      <div
-        className="w-[800px] h-[900px] bg-contain bg-no-repeat bg-center"
-        style={{
-        //   height: "calc(100vh - 65px)",
-          backgroundImage: `url(${photoName ? `${PF}${photoName}` : ""})`,
-        }}
-      >
-        {" "}
+      <div className="w-[800px] h-[900px] flex justify-center items-center">
+        {photoName && (
+          <img
+            src={`${PF}${photoName}`}
+            alt="Fullscreen"
+            className="w-full h-full object-contain"
+          />
+        )}
       </div>
 
       {/* Close Button */}

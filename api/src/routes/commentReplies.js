@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const Comment = require("../models/Comment.js");
+const CommentReply = require("../models/CommentReply.js");
 
 // Create a comment
 router.post("/", async (req, res) => {
-  const newComment = new Comment(req.body);
+  const newComment = new CommentReply(req.body);
   try {
     const savedComment = await newComment.save();
     res.status(200).json(savedComment);
@@ -13,23 +13,23 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/:postId", async (req, res) => {
+router.get("/:commentId", async (req, res) => {
   try {
-    const comments = await Comment.find({ postId: req.params.postId });
+    const comments = await CommentReply.find({ commentId: req.params.commentId });
     res.status(200).json(comments);
   } catch (error) {
     res.status(500).json(error);
   }
 });
 
-  
+
 // Like/unlike a Comment
-router.put("/:id/likeComment", async (req, res) => {
+router.put("/:id/likeCommentReply", async (req, res) => {
   const { id } = req.params;
   const { userId } = req.body;
 
   try {
-    const comment = await Comment.findById(id);
+    const comment = await CommentReply.findById(id);
     if (!comment) {
       return res.status(404).json({ message: "Comment not found" });
     }
@@ -48,6 +48,5 @@ router.put("/:id/likeComment", async (req, res) => {
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 });
-
 
 module.exports = router;

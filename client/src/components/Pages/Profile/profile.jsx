@@ -10,35 +10,40 @@ import axios from "axios";
 import { useParams } from "react-router";
 // import ProfileSkeleton from "../../Skeleton/profileSkeleton/profileSkeleton";
 
-function profile() {
+function Profile() {
   const PA = import.meta.env.VITE_PUBLIC_API;
   const [user, setUser] = useState({});
-  const userId = useParams().id;
+  const {userId} = useParams();
   const [profileLoading, setProfileLoading] = useState(true);
-  // console.log(userId)
 
   useEffect(() => {
     const fetchUser = async () => {
-      setProfileLoading(true)
+      setProfileLoading(true);
       try {
         const res = await axios.get(`${PA}/api/users?userId=${userId}`);
         setUser(res.data);
-        // console.log(res.data);
       } catch (error) {
         console.log("Error at fetching", error);
-      }
-      finally{
+      } finally {
         setProfileLoading(false);
       }
     };
     fetchUser();
   }, [userId]);
 
+  // Scroll to top when Profile is loaded or userId changes
+  useEffect(() => {
+    console.log("Scroll to top triggered");
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 0);
+  }, []);
+
   return (
     <div>
-      <div className="flex justify-center ">
+      <div className="flex justify-center overflow-x-hidden">
         <Options
-        userId={userId}
+          userId={userId}
           CurrentUserPhoto={CurrentUserPhoto}
           mainItems={mainItems}
           SeperatingLine={SeperatingLine}
@@ -55,4 +60,5 @@ function profile() {
     </div>
   );
 }
-export default profile;
+
+export default Profile;

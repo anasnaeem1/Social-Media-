@@ -1,18 +1,18 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { submittingPost } from "../../../../../apiCalls";
-import { AuthContext } from "../../../../context/AuthContext";
+import { UserContext } from "../../../../context/UserContext";
 import CurrentUserPhoto from "../../../../currentUserPhoto";
 
 function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
   const PF = import.meta.env.VITE_PUBLIC_FOLDER;
   const PA = import.meta.env.VITE_PUBLIC_API;
-  const { user } = useContext(AuthContext);
+  const { user } = useContext(UserContext);
   const [postFile, setPostFile] = useState(null);
   const [previewImg, setPreviewImg] = useState(null);
   const desc = useRef();
 
-  console.log("userId", userId);
+  // console.log("userId", userId);
 
   const handlePostFileChange = (g) => {
     const selectedPostPic = g.target.files[0];

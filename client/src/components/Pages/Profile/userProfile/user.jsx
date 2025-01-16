@@ -4,7 +4,7 @@ import Feed from "../../Home/feed/feed";
 import UserInfo from "./userInfo";
 import ProfilePicSkeleton from "../../../Skeleton/profileSkeleton/profilePicSkeleton";
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../../context/AuthContext";
+import { UserContext } from "../../../context/UserContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -16,7 +16,7 @@ function User({
   mainItems,
   SeperatingLine,
 }) {
-  const { dispatch, user: currentUser } = useContext(AuthContext);
+  const { dispatch, user: currentUser } = useContext(UserContext);
   const PA = import.meta.env.VITE_PUBLIC_API;
   const PF = import.meta.env.VITE_PUBLIC_FOLDER;
   const { Friends } = mainItems;
@@ -120,7 +120,7 @@ function User({
     const selectedPic = e.target.files[0];
     setProfilePicFile(selectedPic || null);
     setUpdateBoxVisibility(!!selectedPic);
-    dispatch({ type: "SHOW_OVERLAY" });
+    dispatch({ type: "SHOW_UPLOADPROFILEBOX" });
   };
 
   // Update cPostFile whenever profilePicFile changes
@@ -206,8 +206,8 @@ function User({
     setUpdateBoxVisibility(false);
     const fileInput = document.getElementById("uploadButton");
     if (fileInput) {
-      fileInput.value = ""; // Reset the file input field value
-      dispatch({ type: "HIDE_OVERLAY" });
+      fileInput.value = "";
+      dispatch({ type: "HIDE_UPLOADPROFILEBOX" });
     }
   };
 
@@ -270,7 +270,7 @@ function User({
                     userId === currentUser._id
                       ? "border-[3px] border-white"
                       : ""
-                  } relative border-[2px] border-white h-[170px] w-[170px] md:h-[150px] md:w-[150px] rounded-full shadow-lg mx-auto md:mx-0`}
+                  }${!profileUser.profilePic && "border-none" } relative border-[2px] border-white h-[170px] w-[170px] md:h-[156px] md:w-[156px] rounded-full shadow-lg mx-auto md:mx-0`}
                   style={{
                     backgroundImage: `url(${
                       profileUser.profilePic
@@ -283,7 +283,7 @@ function User({
                 >
                   {userId !== currentUser._id && (
                     <svg
-                      className="absolute top-0 left-0 h-[156px] w-[156px] transform -translate-y-[4px] -translate-x-[5px] rotate-[90deg]"
+                      className="absolute top-0 left-0 h-[162px] w-[162px] transform -translate-y-[5px] -translate-x-[5px] rotate-[90deg]"
                       xmlns="http://www.w3.org/2000/svg"
                       version="1.1"
                       viewBox="0 0 160 160"

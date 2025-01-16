@@ -47,6 +47,22 @@ export const submittingPost = async (userId, desc, img) => {
   }
 };
 
+// export const submittingComment = async (userId, postId, text) => {
+//   const PA = import.meta.env.VITE_PUBLIC_API;
+//   const newComment = {
+//     userId: userId,
+//     postId: postId,
+//     text: text,
+//   };
+//   try {
+//     const commentRespose = await axios.post(`${PA}/api/comments`, newComment);
+//     return commentRespose.data; 
+//   } catch (error) {
+//     console.error(error);
+//     throw error;    
+//   }
+// };
+
 export const getUser = async (userId, username) => {
   const PA = import.meta.env.VITE_PUBLIC_API;
   try {

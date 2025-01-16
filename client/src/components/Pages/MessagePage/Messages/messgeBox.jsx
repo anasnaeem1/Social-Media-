@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import UserPhoto from "../../../userPhoto";
-import { AuthContext } from "../../../context/AuthContext";
+import { UserContext } from "../../../context/UserContext";
 
 function messgeBox({ senderId, user, socket, msg, messageSent }) {
-  const { user: currentUser } = useContext(AuthContext);
+  const { user: currentUser } = useContext(UserContext);
   const userId = currentUser?._id;
 
   return (

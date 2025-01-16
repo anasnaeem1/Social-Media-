@@ -4,7 +4,7 @@ import { useEffect, useState, memo, useContext } from "react";
 import Post from "./post/post";
 import axios from "axios";
 import PostSkeleton from "../../../Skeleton/postSkeleton";
-import { AuthContext } from "../../../context/AuthContext";
+import { UserContext } from "../../../context/UserContext";
 
 function Feed({
   currentUserPhoto,
@@ -14,7 +14,7 @@ function Feed({
   userId,
 }) {
   const { ShareOptions } = mainItems;
-  const { reload, user, dispatch } = useContext(AuthContext);
+  const { reload, user, dispatch } = useContext(UserContext);
   const PA = import.meta.env.VITE_PUBLIC_API;
   const [posts, setPosts] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
@@ -60,6 +60,9 @@ function Feed({
 
   useEffect(() => {
     if (reload) {
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 0);
       setPosts([]);
       fetchPosts();
       dispatch({ type: "UNRELOAD", payload: false }); // Reset reload state
@@ -73,7 +76,7 @@ function Feed({
   };
 
   return (
-    <div className="relative">
+    <div className={`${!userId ? "px-2" : ""} relative`}>
       {/* Show loading indicator */}
       {isFetching && (
         <div className="fixed top-0 left-0 right-0 z-50 flex justify-center items-center h-[65px] reload-slidein translate-y-[-70px]">
@@ -107,7 +110,7 @@ function Feed({
 
         {/* Display posts */}
         {posts.length > 0 ? (
-          posts.map((post) => <Post post={post} key={post._id} />)
+          posts.map((post) => <Post userId={userId} post={post} key={post._id} />)
         ) : (
           <>
             <PostSkeleton />
