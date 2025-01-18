@@ -40,7 +40,7 @@ app.use(
 app.use("/images", express.static(path.join(__dirname, "./public/images")));
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "http://localhost:5174",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"]
   })
@@ -57,6 +57,9 @@ app.use("/api/messages", messagesRouter);
 app.use("/api/uploads", uploadRouter);
 app.use("/api/delete", deleteRouter);
 
+app.get("/", (req, res) => {
+  res.send("Hello World")
+})
 
 app.listen(PORT, () => {
   console.log(`Backend server is running on port ${PORT}`);
