@@ -1,7 +1,7 @@
 import axios from "axios";
 
+const PA = import.meta.env.VITE_PUBLIC_API;
 export const loginCall = async (userCredentials, dispatch) => {
-  const PA = import.meta.env.VITE_PUBLIC_API;
   dispatch({ type: "LOGIN_START" });
   try {
     const res = await axios.post(`${PA}/api/auth/login`, userCredentials);
@@ -18,7 +18,7 @@ export const searchUser = async (Username, dispatch) => {
     // const url = `${PA}api/users/?username=${username}`;
     // console.log("Constructed API URL:", url);
     const res = await axios.get(
-      `http://localhost:8801/api/users/?username=${Username}`
+      `${PA}/api/users/?username=${Username}`
     );
     const { profilePic, username, _id, bio } = res.data;
     dispatch({

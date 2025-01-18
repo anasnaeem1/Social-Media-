@@ -50,7 +50,7 @@ function CommentBox({ post, postUser, userId }) {
         data.append("file", commentPicture);
   
         const uploadResponse = await axios.post(
-          "http://localhost:8801/api/uploads",
+          "https://social-media-backend-eight-azure.vercel.app/api/uploads",
           data,
           {
             headers: { "Content-Type": "multipart/form-data" },

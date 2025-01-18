@@ -183,7 +183,7 @@ function User({
 
             // console.log("Submitting new post...");
             const postResponse = await axios.post(
-              "http://localhost:8801/api/posts/",
+              "https://social-media-backend-eight-azure.vercel.app/api/posts/",
               newPost
             );
             // console.log(postResponse.data)
