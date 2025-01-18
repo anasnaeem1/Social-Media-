@@ -40,7 +40,7 @@ app.use(
 app.use("/images", express.static(path.join(__dirname, "./src/public/images")));
 app.use(
   cors({
-    origin: "http://localhost:5174",
+    origin: "https://social-media-eosin-ten.vercel.app",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"]
   })
