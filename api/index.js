@@ -38,13 +38,29 @@ app.use(
 );
 
 app.use("/images", express.static(path.join(__dirname, "./src/public/images")));
+const allowedOrigins = [
+  "https://social-media-eosin-ten.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:5174"
+];
+
 app.use(
   cors({
-    origin: "https://social-media-eosin-ten.vercel.app",
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g., mobile apps or Postman)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
+
 
 app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
