@@ -1,6 +1,6 @@
 [
     {
-      "origin": ["http://localhost:5173"],
+      "origin": ["https://social-media-eosin-ten.vercel.app"],
       "responseHeader": ["Content-Type"],
       "method": ["GET", "POST", "PUT"],
       "maxAgeSeconds": 3600
