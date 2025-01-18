@@ -4,24 +4,24 @@ const morgan = require("morgan");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const path = require("path");
-const connectDB = require("./db/index.js");
-const userRouter = require("./routes/users.js");
-const authRouter = require("./routes/auth.js");
-const postRouter = require("./routes/post.js");
-const uploadRouter = require("./routes/fileUpload.js");
-const deleteRouter = require("./routes/fileDelete.js");
-const convosRouter = require("./routes/convos.js");
-const commentsRouter = require("./routes/comments.js");
-const commentReplies = require("./routes/commentReplies.js");
-const messagesRouter = require("./routes/messages.js");
-const search = require("./routes/search.js")
+const connectDB = require("./src/db/index.js");
+const userRouter = require("./src/routes/users.js");
+const authRouter = require("./src/routes/auth.js");
+const postRouter = require("./src/routes/post.js");
+const uploadRouter = require("./src/routes/fileUpload.js");
+const deleteRouter = require("./src/routes/fileDelete.js");
+const convosRouter = require("./src/routes/convos.js");
+const commentsRouter = require("./src/routes/comments.js");
+const commentReplies = require("./src/routes/commentReplies.js");
+const messagesRouter = require("./src/routes/messages.js");
+const search = require("./src/routes/search.js")
 // const { console } = require("inspector");
 
 // Configure environment variables
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 8800;
+const PORT = process.env.PORT || 8801;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 connectDB(process.env.MONGO_URI);
@@ -37,7 +37,7 @@ app.use(
   })
 );
 
-app.use("/images", express.static(path.join(__dirname, "./public/images")));
+app.use("/images", express.static(path.join(__dirname, "./src/public/images")));
 app.use(
   cors({
     origin: "http://localhost:5174",
