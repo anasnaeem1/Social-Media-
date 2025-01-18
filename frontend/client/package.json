@@ -13,10 +13,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@mui/material": "^6.4.0",
     "axios": "^1.7.7",
+    "cd": "^0.3.3",
     "cors": "^2.8.5",
     "emoji-mart": "^5.6.0",
     "firebase": "^11.0.2",
@@ -24,10 +28,12 @@
     "gh-pages": "^6.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-loading-skeleton": "^3.5.0",
     "react-router-dom": "^6.28.0",
     "socket-client": "^1.0.0",
     "socket.io-client": "^4.8.1",
-    "timeago.js": "^4.0.2"
+    "timeago.js": "^4.0.2",
+    "y": "file:../socket"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
