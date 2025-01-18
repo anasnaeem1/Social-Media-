@@ -14,7 +14,7 @@ import { YourNewComment } from "../../../../context/UserActions";
 import { useNavigate } from "react-router-dom";
 import CommentBox from "./comments/commentBox";
 
-function Post({ post, userId }) {
+function Post({ post, userId, searchInput }) {
   const PF = import.meta.env.VITE_PUBLIC_FOLDER;
   const PA = import.meta.env.VITE_PUBLIC_API;
   const { dispatch, commentBox, user } = useContext(UserContext);
@@ -107,6 +107,24 @@ function Post({ post, userId }) {
     }
   };
 
+  const highlightText = (text, searchTerm) => {
+    if (!searchTerm) return text;
+
+
+    const regex = new RegExp(`(${searchTerm})`, "gi");
+    const parts = text.split(regex);
+
+    return parts.map((part, index) =>
+      regex.test(part) ? (
+        <span key={index} className="text-blue-500">
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
+  };
+
   return (
     <div className="bg-white mx-2 shadow-md border border-gray-200 rounded-lg flex flex-col  max-w-[540px] w-full">
       {/* Post Header */}
@@ -163,9 +181,10 @@ function Post({ post, userId }) {
             !post.img ? "text-xl py-2" : "text-sm"
           } px-4 font-medium text-gray-800`}
         >
-          {post.desc}
+          {highlightText(post.desc, searchInput)}
         </div>
       )}
+
       {/* Image Section */}
       {post.img && (
         <Link to={`/photo/${[post.img]}`}>
@@ -206,7 +225,7 @@ function Post({ post, userId }) {
         {/* Like Button */}
         <button
           onClick={likeHandler}
-          className="flex items-center justify-center gap-2 w-full px-3 py-2 bg-gray-50 hover:bg-gray-200 transition-all"
+          className="flex items-center sm:px-3  justify-center gap-2 w-full px-1 py-2 bg-gray-50 hover:bg-gray-200 transition-all"
         >
           <span
             className={`${
@@ -215,7 +234,7 @@ function Post({ post, userId }) {
           >
             {isLiked ? shareIcons[0].liked : Shares[0].icon}
           </span>
-          <span className="text-sm font-medium text-gray-700">
+          <span className="text-xs sm:text-sm font-medium text-gray-700">
             {shareIcons[0].label}
           </span>
         </button>
@@ -223,32 +242,32 @@ function Post({ post, userId }) {
         {/* Comments Button */}
         <button
           onClick={handleCommentBox}
-          className="flex items-center justify-center gap-2 w-full px-3 py-2 bg-gray-50 hover:bg-gray-200 transition-all"
+          className="flex items-center sm:px-3  justify-center gap-2 w-full px-1 py-2 bg-gray-50 hover:bg-gray-200 transition-all"
         >
           <span className="transition-all duration-300 text-base text-gray-700">
             {shareIcons[1].icon}
           </span>
-          <span className="text-sm font-medium text-gray-700">
+          <span className="text-xs sm:text-sm font-medium text-gray-700">
             {shareIcons[1].label}
           </span>
         </button>
 
         {/* Tag Button */}
-        <button className="flex items-center justify-center gap-2 w-full px-3 py-2 bg-gray-50 hover:bg-gray-200 transition-all">
+        <button className="flex items-center  sm:px-3 justify-center gap-2 w-full px-1 py-2 bg-gray-50 hover:bg-gray-200 transition-all">
           <span className="transition-all duration-300 text-base text-gray-700">
             {shareIcons[2].icon}
           </span>
-          <span className="text-sm font-medium text-gray-700">
+          <span className="text-xs sm:text-sm font-medium text-gray-700">
             {shareIcons[2].label}
           </span>
         </button>
 
         {/* Share Button */}
-        <button className="flex items-center justify-center gap-2 w-full px-3 py-2 bg-gray-50 hover:bg-gray-200 transition-all">
+        <button className="flex items-center sm:px-1  justify-center gap-2 w-full px-3 py-2 bg-gray-50 hover:bg-gray-200 transition-all">
           <span className="transition-all duration-300 text-base text-gray-700">
             {shareIcons[3].icon}
           </span>
-          <span className="text-sm font-medium text-gray-700">
+          <span className="text-xs sm:text-sm font-medium text-gray-700">
             {shareIcons[3].label}
           </span>
         </button>

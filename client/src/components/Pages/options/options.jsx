@@ -15,11 +15,12 @@ function Options({ mainItems, SeperatingLine, userId }) {
 
       {/* Main Options Container */}
       <div
-        className={`fixed left-0 top-[65px] custom-width custom-scrollbar overflow-y-scroll h-screen flex-shrink ${
+        className={`fixed left-0 top-[65px] custom-width custom-scrollbar overflow-y-scroll flex-shrink ${
           userId
             ? "hidden lg:block lg:w-[250px] lg:flex-shrink-0"
             : "hidden md:block md:w-[250px] md:flex-shrink"
         }`}
+        style={{ height: "calc(100vh - 65px)" }}
       >
         <div className="pl-4 w-full pt-5 flex flex-col gap-6">
           {/* Options List */}

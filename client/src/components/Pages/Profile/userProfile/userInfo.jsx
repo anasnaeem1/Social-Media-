@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { UserContext } from "../../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 
-function UserInfo({ profileUser, userId }) {
+function UserInfo({ profileUser }) {
   const [friendList, setFriendList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   // const [makingConvo, setMakingConvo] = useState(false);

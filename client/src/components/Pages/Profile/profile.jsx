@@ -2,12 +2,12 @@ import Options from "../options/options";
 import * as mainItems from "../../../constants/index";
 import CurrentUserPhoto from "../../currentUserPhoto";
 import SeperatingLine from "../../seperatingLine";
-import Navbar from "../../Header/navbar";
 import User from "./userProfile/user";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router";
+import SearchSuggestions from "../searchSuggestions/suggesionBox"
 // import ProfileSkeleton from "../../Skeleton/profileSkeleton/profileSkeleton";
 
 function Profile() {
@@ -41,7 +41,8 @@ function Profile() {
 
   return (
     <div>
-      <div className="flex justify-center overflow-x-hidden">
+      <div className="relative flex justify-center overflow-x-hidden">
+      <SearchSuggestions/>
         <Options
           userId={userId}
           CurrentUserPhoto={CurrentUserPhoto}

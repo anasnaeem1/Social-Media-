@@ -78,7 +78,7 @@ function Feed({
   return (
     <div className={`${!userId ? "px-2" : ""} relative`}>
       {/* Show loading indicator */}
-      {isFetching && (
+      {!userId && isFetching && (
         <div className="fixed top-0 left-0 right-0 z-50 flex justify-center items-center h-[65px] reload-slidein translate-y-[-70px]">
           <div className="bg-white h-[40px] w-[40px] flex justify-center items-center rounded-full shadow-lg border border-gray-200 reload-animation">
             <CircularProgress size={23} />

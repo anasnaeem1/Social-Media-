@@ -97,3 +97,8 @@ export const YourNewPost = (post) => ({
   type: "YOUR_NEW_POST",
   payload: post,
 });
+
+export const setSearchInput = (input) => ({
+  type: "SEARCHEDINPUT",
+  payload: input,
+});

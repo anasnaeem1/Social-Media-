@@ -11,6 +11,7 @@ const INITIAL_STATE = {
   newPost: null,
   isFetching: false,
   error: false,
+  searchedInput : null,
   yourNewMessage:null
 };
 

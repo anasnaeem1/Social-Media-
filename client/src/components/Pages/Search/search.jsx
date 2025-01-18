@@ -15,7 +15,7 @@ function Search() {
   const [postsIsLoading, setPostsIsLoading] = useState(true);
   const [posts, setPosts] = useState([]);
   const [user, setUser] = useState({});
-  const userId = useParams().id;
+  // const userId = useParams().id;
   const [followed, setFollowed] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
 
@@ -61,6 +61,7 @@ function Search() {
       );
       const isFollowed = normalizedFollowings.includes(user._id.toString());
       setFollowed(isFollowed);
+      console.log(followed)
     }
   }, [currentUser.followings, user._id]);
 

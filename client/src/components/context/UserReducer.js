@@ -125,7 +125,13 @@ const AuthReducer = (state, action) => {
     case "YOUR_NEW_POST":
       return {
         ...state,
-        yourNewMessage: action.payload, 
+        yourNewPost: action.payload, 
+      };
+
+    case "SEARCHEDINPUT":
+      return {
+        ...state,
+        searchedInput: action.payload, 
       };
 
     default:

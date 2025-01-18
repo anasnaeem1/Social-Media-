@@ -11,14 +11,42 @@ import { useParams } from "react-router-dom";
 
 function Navbar() {
   const { controlsIcons } = navItems;
-  const { reload, isOverlayVisible, dispatch, SearchedUser, user } =
-    useContext(UserContext);
+  const {
+    reload,
+    isOverlayVisible,
+    dispatch,
+    SearchedUser,
+    user,
+    searchedInput,
+  } = useContext(UserContext);
   const PF = import.meta.env.VITE_PUBLIC_FOLDER;
-  const searchedUsername = useRef();
+  const searchedUsername = useRef(null);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const navigate = useNavigate();
   const params = useParams();
   const [isMenuClicked, setIsMenuClicked] = useState(false);
+  const searchInput = useRef(null);
+
+  useEffect(() => {
+    if (!searchedInput) {
+      searchInput.current.value = ""; // Clear the input field
+    }
+  }, [searchedInput]);
+  
+
+  const handleInputChange = () => {
+    if (searchInput.current) {
+  
+      const inputValue = searchInput.current.value || ""; // Ensure inputValue is never null
+
+      if (inputValue === "") {
+        dispatch({ type: "SEARCHEDINPUT", payload: inputValue });
+        return; // Exit early for empty input
+      }
+
+      dispatch({ type: "SEARCHEDINPUT", payload: inputValue });
+    }
+  };
 
   const handleMenuClick = () => {
     setIsMenuClicked(true);
@@ -32,23 +60,36 @@ function Navbar() {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-
-    const username = searchedUsername.current.value;
-    if (username) {
-      try {
-        await searchUser(username, dispatch);
-        setIsMenuVisible(false);
-      } catch (err) {
-        console.log("Error during search", err);
-      }
+  
+    const input = searchInput.current.value;
+  
+    if (input) {
+      // Replace spaces with hyphens for clarity
+      const formattedInput = input.trim().replace(/\s+/g, "-");
+  
+      navigate(`/search/${formattedInput}`);
+      dispatch({ type: "SEARCHEDINPUT", payload: "" });
     } else {
       console.log("Search input is not available");
     }
   };
-
+  
   const handleClearInput = () => {
-    searchedUsername.current.value = "";
+    if (searchedUsername.current) {
+      searchedUsername.current.value = "";
+    }
   };
+  
+
+  useEffect(() => {
+    if (SearchedUser && SearchedUser[0] && SearchedUser[0].username) {
+      const username = searchedUsername.current.value;
+      if (SearchedUser[0].username === username) {
+        navigate(`/search/${SearchedUser[0].id}`);
+        searchedUsername.current.value = "";
+      }
+    }
+  }, [SearchedUser]);
 
   useEffect(() => {
     if (SearchedUser && SearchedUser[0] && SearchedUser[0].username) {
@@ -71,17 +112,15 @@ function Navbar() {
   };
 
   const handleUserProfile = (e) => {
-    e.preventDefault()
-    navigate(`/profile/${user._id}`)
-    setIsMenuVisible(false)
-  } 
+    e.preventDefault();
+    navigate(`/profile/${user._id}`);
+    setIsMenuVisible(false);
+  };
 
   return (
     <>
       <div
-        className={`${
-          params === "/photo" ? "hidden" : "block"
-        }  h-[65px]`}
+        className={`${params === "/photo" ? "hidden" : "block"}  h-[65px]`}
       ></div>
       {isOverlayVisible && (
         <div className="fixed top-0 left-0 right-0 h-[65px] bg-black opacity-5 z-[9999] pointer-events-none"></div>
@@ -119,7 +158,8 @@ function Navbar() {
             >
               {/* Search Input */}
               <input
-                ref={searchedUsername}
+                ref={searchInput}
+                onChange={handleInputChange}
                 type="text"
                 placeholder="Search..."
                 className="border-gray-300 border focus:outline-gray-400 focus:px-6 transition-all duration-300 text-black bg-transparent w-full px-3 py-2 rounded-full"
@@ -208,14 +248,17 @@ function Navbar() {
               <i className="text-lg text-gray-400 ri-arrow-down-s-line"></i>
             </div>
             {isMenuVisible && (
-              <div onClick={handleUserProfile} className="border shadow-2xl absolute top-[61px] right-0 bg-white rounded-xl w-[350px] overflow-hidden">
+              <div
+                onClick={handleUserProfile}
+                className="border shadow-2xl absolute top-[61px] right-0 bg-white rounded-xl w-[350px] overflow-hidden"
+              >
                 {/* User Profile */}
-                  <div className="flex items-center px-4 py-4 bg-gray-50 hover:bg-gray-100 transition-colors">
-                    <CurrentUserPhoto />
-                    <span className="ml-4 text-gray-800 text-lg font-semibold">
-                      {user.username}
-                    </span>
-                  </div>
+                <div className="flex items-center px-4 py-4 bg-gray-50 hover:bg-gray-100 transition-colors">
+                  <CurrentUserPhoto />
+                  <span className="ml-4 text-gray-800 text-lg font-semibold">
+                    {user.username}
+                  </span>
+                </div>
                 <hr className="border-gray-200" />
 
                 {/* Setting And Privacy */}

@@ -11,7 +11,7 @@ import io from "socket.io-client";
 import Home from "./components/Pages/Home/home";
 import ViewPhoto from "./components/Pages/viewPhoto/viewPhoto";
 import Profile from "./components/Pages/Profile/profile";
-import Search from "./components/Pages/Search/search";
+// import Search from "./components/Pages/Search/search";
 import Login from "./components/Pages/login/login";
 import Register from "./components/Pages/Register/register";
 import Navbar from "./components/Header/navbar";
@@ -50,6 +50,10 @@ function App() {
               element={!user ? <Navigate to="/register" /> : <Home />}
             >
               <Route
+                path="/search/:searchInput"
+                element={!user ? <Navigate to="/register" /> : <Home />}
+              />
+              <Route
                 path=":postId"
                 element={!user ? <Navigate to="/register" /> : <Home />}
               >
@@ -73,10 +77,6 @@ function App() {
                 />
               </Route>
             </Route>
-            <Route
-              path="/search/:id"
-              element={!user ? <Navigate to="/register" /> : <Search />}
-            />
             <Route
               path="/photo/:photoName"
               element={!user ? <Navigate to="/register" /> : <ViewPhoto />}

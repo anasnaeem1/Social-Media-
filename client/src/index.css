@@ -49,18 +49,29 @@
   }
 }
 
-
 .others-container {
   width: 30%;
   height: 90vh;
   padding: 1rem;
+  margin-right: 0 !important;
   overflow-y: auto;
+}
+
+@media (max-width: 1085px) {
+  .search-box{
+    width: 510px;
+  }
 }
 
 @media (max-width: 1024px) {
   .others-container {
     display: none;
     width: 35%; /* Adjust the width for medium screens */
+  }
+  .search-box{
+    width: 600px;
+    margin-right: 0;
+    margin: auto;
   }
   .feed-container {
     margin-right: 80px;
