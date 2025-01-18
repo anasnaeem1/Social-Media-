@@ -38,26 +38,15 @@ app.use(
 );
 
 app.use("/images", express.static(path.join(__dirname, "./src/public/images")));
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:5174",
-  "https://social-media-self-beta.vercel.app/",
-]; 
+// const allowedOrigins = [
+//   "http://localhost:5173",
+//   "http://localhost:5174",
+//   "https://social-media-self-beta.vercel.app/",
+// ];
 
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (e.g., mobile apps or Postman)
-      if (!origin) return callback(null, true);
-
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: "*",
   })
 );
 
