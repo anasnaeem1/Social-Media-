@@ -14,7 +14,7 @@ const convosRouter = require("./src/routes/convos.js");
 const commentsRouter = require("./src/routes/comments.js");
 const commentReplies = require("./src/routes/commentReplies.js");
 const messagesRouter = require("./src/routes/messages.js");
-const search = require("./src/routes/search.js")
+const search = require("./src/routes/search.js");
 // const { console } = require("inspector");
 
 // Configure environment variables
@@ -39,9 +39,9 @@ app.use(
 
 app.use("/images", express.static(path.join(__dirname, "./src/public/images")));
 const allowedOrigins = [
-  "https://social-media-eosin-ten.vercel.app",
   "http://localhost:5173",
-  "http://localhost:5174"
+  "http://localhost:5174",
+  "https://social-media-self-beta.vercel.app/",
 ];
 
 app.use(
@@ -57,10 +57,9 @@ app.use(
       }
     },
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"]
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-
 
 app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
@@ -74,8 +73,8 @@ app.use("/api/uploads", uploadRouter);
 app.use("/api/delete", deleteRouter);
 
 app.get("/", (req, res) => {
-  res.send("Hello World")
-})
+  res.send("Hello World");
+});
 
 app.listen(PORT, () => {
   console.log(`Backend server is running on port ${PORT}`);
