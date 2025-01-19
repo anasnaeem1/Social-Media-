@@ -10,7 +10,7 @@ function UserInfo({ profileUser }) {
   // const [makingConvo, setMakingConvo] = useState(false);
 
   const { user } = useContext(UserContext);
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images";
+  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images/";
   const PA = import.meta.env.VITE_PUBLIC_API;
 
   useEffect(() => {

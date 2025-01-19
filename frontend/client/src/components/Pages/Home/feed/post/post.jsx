@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 import CommentBox from "./comments/commentBox";
 
 function Post({ post, userId, searchInput }) {
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images";
+  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images/";
   const PA = import.meta.env.VITE_PUBLIC_API;
   const { dispatch, commentBox, user } = useContext(UserContext);
   const { Friends, Shares } = mainItems;

@@ -8,7 +8,7 @@ function FriendList() {
   const { user } = useContext(UserContext);
   const [friendList, setFriendList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images";
+  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images/";
   const PA = import.meta.env.VITE_PUBLIC_API;
 
   useEffect(() => {

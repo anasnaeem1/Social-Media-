@@ -1,7 +1,7 @@
 import Mutuals from "../../../mutuals";
 
 function Others({ mainItems }) {
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images";
+  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images/";
 
   return (
     <>

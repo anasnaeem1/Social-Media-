@@ -5,7 +5,7 @@ import { UserContext } from "../../../../../context/UserContext";
 import Comment from "./Comment"; // Make sure Comment is imported properly
 
 function CommentBox({ post, postUser, userId }) {
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images";
+  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images/";
   const PA = import.meta.env.VITE_PUBLIC_API;
   const { dispatch, user } = useContext(UserContext);
   const [comments, setComments] = useState([]);
