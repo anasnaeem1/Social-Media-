@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "prestart": "node buildFrontend.js"
+    "build": "node buildFrontend.js"
   },
   "keywords": [],
   "author": "",
