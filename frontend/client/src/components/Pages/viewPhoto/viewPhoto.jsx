@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 
 function ViewPhoto() {
   const { photoName } = useParams();
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER;
+  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "";
   const navigate = useNavigate();
 
   return (

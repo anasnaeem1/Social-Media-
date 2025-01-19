@@ -19,7 +19,7 @@ function Navbar() {
     user,
     searchedInput,
   } = useContext(UserContext);
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER;
+  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "";
   const searchedUsername = useRef(null);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const navigate = useNavigate();

@@ -7,7 +7,7 @@ function Reply({ reply, newReply }) {
   const [replyUser, setReplyUser] = useState(null);
   const [userFetching, setUserFetching] = useState(false);
   const { user } = useContext(UserContext);
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER;
+  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "";
   const PA = import.meta.env.VITE_PUBLIC_API;
   const [isHighlighted, setIsHighlighted] = useState(newReply);
 

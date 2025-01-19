@@ -16,7 +16,7 @@ function convo({
   const [userLoading, setUserLoading] = useState(false);
   // const [userLoading, setUserLoading] = useState(false);
   const { user: currentUser, yourNewMessage } = useContext(UserContext);
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER;
+  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "";
   const PA = import.meta.env.VITE_PUBLIC_API;
   const [latestMessage, setLatestMessage] = useState(null);
   const [isOnline, setIsOnline] = useState(false);

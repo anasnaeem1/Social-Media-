@@ -1,4 +1,4 @@
-const PF = import.meta.env.VITE_PUBLIC_FOLDER;
+const PF = import.meta.env.VITE_PUBLIC_FOLDER || "";
 
 export const navItems = {
   logo: "social",

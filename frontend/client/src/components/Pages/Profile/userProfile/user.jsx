@@ -18,7 +18,7 @@ function User({
 }) {
   const { dispatch, user: currentUser } = useContext(UserContext);
   const PA = import.meta.env.VITE_PUBLIC_API;
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER;
+  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "";
   const { Friends } = mainItems;
   const [followed, setFollowed] = useState(false);
   const [editVisibility, setEditVisibility] = useState(false);

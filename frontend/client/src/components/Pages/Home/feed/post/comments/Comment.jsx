@@ -9,7 +9,7 @@ import { getFormControlUtilityClasses } from "@mui/material";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 function Comment({ userId, postId, postUser, comment, newComment }) {
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER;
+  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "";
   const PA = import.meta.env.VITE_PUBLIC_API;
   const navigate = useNavigate();
   const [commentUser, setCommentUser] = useState(null);
