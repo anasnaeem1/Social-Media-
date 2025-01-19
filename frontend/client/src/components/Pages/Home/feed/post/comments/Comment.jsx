@@ -34,7 +34,7 @@ function Comment({ userId, postId, postUser, comment, newComment }) {
         if (comment?.userId) {
           setUserFetching(true);
           const res = await axios.get(
-            `${PA}/api/users?userId=${comment.userId}`
+            `/api/users?userId=${comment.userId}`
           );
           setCommentUser(res.data);
           setUserFetching(false);
@@ -71,7 +71,7 @@ function Comment({ userId, postId, postUser, comment, newComment }) {
     const userId = user._id;
 
     try {
-      await axios.put(`${PA}/api/comments/${comment._id}/likeComment`, {
+      await axios.put(`/api/comments/${comment._id}/likeComment`, {
         userId: userId,
       });
 
@@ -89,7 +89,7 @@ function Comment({ userId, postId, postUser, comment, newComment }) {
 
     try {
       const repliesRes = await axios.get(
-        `${PA}/api/commentsReplies/${comment._id}`
+        `/api/commentsReplies/${comment._id}`
       );
       if (repliesRes.data) {
         setReplies(repliesRes.data);
@@ -139,7 +139,7 @@ function Comment({ userId, postId, postUser, comment, newComment }) {
 
         try {
           const commentRespose = await axios.post(
-            `${PA}/api/commentsReplies`,
+            `/api/commentsReplies`,
             newReply
           );
           replyText.current.value = "";

@@ -16,7 +16,7 @@ function Reply({ reply, newReply }) {
       try {
         if (reply?.userId) {
           setUserFetching(true);
-          const res = await axios.get(`${PA}/api/users?userId=${reply.userId}`);
+          const res = await axios.get(`/api/users?userId=${reply.userId}`);
           setReplyUser(res.data);
           setUserFetching(false);
         }

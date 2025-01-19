@@ -15,7 +15,7 @@ function FriendList() {
     if (user._id) {
       const fetchFriends = async () => {
         try {
-          const res = await axios.get(`${PA}/api/users/friends/${user._id}`);
+          const res = await axios.get(`/api/users/friends/${user._id}`);
           setFriendList(res.data);
           setIsLoading(false);
         } catch (error) {

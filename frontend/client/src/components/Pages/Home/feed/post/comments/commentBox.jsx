@@ -20,7 +20,7 @@ function CommentBox({ post, postUser, userId }) {
     const fetchComments = async () => {
       try {
         if (postId) {
-          const commentsRes = await axios.get(`${PA}/api/comments/${postId}`);
+          const commentsRes = await axios.get(`/api/comments/${postId}`);
           if (commentsRes.data) {
             setComments(commentsRes.data);
           }
@@ -79,7 +79,7 @@ function CommentBox({ post, postUser, userId }) {
     // Post the comment
     try {
       const commentResponse = await axios.post(
-        `${PA}/api/comments`,
+        `/api/comments`,
         newComment
       );
       commentText.current.value = "";

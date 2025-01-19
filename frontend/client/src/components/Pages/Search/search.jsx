@@ -42,7 +42,7 @@ function Search() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await axios.get(`${PA}/api/posts/profile/` + userId);
+        const res = await axios.get(`/api/posts/profile/` + userId);
         const randomizedPosts = res.data.sort(() => Math.random() - 0.5);
         setPosts(randomizedPosts);
         setPostsIsLoading(false);
@@ -70,12 +70,12 @@ function Search() {
     setFollowLoading(true);
     try {
       if (followed) {
-        await axios.put(`${PA}/api/users/${user._id}/unfollow`, {
+        await axios.put(`/api/users/${user._id}/unfollow`, {
           userId: currentUser._id,
         });
         dispatch({ type: "UNFOLLOW", payload: user._id });
       } else {
-        await axios.put(`${PA}/api/users/${user._id}/follow`, {
+        await axios.put(`/api/users/${user._id}/follow`, {
           userId: currentUser._id,
         });
         dispatch({ type: "FOLLOW", payload: user._id });

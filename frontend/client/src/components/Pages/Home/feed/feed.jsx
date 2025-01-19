@@ -28,12 +28,12 @@ function Feed({
     try {
       let res;
       if (userId) {
-        res = await axios.get(`${PA}/api/posts/profile/${userId}`);
+        res = await axios.get(`/api/posts/profile/${userId}`);
         setPosts(res.data);
         setHasMore(false);
       } else {
         res = await axios.get(
-          `${PA}/api/posts/timeline/${user._id}?page=${page}&limit=5`
+          `/api/posts/timeline/${user._id}?page=${page}&limit=5`
         );
         const randomizePosts = (array) => {
           for (let i = array.length - 1; i > 0; i--) {

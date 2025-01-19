@@ -45,7 +45,7 @@ function convo({
           );
           // console.log(sender);
           if (sender) {
-            const res = await axios.get(`${PA}/api/users?userId=${sender}`);
+            const res = await axios.get(`/api/users?userId=${sender}`);
             if (!res.data) {
               console.log("No message Found");
             } else {
@@ -69,7 +69,7 @@ function convo({
         setLoadingMessage(true);
         if (user._id && currentUser._id) {
           const res = await axios.get(
-            `${PA}/api/messages/${currentUser._id}/${user._id}/latestMessage`
+            `/api/messages/${currentUser._id}/${user._id}/latestMessage`
           );
 
           if (!res.data || !res.data.text) {

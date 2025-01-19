@@ -65,7 +65,7 @@ function User({
       const fetchConvo = async () => {
         try {
           const res = await axios.get(
-            `${PA}/api/convos/${profileUser._id}/${currentUser._id}`
+            `/api/convos/${profileUser._id}/${currentUser._id}`
           );
           // console.log(res.data);
           if (res.data) {
@@ -88,7 +88,7 @@ function User({
     try {
       if (followed) {
         const res = await axios.put(
-          `${PA}/api/users/${profileUser._id}/unfollow`,
+          `/api/users/${profileUser._id}/unfollow`,
           {
             userId: currentUser._id,
           }
@@ -99,7 +99,7 @@ function User({
         }
       } else {
         const res = await axios.put(
-          `${PA}/api/users/${profileUser._id}/follow`,
+          `/api/users/${profileUser._id}/follow`,
           {
             userId: currentUser._id,
           }
@@ -142,7 +142,7 @@ function User({
       data.append("file", profilePicFile);
 
       // Upload the file
-      const uploadResponse = await axios.post(`${PA}/api/uploads`, data, {
+      const uploadResponse = await axios.post(`/api/uploads`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -156,7 +156,7 @@ function User({
 
       // Submit the profile picture update request
       const profilePicResponse = await axios.put(
-        `${PA}/api/users/${currentUser._id}`,
+        `/api/users/${currentUser._id}`,
         newProfilePic
       );
 
@@ -174,7 +174,7 @@ function User({
       if (uploadResponse.data) {
         if (currentUser.profilePic) {
           try {
-            await axios.delete(`${PA}/api/delete/${currentUser.profilePic}`);
+            await axios.delete(`/api/delete/${currentUser.profilePic}`);
             const newPost = {
               userId: currentUser._id,
               isProfileUpdate: true,
@@ -225,7 +225,7 @@ function User({
       recieverId: currentUser._id,
     };
     try {
-      const makingConvo = await axios.post(`${PA}/api/convos`, data);
+      const makingConvo = await axios.post(`/api/convos`, data);
 
       if (makingConvo.data.convoId) {
         navigate(`/messages/${makingConvo.data.convoId}`);

@@ -16,7 +16,7 @@ function FollowSuggestion() {
       const fetchFriends = async () => {
         try {
           const res = await axios.get(
-            `${PA}/api/users/mutuals?userId=${user._id}`
+            `/api/users/mutuals?userId=${user._id}`
           );
           if (res.data) {
             const sanitizedResponse = res.data.filter(
@@ -40,14 +40,14 @@ function FollowSuggestion() {
   const handleFollowToggle = async (friendId, isCurrentlyFollowed) => {
     try {
       if (isCurrentlyFollowed) {
-        await axios.put(`${PA}/api/users/${friendId}/unfollow`, {
+        await axios.put(`/api/users/${friendId}/unfollow`, {
           userId: user._id,
 
           
         });
         dispatch({ type: "UNFOLLOW", payload: friendId });
       } else {
-        await axios.put(`${PA}/api/users/${friendId}/follow`, {
+        await axios.put(`/api/users/${friendId}/follow`, {
           userId: user._id,
         });
         dispatch({ type: "FOLLOW", payload: friendId });

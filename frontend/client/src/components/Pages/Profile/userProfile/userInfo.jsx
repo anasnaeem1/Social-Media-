@@ -18,7 +18,7 @@ function UserInfo({ profileUser }) {
       const fetchFriends = async () => {
         try {
           const res = await axios.get(
-            `${PA}/api/users/friends/${profileUser._id}`
+            `/api/users/friends/${profileUser._id}`
           );
           // console.log(res.data);
           // if(res.data) => {}

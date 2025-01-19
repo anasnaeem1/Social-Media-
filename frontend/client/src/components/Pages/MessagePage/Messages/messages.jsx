@@ -70,7 +70,7 @@ function Messages({
     const fetchConvo = async () => {
       if (userId) {
         try {
-          const res = await axios.get(`${PA}/api/convos/${convoId}/convoId`);
+          const res = await axios.get(`/api/convos/${convoId}/convoId`);
           setConvo(res.data);
           // console.log(res.data)
         } catch (error) {
@@ -92,7 +92,7 @@ function Messages({
         if (convo?.members) {
           const sender = convo.members.find((e) => e !== currentUser._id);
           if (sender) {
-            const res = await axios.get(`${PA}/api/users?userId=${sender}`);
+            const res = await axios.get(`/api/users?userId=${sender}`);
             setUser(res.data);
           }
         }
@@ -112,7 +112,7 @@ function Messages({
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const res = await axios.get(`${PA}/api/messages/${convoId}`);
+        const res = await axios.get(`/api/messages/${convoId}`);
         const sortedMessages = res.data.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
@@ -164,7 +164,7 @@ function Messages({
             try {
               if (message._id) {
                 const response = await axios.put(
-                  `${PA}/api/messages/${message._id}/seen`
+                  `/api/messages/${message._id}/seen`
                 );
 
                 if (response.status === 200) {
@@ -237,7 +237,7 @@ function Messages({
       }
 
       if (message.current.value.trim() !== "") {
-        const msgResponse = await axios.post(`${PA}/api/messages`, newMessage);
+        const msgResponse = await axios.post(`/api/messages`, newMessage);
         if (msgResponse.data) {
           setMessages((prevMessages) => [msgResponse.data, ...prevMessages]);
           // dispatch({ type: "YOUR_NEW_MESSAGE", payload: newMessage.text });

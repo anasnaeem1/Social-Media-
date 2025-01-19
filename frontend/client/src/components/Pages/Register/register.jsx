@@ -37,7 +37,7 @@ function register() {
       };
 
       try {
-        await axios.post( `${PA}/api/auth/register`, user);
+        await axios.post( `/api/auth/register`, user);
         navigate("/login");
       } catch (error) {
         alert("Registration failed. Please try again!");

@@ -27,7 +27,7 @@ function userDetails({ user }) {
     try {
       if (followed) {
         const res = await axios.put(
-          `${PA}/api/users/${user._id}/unfollow`,
+          `/api/users/${user._id}/unfollow`,
           {
             userId: currentUser._id,
           }
@@ -38,7 +38,7 @@ function userDetails({ user }) {
         }
       } else {
         const res = await axios.put(
-          `${PA}/api/users/${user._id}/follow`,
+          `/api/users/${user._id}/follow`,
           {
             userId: currentUser._id,
           }

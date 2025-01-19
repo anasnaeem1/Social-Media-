@@ -80,7 +80,7 @@ function ChatApp() {
     const fetchConvos = async () => {
       setConvoLoading(true);
       try {
-        const res = await axios.get(`${PA}/api/convos/${user._id}/userId`);
+        const res = await axios.get(`/api/convos/${user._id}/userId`);
         setConversations(res.data);
       } catch (error) {
         console.error("Error fetching conversations:", error);

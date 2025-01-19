@@ -26,7 +26,7 @@ function Search1() {
     const fetchUsers = async () => {
       try {
         const userResponse = await axios.get(
-          `${PA}/api/search/user/${decodedParams}`
+          `/api/search/user/${decodedParams}`
         );
         console.log("Users Response:", userResponse?.data);
         setSearchedUsers(userResponse?.data || []);
@@ -39,7 +39,7 @@ function Search1() {
     const fetchPosts = async () => {
       try {
         const postResponse = await axios.get(
-          `${PA}/api/search/post/${decodedParams}`
+          `/api/search/post/${decodedParams}`
         );
 
         // console.log("Posts Response:", postResponse?.data);

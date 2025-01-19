@@ -20,7 +20,7 @@ function Profile() {
     const fetchUser = async () => {
       setProfileLoading(true);
       try {
-        const res = await axios.get(`${PA}/api/users?userId=${userId}`);
+        const res = await axios.get(`/api/users?userId=${userId}`);
         setUser(res.data);
       } catch (error) {
         console.log("Error at fetching", error);

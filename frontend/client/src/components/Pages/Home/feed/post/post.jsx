@@ -62,7 +62,7 @@ function Post({ post, userId, searchInput }) {
     setIsProcessing(true);
     const userId = user._id;
     try {
-      await axios.put(`${PA}/api/posts/${post._id}/like`, {
+      await axios.put(`/api/posts/${post._id}/like`, {
         userId: userId,
       });
       setLikes(isLiked ? likes - 1 : likes + 1);
@@ -77,7 +77,7 @@ function Post({ post, userId, searchInput }) {
     const fetchUser = async () => {
       try {
         setIsLoading(true);
-        const res = await axios.get(`${PA}/api/users?userId=${post.userId}`);
+        const res = await axios.get(`/api/users?userId=${post.userId}`);
         setPostUser(res.data);
         setIsLoading(false);
       } catch (error) {

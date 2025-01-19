@@ -29,7 +29,7 @@ function SuggestionBox() {
       try {
         setUserIsLoading(true); // Set loading state
         const userSearchRes = await axios.get(
-          `${PA}/api/search/user/${searchedInput}`
+          `/api/search/user/${searchedInput}`
         );
         if (userSearchRes.data && Array.isArray(userSearchRes.data)) {
           // console.log(user);
@@ -66,7 +66,7 @@ function SuggestionBox() {
       try {
         setUserIsLoading(true); // Set loading state
         const postsSearchRes = await axios.get(
-          `${PA}/api/search/post/${searchedInput}`
+          `/api/search/post/${searchedInput}`
         );
         if (postsSearchRes.data && Array.isArray(postsSearchRes.data)) {
           // console.log(postsSearchRes.data);

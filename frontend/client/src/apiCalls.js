@@ -15,10 +15,10 @@ export const searchUser = async (Username, dispatch) => {
   //   const PA = import.meta.env.VITE_PUBLIC_API;
   dispatch({ type: "SEARCH_START" });
   try {
-    // const url = `${PA}api/users/?username=${username}`;
+    // const url = `api/users/?username=${username}`;
     // console.log("Constructed API URL:", url);
     const res = await axios.get(
-      `${PA}/api/users/?username=${Username}`
+      `/api/users/?username=${Username}`
     );
     const { profilePic, username, _id, bio } = res.data;
     dispatch({
@@ -39,7 +39,7 @@ export const submittingPost = async (userId, desc, img) => {
     img: img,
   };
   try {
-    const postResponse = await axios.post(`${PA}/api/posts/`, newPost);
+    const postResponse = await axios.post(`/api/posts/`, newPost);
     return postResponse.data; 
   } catch (error) {
     console.error(error);
@@ -55,7 +55,7 @@ export const submittingPost = async (userId, desc, img) => {
 //     text: text,
 //   };
 //   try {
-//     const commentRespose = await axios.post(`${PA}/api/comments`, newComment);
+//     const commentRespose = await axios.post(`/api/comments`, newComment);
 //     return commentRespose.data; 
 //   } catch (error) {
 //     console.error(error);
@@ -67,10 +67,10 @@ export const getUser = async (userId, username) => {
   const PA = import.meta.env.VITE_PUBLIC_API;
   try {
     if (userId) {
-      const res = await axios.get(`${PA}/api/users?userId=${userId}`);
+      const res = await axios.get(`/api/users?userId=${userId}`);
       return res.data;
     } else if (username) {
-      const res = await axios.get(`${PA}/api/users?username=${username}`);
+      const res = await axios.get(`/api/users?username=${username}`);
       return res.data; 
     }
   } catch (error) {
