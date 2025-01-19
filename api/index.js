@@ -2,7 +2,6 @@ const express = require("express");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
-const cors = require("cors");
 const path = require("path");
 const connectDB = require("./src/db/index.js");
 const userRouter = require("./src/routes/users.js");
@@ -42,17 +41,6 @@ app.use(
 );
 
 app.use("/images", express.static(path.join(__dirname, "./src/public/images")));
-// const allowedOrigins = [
-//   "http://localhost:5173",
-//   "http://localhost:5174",
-//   "https://social-media-self-beta.vercel.app/",
-// ];
-
-app.use(
-  cors({
-    origin: "*",
-  })
-);
 
 app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
