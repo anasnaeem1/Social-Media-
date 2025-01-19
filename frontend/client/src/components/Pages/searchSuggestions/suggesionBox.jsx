@@ -9,7 +9,7 @@ function SuggestionBox() {
   const [searchedUsers, setSearchedUsers] = useState(null);
   const [searchedPosts, setSearchedPosts] = useState(null);
   const [userIsLoading, setUserIsLoading] = useState(true);
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "";
+  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images";
   const PA = import.meta.env.VITE_PUBLIC_API;
   const navigate = useNavigate();
 

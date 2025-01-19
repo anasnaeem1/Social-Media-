@@ -5,7 +5,7 @@ import { UserContext } from "../../../../context/UserContext";
 import CurrentUserPhoto from "../../../../currentUserPhoto";
 
 function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "";
+  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images";
   const PA = import.meta.env.VITE_PUBLIC_API;
   const { user } = useContext(UserContext);
   const [postFile, setPostFile] = useState(null);

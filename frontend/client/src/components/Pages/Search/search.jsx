@@ -9,7 +9,7 @@ import { getUser } from "../../../apiCalls";
 
 function Search() {
   const { dispatch, user: currentUser } = useContext(UserContext);
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "";
+  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images";
   const PA = import.meta.env.VITE_PUBLIC_API;
   const [userIsLoading, setUserIsLoading] = useState(true);
   const [postsIsLoading, setPostsIsLoading] = useState(true);

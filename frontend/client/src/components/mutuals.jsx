@@ -8,7 +8,7 @@ function FollowSuggestion() {
   const { user, dispatch } = useContext(UserContext);
   const [mutualFriends, setMutualFriends] = useState([]);
   const [loadingFriends, setLoadingFriends] = useState(true);
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "";
+  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images";
   const PA = import.meta.env.VITE_PUBLIC_API;
 
   useEffect(() => {

@@ -5,7 +5,7 @@ import { UserContext } from "./context/UserContext";
 import { Link } from "react-router-dom";
 
 function user() {
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "";
+  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images";
   const { user } = useContext(UserContext);
 
   return (

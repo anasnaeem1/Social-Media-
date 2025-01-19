@@ -12,7 +12,7 @@ function Messages({
   conversations,
   arrivalMessage,
 }) {
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "";
+  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images";
   const {
     dispatch,
     yourNewMessage,
