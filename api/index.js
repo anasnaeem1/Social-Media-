@@ -15,6 +15,7 @@ const commentsRouter = require("./src/routes/comments.js");
 const commentReplies = require("./src/routes/commentReplies.js");
 const messagesRouter = require("./src/routes/messages.js");
 const search = require("./src/routes/search.js");
+const { readFileSync } = require("fs");
 // const { console } = require("inspector");
 
 // Configure environment variables
@@ -25,6 +26,9 @@ const PORT = process.env.PORT || 8801;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 connectDB(process.env.MONGO_URI);
+const STATIC_PATH = path.join(process.cwd(), "./frontendDist");
+
+app.use(express.static(STATIC_PATH));
 
 // Middleware
 
@@ -61,8 +65,11 @@ app.use("/api/messages", messagesRouter);
 app.use("/api/uploads", uploadRouter);
 app.use("/api/delete", deleteRouter);
 
-app.get("/", (req, res) => {
-  res.send("Hello World");
+app.use("/*", async (_req, res, _next) => {
+  return res
+    .status(200)
+    .set("Content-Type", "text/html")
+    .send(readFileSync(path.join(STATIC_PATH, "index.html")));
 });
 
 app.listen(PORT, () => {
