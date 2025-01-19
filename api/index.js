@@ -26,7 +26,7 @@ const PORT = process.env.PORT || 8801;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 connectDB(process.env.MONGO_URI);
-const STATIC_PATH = path.join(__dirname, "./src/frontendDist");
+const STATIC_PATH = path.join(__dirname, "./src/public/dist");
 
 app.use(express.static(STATIC_PATH));
 
