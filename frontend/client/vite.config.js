@@ -10,6 +10,7 @@ const config = defineConfig({
   plugins: [react()],
   build:{
     outDir: "../../api/src/public/dist",
+    emptyOutDir:true
   },
   server: {
     host: "localhost",
