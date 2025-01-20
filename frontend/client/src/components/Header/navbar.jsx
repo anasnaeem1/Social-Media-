@@ -144,8 +144,8 @@ function Navbar() {
 
         {/* Search Bar */}
         <div>
-          <i className="flex lg:hidden items-center justify-center ri-search-line text-lg w-11 h-11 bg-BgColor text-white rounded-full"></i>
-          <div className="hidden lg:flex items-center px-2 py-2">
+          <i className="flex lg:hidden items-center justify-center ri-search-line text-lg md:w-11 md:h-11 w-9 h-9 bg-BgColor text-white rounded-full"></i>
+          <div className="hidden md:text-sm text-xsm lg:flex items-center px-2 py-2">
             <form
               onSubmit={handleSearch}
               onKeyDown={(e) => {
@@ -176,7 +176,7 @@ function Navbar() {
           </div>
         </div>
 
-        <div className="flex gap-5 justify-center items-center">
+        <div className="flex  gap-5 justify-center items-center">
           {/* Controls */}
           <div>
             <ul className="flex gap-2 text-lg">
@@ -194,7 +194,7 @@ function Navbar() {
           </div>
 
           {/* Controls Icons */}
-          <div>
+          <div className="hidden md:flex">
             <ul className="flex gap-4 text-xl">
               {/* User Icon  */}
               <li className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-sky-400 to-green-300 text-black cursor-pointer relative text-2xl">
@@ -250,7 +250,7 @@ function Navbar() {
             {isMenuVisible && (
               <div
                 onClick={handleUserProfile}
-                className="border shadow-2xl absolute top-[61px] right-0 bg-white rounded-xl w-[350px] overflow-hidden"
+                className="border shadow-2xl absolute top-[61px] right-0 bg-white rounded-xl md:w-[350px] w-[300px] overflow-hidden"
               >
                 {/* User Profile */}
                 <div className="flex items-center px-4 py-4 bg-gray-50 hover:bg-gray-100 transition-colors">

@@ -413,7 +413,7 @@ function User({
         )}
 
         {/* Feed and User Info */}
-        <div className="flex flex-col-reverse lg:flex-row mx-auto justify-center gap-6 px-6 max-w-7xl">
+        <div className="flex flex-col-reverse items-center sm:items-start lg:flex-row mx-auto justify-center gap-6 px-6 max-w-7xl">
           <div className="flex-grow">
             <Feed
               cPostFile={cPostFile}

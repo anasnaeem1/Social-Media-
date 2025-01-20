@@ -63,7 +63,7 @@ function Search1() {
   }, [decodedParams]);
 
   return (
-    <div className="pt-5 search-box w-full max-w-full sm:max-w-[550px] mx-auto border text-gray-800 py-6 px-3 sm:py-8 sm:px-6 bg-gradient-to-r from-blue-50 via-white to-blue-50">
+    <div className="pt-5 search-box w-full max-w-full sm:max-w-[550px] mx-auto border text-gray-800  sm:py-8 sm:px-6 bg-gradient-to-r from-blue-50 via-white to-blue-50">
       <div className="mb-6 text-center">
         <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">
           Search Results for:{" "}

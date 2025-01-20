@@ -19,22 +19,22 @@ import MessagesPage from "./components/Pages/MessagePage/messagesMain";
 
 function App() {
   const { user } = useContext(UserContext);
-  const socket = useRef(null);
+  // const socket = useRef(null);
 
-  useEffect(() => {
-    socket.current = io("ws://localhost:8900");
-    if (user) {
-      socket.current.emit("addUser", user._id);
-      socket.current.on("getUsers", (users) => {
-        // console.log("Online users:", users);
-      });
-    }
-    return () => {
-      if (socket.current) {
-        socket.current.disconnect();
-      }
-    };
-  }, [user]);
+  // useEffect(() => {
+  //   socket.current = io("ws://localhost:8900");
+  //   if (user) {
+  //     socket.current.emit("addUser", user._id);
+  //     socket.current.on("getUsers", (users) => {
+  //       // console.log("Online users:", users);
+  //     });
+  //   }
+  //   return () => {
+  //     if (socket.current) {
+  //       socket.current.disconnect();
+  //     }
+  //   };
+  // }, [user]);
 
   return (
     <div

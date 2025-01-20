@@ -126,7 +126,7 @@ function Post({ post, userId, searchInput }) {
   };
 
   return (
-    <div className="bg-white mx-2 shadow-md border border-gray-200 rounded-lg flex flex-col  max-w-[540px] w-full">
+    <div className="bg-white mx-4 shadow-md border border-gray-200 rounded-lg flex flex-col  max-w-[540px] w-full">
       {/* Post Header */}
       <div className="flex px-4 py-3 justify-between items-center">
         <div className="flex items-center gap-3">
@@ -178,8 +178,8 @@ function Post({ post, userId, searchInput }) {
       {post?.desc && (
         <div
           className={`${
-            !post.img ? "text-xl py-2" : "text-sm"
-          } px-4 font-medium text-gray-800`}
+            !post.img ? "text-lg py-2 md-text-lg" : "text-sm"
+          } px-4 md-text-sm text-start font-medium text-gray-800`}
         >
           {highlightText(post.desc, searchInput)}
         </div>

@@ -35,20 +35,20 @@ function CommentBox({ post, postUser, userId }) {
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!commentText.current.value.trim()) {
       console.error("Comment text is required.");
       return;
     }
-  
+
     let uniqueFileName = null;
-  
+
     // Upload the file if present
     if (commentPicture) {
       try {
         const data = new FormData();
         data.append("file", commentPicture);
-  
+
         const uploadResponse = await axios.post(
           "https://social-media-backend-eight-azure.vercel.app/api/uploads",
           data,
@@ -56,45 +56,42 @@ function CommentBox({ post, postUser, userId }) {
             headers: { "Content-Type": "multipart/form-data" },
           }
         );
-  
+
         uniqueFileName = uploadResponse.data;
         console.log("Received unique filename:", uniqueFileName);
       } catch (error) {
-        console.error("File upload failed:", error.response?.data || error.message || error);
+        console.error(
+          "File upload failed:",
+          error.response?.data || error.message || error
+        );
         return;
       }
     }
-  
+
     // Construct the comment object
     const newComment = {
       userId: user._id,
       postId: post._id,
       text: commentText.current.value,
     };
-  
+
     if (uniqueFileName) {
       newComment.img = uniqueFileName;
     }
-  
+
     // Post the comment
     try {
-      const commentResponse = await axios.post(
-        `/api/comments`,
-        newComment
-      );
+      const commentResponse = await axios.post(`/api/comments`, newComment);
       commentText.current.value = "";
-  
+
       if (commentResponse.data) {
         setNewComment(true);
-        setComments((prevComments) => [
-          commentResponse.data,
-          ...prevComments,
-        ]);
+        setComments((prevComments) => [commentResponse.data, ...prevComments]);
         setCommentPicture(null);
-  
+
         const commentsContainer = document.getElementById("comments-container");
         const lastComment = commentsContainer?.lastElementChild;
-  
+
         if (lastComment) {
           lastComment.scrollIntoView({ behavior: "smooth", block: "start" });
         }
@@ -106,14 +103,13 @@ function CommentBox({ post, postUser, userId }) {
       );
     }
   };
-  
 
   const handleCommentFileChange = (e) => {
     const file = e.target.files[0]; // Get the selected file
     if (file) {
       setCommentPicture(file); // Set the selected file in the state
       const previewURL = URL.createObjectURL(file);
-      setCommentPicPreview(previewURL)
+      setCommentPicPreview(previewURL);
     }
   };
 
@@ -121,119 +117,119 @@ function CommentBox({ post, postUser, userId }) {
     <>
       {/* Comments Section */}
       <div
-  id="comment-box"
-  className="flex flex-col px-4 py-3 border-t border-gray-300"
->
-  <div className="flex justify-between items-center mb-3">
-    <h2 className="text-base font-semibold text-gray-800">Comments</h2>
-    <button className="text-sm text-blue-600 hover:underline">
-      Filter Comments
-    </button>
-  </div>
+        id="comment-box"
+        className="flex flex-col w-full max-w-[540px] px-2 py-3 border-t border-gray-300"
+      >
+        {/* Header Section */}
+        <div className="flex justify-between items-center mb-3">
+          <h2 className="text-base font-semibold text-gray-800">Comments</h2>
+          <button className="text-sm text-blue-600 hover:underline">
+            Filter Comments
+          </button>
+        </div>
 
-  {/* Comments List */}
-  <div
-    className="flex flex-col gap-3 max-h-[280px] overflow-y-auto overflow-x-hidden pr-2"
-    style={{
-      scrollbarWidth: "thin",
-      scrollbarColor: "lightgray transparent",
-    }}
-  >
-    {postId && comments?.length > 0 ? (
-      comments.map((comment) => (
-        <Comment
-          userId={userId}
-          postId={postId}
-          postUser={postUser}
-          newComment={newComment}
-          key={comment._id}
-          comment={comment}
-        />
-      ))
-    ) : (
-      <p className="text-sm text-gray-500">No comments yet.</p>
-    )}
-  </div>
-
-  {/* Add Comment Input */}
-  <form
-    className="flex flex-col gap-2 p-2 border-t rounded-lg shadow-sm"
-    onSubmit={handleCommentSubmit}
-  >
-    {/* Image Preview Section */}
-    {commentPicture && (
-      <div className="flex items-center gap-2">
-        <img
-          src={commentPicPreview}
-          alt="Selected preview"
-          className="w-[90px] h-[90px] rounded-md object-cover border"
-        />
-        <button
-          type="button"
-          className="text-red-500 text-xs"
-          onClick={() => setCommentPicture(null)} // Remove the preview
+        {/* Comments List */}
+        <div
+          className="flex flex-col gap-3 max-h-[280px] overflow-y-auto overflow-x-hidden pr-2"
+          style={{
+            scrollbarWidth: "thin",
+            scrollbarColor: "lightgray transparent",
+          }}
         >
-          Remove
-        </button>
+          {postId && comments?.length > 0 ? (
+            comments.map((comment) => (
+              <Comment
+                userId={userId}
+                postId={postId}
+                postUser={postUser}
+                newComment={newComment}
+                key={comment._id}
+                comment={comment}
+              />
+            ))
+          ) : (
+            <p className="text-sm text-gray-500">No comments yet.</p>
+          )}
+        </div>
+
+        {/* Add Comment Input */}
+        <form
+          className="flex flex-col gap-2 p-2 border-t rounded-lg shadow-sm"
+          onSubmit={handleCommentSubmit}
+        >
+          {/* Image Preview Section */}
+          {commentPicture && (
+            <div className="flex items-center gap-2">
+              <img
+                src={commentPicPreview}
+                alt="Selected preview"
+                className="w-[90px] h-[90px] rounded-md object-cover border"
+              />
+              <button
+                type="button"
+                className="text-red-500 text-xs"
+                onClick={() => setCommentPicture(null)} // Remove the preview
+              >
+                Remove
+              </button>
+            </div>
+          )}
+
+          {/* Add Comment Input Section */}
+          <div className="flex flex-col sm:flex-row items-stretch gap-2">
+            {/* Image Icon for Upload */}
+            <label
+              htmlFor="file-upload"
+              className="text-gray-500 hover:text-blue-600 transition duration-150 flex-shrink-0 cursor-pointer flex items-center justify-center w-10 h-10 border border-gray-300 rounded-md"
+              title="Add Photo"
+            >
+              <i className="ri-image-ai-fill text-xl"></i>
+            </label>
+
+            {/* File Input (Hidden by Default) */}
+            <input
+              type="file"
+              id="file-upload"
+              accept=".png, .jpg, .jpeg"
+              className="hidden"
+              onChange={handleCommentFileChange} // Handle file selection
+            />
+
+            {/* Textarea for Comment Input */}
+            <textarea
+              id="comment-input"
+              placeholder="Write a comment... (Shift+Enter for new line)"
+              rows={1}
+              maxLength={300}
+              className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:outline-none text-sm text-gray-700 resize-none overflow-hidden"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  if (e.target.value.trim()) {
+                    handleCommentSubmit(e);
+                  }
+                }
+              }}
+              onInput={(e) => {
+                e.target.style.height = "auto";
+                e.target.style.height = `${Math.min(
+                  e.target.scrollHeight,
+                  60
+                )}px`;
+              }}
+              ref={commentText}
+            ></textarea>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="w-full sm:w-auto px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-150 text-sm flex-shrink-0"
+            >
+              Post
+            </button>
+          </div>
+        </form>
       </div>
-    )}
-
-    {/* Add Comment Input Section */}
-    <div className="flex items-center gap-2">
-      {/* Image Icon for Upload */}
-      <label
-        htmlFor="file-upload"
-        className="text-gray-500 hover:text-blue-600 transition duration-150 flex-shrink-0 cursor-pointer"
-        title="Add Photo"
-      >
-        <i className="ri-image-ai-fill text-xl"></i>
-      </label>
-
-      {/* File Input (Hidden by Default) */}
-      <input
-        type="file"
-        id="file-upload"
-        accept=".png, .jpg, .jpeg"
-        className="hidden"
-        onChange={handleCommentFileChange} // Handle file selection
-      />
-
-      {/* Textarea for Comment Input */}
-      <textarea
-        id="comment-input"
-        placeholder="Write a comment... (Shift+Enter for new line)"
-        rows={1}
-        maxLength={300}
-        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:outline-none text-sm text-gray-700 resize-none overflow-hidden"
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            if (e.target.value.trim()) {
-              handleCommentSubmit(e);
-            }
-          }
-        }}
-        onInput={(e) => {
-          e.target.style.height = "auto";
-          e.target.style.height = `${Math.min(
-            e.target.scrollHeight,
-            60
-          )}px`;
-        }}
-        ref={commentText}
-      ></textarea>
-
-      {/* Submit Button */}
-      <button
-        type="submit"
-        className="px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-150 text-sm flex-shrink-0"
-      >
-        Post
-      </button>
-    </div>
-  </form>
-</div>
-
     </>
   );
 }

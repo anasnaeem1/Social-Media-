@@ -76,7 +76,7 @@ function Feed({
   };
 
   return (
-    <div className={`${!userId ? "px-2" : ""} relative`}>
+    <div className={` relative`}>
       {/* Show loading indicator */}
       {!userId && isFetching && (
         <div className="fixed top-0 left-0 right-0 z-50 flex justify-center items-center h-[65px] reload-slidein translate-y-[-70px]">

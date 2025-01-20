@@ -45,13 +45,9 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
       const data = new FormData();
       data.append("file", postFile);
 
-      const uploadResponse = await axios.post(
-        "https://social-media-backend-eight-azure.vercel.app/api/uploads",
-        data,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+      const uploadResponse = await axios.post("/api/uploads", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       const uniqueFileName = uploadResponse.data;
       console.log("Received unique filename:", uniqueFileName);
 
@@ -80,7 +76,9 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
       className="bg-white mx-2 p-4 shadow-[0px_0px_15px_-10px_rgba(0,0,0,0.6)] border border-gray-200 rounded-lg flex flex-col gap-3 max-w-[540px] w-full"
     >
       <div className="flex items-center gap-3 w-full">
-        <CurrentUserPhoto />
+        <div className="hidden sm:block">
+          <CurrentUserPhoto />
+        </div>
         <input
           ref={desc}
           className="py-2 w-full px-2 rounded-md border focus:outline-none focus:ring-2 focus:ring-gray-300"
@@ -124,54 +122,62 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
         </div>
       )}
 
-      {/* Share options and submit button */}
       <ul className="flex justify-around items-center gap-3 w-full">
-        {ShareOptions.map((option, id) => {
+        <div className="flex justify-center items-center">
+          <div className="flex justify-center items-center">
+            <input
+              encType="multipart/form-datas"
+              onChange={handlePostFileChange}
+              type="file"
+              id="uploadButton"
+              accept=".png,.jpg,.jpeg"
+              className="hidden"
+            />
+            <label
+              htmlFor="uploadButton"
+              className="cursor-pointer text-blue-500 text-2xl mr-1"
+            >
+              <i className="ri-image-ai-fill"></i>
+            </label>
+          </div>
+          <span className="cursor-pointer sm:block hidden text-xs sm:text-base">
+            Photo or Video
+          </span>
+        </div>
+
+        <div className={`flex justify-center items-center`}>
+          <li className={` cursor-pointer  text-red-500 text-2xl mr-1`}>
+            <i className="ri-hashtag"></i>
+          </li>
+          <span
+            className={`cursor-pointer sm:block hidden text-xs sm:text-base`}
+          >
+            Tag
+          </span>
+        </div>
+
+        <div className={`flex justify-center items-center`}>
+          <li className={` cursor-pointer text-yellow-500 text-2xl mr-1`}>
+            <i className="ri-emoji-sticker-line"></i>
+          </li>
+          <span
+            className={`cursor-pointer sm:block hidden text-xs sm:text-base`}
+          >
+            Feeling
+          </span>
+        </div>
+
+        {/* {ShareOptions.map((option, id) => {
           const colorClasses = [
             "text-red-600",
             "text-blue-600",
             "text-green-600",
             "text-yellow-600",
           ];
-
           return (
-            <div
-              key={id}
-              className={`${
-                option.id === 3 || option.id === 4 ? "hidden sm:flex" : "flex"
-              } justify-center items-center gap-1`}
-            >
-              <li className={`${colorClasses[id]} cursor-pointer text-xl`}>
-                {option.icon}
-              </li>
-              <span
-                className={`${
-                  option.id === 1 ? "hidden" : undefined
-                } cursor-pointer text-sm`}
-              >
-                {option.label}
-              </span>
-              {option.id === 1 && (
-                <div className="flex justify-center items-center">
-                  <label
-                    htmlFor="uploadButton"
-                    className="cursor-pointer text-sm"
-                  >
-                    Photos and Videos
-                  </label>
-                  <input
-                    encType="multipart/form-datas"
-                    onChange={handlePostFileChange}
-                    type="file"
-                    id="uploadButton"
-                    accept=".png,.jpg,.jpeg"
-                    className="hidden"
-                  />
-                </div>
-              )}
-            </div>
           );
-        })}
+        })} */}
+
         <button
           type="submit"
           className="py-2 px-4 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-300"

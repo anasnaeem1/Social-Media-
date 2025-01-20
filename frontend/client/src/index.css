@@ -42,8 +42,8 @@
   }
 }
 
-
-@media (max-width: 1280px) { /* xl breakpoint */
+@media (max-width: 1280px) {
+  /* xl breakpoint */
   .options-container {
     width: 150px; /* Fixed width for smaller screens */
   }
@@ -58,7 +58,7 @@
 }
 
 @media (max-width: 1085px) {
-  .search-box{
+  .search-box {
     width: 510px;
   }
 }
@@ -68,19 +68,33 @@
     display: none;
     width: 35%; /* Adjust the width for medium screens */
   }
-  .search-box{
+  .search-box {
     width: 600px;
     margin-right: 0;
     margin: auto;
-  }
-  .feed-container {
-    margin-right: 80px;
   }
 }
 
 @media (max-width: 767px) {
   .feed-container {
     margin-right: 0;
+  }
+}
+
+@media (max-width: 366px) {
+  .userInfo-Box{
+    width: 320px;
+  }
+}
+
+
+@media (max-width: 640px) {
+  #comment-box textarea {
+    font-size: 14px;
+  }
+  #comment-box img {
+    width: 70px;
+    height: 70px;
   }
 }
 
