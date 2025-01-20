@@ -484,7 +484,7 @@ function User({
 
               {/* Optional: Info about file */}
               <p className="text-xs text-gray-500">
-                JPEG, PNG, or GIF files are supported. Max size: 5MB
+                JPEG, PNG, or GIF files are supported. Max size: 4MB
               </p>
             </div>
           </div>
