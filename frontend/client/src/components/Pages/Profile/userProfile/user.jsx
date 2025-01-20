@@ -498,7 +498,7 @@ function User({
         type="file"
         id="uploadButton"
         accept=".png,.jpg,.jpeg"
-        className="hidden"
+        className="hidden text-xl"
       />
     </>
   );
