@@ -112,10 +112,12 @@ function Feed({
         {posts.length > 0 ? (
           posts.map((post) => <Post userId={userId} post={post} key={post._id} />)
         ) : (
-          <>
-            <PostSkeleton />
-            <PostSkeleton />
-          </>
+          <p></p>
+          // <div className="w-[540px] flex items-center justify-center">loading Posts</div>
+          // <>
+          //   <PostSkeleton />
+          //   <PostSkeleton />
+          // </>
         )}
 
         {/* Load More Button */}

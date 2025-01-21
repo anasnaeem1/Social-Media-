@@ -133,14 +133,14 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
               accept=".png,.jpg,.jpeg"
               className="hidden"
             />
-          </div>
-          <div className="">
-            <label className="cursor-pointer text-blue-500 text-2xl mr-1">
-              <i className="ri-image-ai-fill"></i>
+            <label htmlFor="uploadButton" className=" flex items-center ">
+              <span className="cursor-pointer text-blue-500 text-2xl mr-1">
+                <i className="ri-image-ai-fill"></i>
+              </span>
+              <span className="text-gray-600  cursor-pointer sm:block hidden text-xs sm:text-base">
+                Photo or Video
+              </span>
             </label>
-            <span className="cursor-pointer sm:block hidden text-xs sm:text-base">
-              Photo or Video
-            </span>
           </div>
         </div>
 
@@ -149,7 +149,7 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
             <i className="ri-hashtag"></i>
           </li>
           <span
-            className={`cursor-pointer sm:block hidden text-xs sm:text-base`}
+            className={`text-gray-600 cursor-pointer sm:block hidden text-xs sm:text-base`}
           >
             Tag
           </span>
@@ -160,7 +160,7 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
             <i className="ri-emoji-sticker-line"></i>
           </li>
           <span
-            className={`cursor-pointer sm:block hidden text-xs sm:text-base`}
+            className={`text-gray-600 cursor-pointer sm:block hidden text-xs sm:text-base`}
           >
             Feeling
           </span>
