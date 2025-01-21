@@ -133,16 +133,15 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
               accept=".png,.jpg,.jpeg"
               className="hidden"
             />
-            <label
-              htmlFor="uploadButton"
-              className="cursor-pointer text-blue-500 text-2xl mr-1"
-            >
+          </div>
+          <div className="">
+            <label className="cursor-pointer text-blue-500 text-2xl mr-1">
               <i className="ri-image-ai-fill"></i>
             </label>
+            <span className="cursor-pointer sm:block hidden text-xs sm:text-base">
+              Photo or Video
+            </span>
           </div>
-          <span className="cursor-pointer sm:block hidden text-xs sm:text-base">
-            Photo or Video
-          </span>
         </div>
 
         <div className={`flex justify-center items-center`}>
