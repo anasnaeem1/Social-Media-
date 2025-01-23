@@ -26,9 +26,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 connectDB(process.env.MONGO_URI);
 
-const STATIC_PATH = path.resolve(__dirname, "./src/public/dist");
-app.use(express.static(STATIC_PATH));
+const STATIC_PATH = path.join(__dirname, "./src/public/dist");
 
+app.use(express.static(STATIC_PATH));
 
 // Middleware
 
@@ -41,7 +41,7 @@ app.use(
   })
 );
 
-app.use("/images",  express.static(path.join(__dirname, "./src/public/images")));
+app.use("/images", express.static(path.join(__dirname, "./src/public/images")));
 
 app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
