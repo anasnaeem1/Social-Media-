@@ -20,7 +20,8 @@ function Post({ post, userId, searchInput }) {
   const PA = import.meta.env.VITE_PUBLIC_API;
   const { dispatch, commentBox, user } = useContext(UserContext);
   const { Friends, Shares } = mainItems;
-  const [likes, setLikes] = useState(post.likes.length);
+  const [likes, setLikes] = useState([]);
+  const [postLikeArray, setPostLikeArray] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
   const [postUser, setPostUser] = useState({});
   const navigate = useNavigate();
@@ -58,6 +59,13 @@ function Post({ post, userId, searchInput }) {
     },
   ];
 
+  useEffect(() => {
+    if (Array.isArray(post.likes)) {
+      setPostLikeArray(post.likes)
+      setLikes(post.likes.length);
+    }
+  }, [post.likes]);
+
   const likeHandler = async () => {
     if (isProcessing) return;
 
@@ -87,7 +95,7 @@ function Post({ post, userId, searchInput }) {
       }
     };
     fetchUser();
-    if (post.likes.includes(user._id)) {
+    if (postLikeArray?.includes(user._id)) {
       setIsLiked(true);
     }
   }, [post.userId, post.likes, user._id]);

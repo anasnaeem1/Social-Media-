@@ -17,9 +17,7 @@ export const searchUser = async (Username, dispatch) => {
   try {
     // const url = `api/users/?username=${username}`;
     // console.log("Constructed API URL:", url);
-    const res = await axios.get(
-      `/api/users/?username=${Username}`
-    );
+    const res = await axios.get(`/api/users/?username=${Username}`);
     const { profilePic, username, _id, bio } = res.data;
     dispatch({
       type: "SEARCH_SUCCESS",
@@ -31,19 +29,23 @@ export const searchUser = async (Username, dispatch) => {
   }
 };
 
-export const submittingPost = async (userId, desc, img) => {
-  const PA = import.meta.env.VITE_PUBLIC_API;
-  const newPost = {
-    userId: userId,
-    desc: desc,
-    img: img,
-  };
+export const submittingPost = async (userId, desc, img, dispatch) => {
+  // const PA = import.meta.env.VITE_PUBLIC_API;
   try {
+    const newPost = {
+      userId: userId,
+      desc: desc,
+      img: img || "",
+    };
     const postResponse = await axios.post(`/api/posts/`, newPost);
-    return postResponse.data; 
+    if (postResponse.data)
+      dispatch({
+        type: "YOURNEWPOST",
+        payload: postResponse.data,
+      });
   } catch (error) {
     console.error(error);
-    throw error;    
+    throw error;
   }
 };
 
@@ -56,10 +58,10 @@ export const submittingPost = async (userId, desc, img) => {
 //   };
 //   try {
 //     const commentRespose = await axios.post(`/api/comments`, newComment);
-//     return commentRespose.data; 
+//     return commentRespose.data;
 //   } catch (error) {
 //     console.error(error);
-//     throw error;    
+//     throw error;
 //   }
 // };
 
@@ -71,7 +73,7 @@ export const getUser = async (userId, username) => {
       return res.data;
     } else if (username) {
       const res = await axios.get(`/api/users?username=${username}`);
-      return res.data; 
+      return res.data;
     }
   } catch (error) {
     console.error(error);

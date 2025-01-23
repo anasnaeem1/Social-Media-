@@ -14,7 +14,7 @@ function Feed({
   userId,
 }) {
   const { ShareOptions } = mainItems;
-  const { reload, user, dispatch } = useContext(UserContext);
+  const { reload, user, dispatch, yourNewPost } = useContext(UserContext);
   const PA = import.meta.env.VITE_PUBLIC_API;
   const [posts, setPosts] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
@@ -55,6 +55,13 @@ function Feed({
   };
 
   useEffect(() => {
+    if (yourNewPost) {
+      yourNewPost
+      setPosts((prevPosts) => [yourNewPost, ...prevPosts]);
+    }
+  }, [yourNewPost]);
+
+  useEffect(() => {
     fetchPosts();
   }, [page, userId]);
 
@@ -74,6 +81,10 @@ function Feed({
       setPage((prev) => prev + 1);
     }
   };
+
+  if (yourNewPost) {
+    console.log(yourNewPost);
+  }
 
   return (
     <div className={` relative`}>

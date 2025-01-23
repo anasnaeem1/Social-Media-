@@ -7,7 +7,7 @@ import CurrentUserPhoto from "../../../../currentUserPhoto";
 function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
   const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images/";
   const PA = import.meta.env.VITE_PUBLIC_API;
-  const { user } = useContext(UserContext);
+  const { user, dispatch } = useContext(UserContext);
   const [postFile, setPostFile] = useState(null);
   const [previewImg, setPreviewImg] = useState(null);
   const desc = useRef();
@@ -35,30 +35,30 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
   const postSubmit = async (e) => {
     e.preventDefault();
 
-    // if (!postFile) {
-    //   console.error("No file selected.");
-    //   return;
-    // }
-    // console.log("File to be uploaded:", postFile);
-
     try {
-      const data = new FormData();
+      let uniqueFileName = null;
+
+      // Handle file upload if `postFile` is not null
       if (postFile) {
+        const data = new FormData();
         data.append("file", postFile);
 
         const uploadResponse = await axios.post("/api/uploads", data, {
           headers: { "Content-Type": "multipart/form-data" },
         });
-        const uniqueFileName = uploadResponse.data;
+
+        uniqueFileName = uploadResponse.data;
         console.log("Received unique filename:", uniqueFileName);
       }
 
-      const newPost = submittingPost(
+      // Submit the post (with or without an image)
+      const newPost = await submittingPost(
         user._id,
         desc.current.value,
-        uniqueFileName
+        uniqueFileName,
+        dispatch
       );
-      console.log(newPost);
+      console.log(newPost)
     } catch (error) {
       console.error(
         "An error occurred:",

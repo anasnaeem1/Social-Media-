@@ -12,6 +12,7 @@ const INITIAL_STATE = {
   isFetching: false,
   error: false,
   searchedInput : null,
+  yourNewPost : null,
   yourNewMessage:null
 };
 
