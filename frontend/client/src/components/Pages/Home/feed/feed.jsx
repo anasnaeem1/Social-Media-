@@ -110,14 +110,20 @@ function Feed({
 
         {/* Display posts */}
         {posts.length > 0 ? (
-          posts.map((post) => <Post userId={userId} post={post} key={post._id} />)
+          posts.map((post) => (
+            <Post userId={userId} post={post} key={post._id} />
+          ))
         ) : (
-          <p></p>
-          // <div className="w-[540px] flex items-center justify-center">loading Posts</div>
-          // <>
-          //   <PostSkeleton />
-          //   <PostSkeleton />
-          // </>
+          // <p></p>
+          <div className="bg-white mx-4 shadow-md border border-gray-200 rounded-lg flex flex-col max-w-[540px] w-[540px] p-4 items-center justify-center gap-3">
+            {/* Spinner */}
+            <div className="animate-spin w-10 h-10 border-4 border-gray-300 border-t-gray-500 rounded-full"></div>
+
+            {/* Loading Message */}
+            <p className="text-gray-500 text-sm font-medium">
+              Loading posts, please wait...
+            </p>
+          </div>
         )}
 
         {/* Load More Button */}

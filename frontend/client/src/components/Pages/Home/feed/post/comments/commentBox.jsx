@@ -12,6 +12,8 @@ function CommentBox({ post, postUser, userId }) {
   const [newComment, setNewComment] = useState(false);
   const [commentPicture, setCommentPicture] = useState(null); // State for the uploaded picture
   const [commentPicPreview, setCommentPicPreview] = useState(null); // State for the uploaded picture
+  const [fetchingComments, setFetchingComments] = useState(false);
+
   const commentText = useRef();
 
   const { postId } = useParams();
@@ -19,10 +21,12 @@ function CommentBox({ post, postUser, userId }) {
   useEffect(() => {
     const fetchComments = async () => {
       try {
+        setFetchingComments(true);
         if (postId) {
           const commentsRes = await axios.get(`/api/comments/${postId}`);
           if (commentsRes.data) {
             setComments(commentsRes.data);
+            setFetchingComments(false);
           }
         }
       } catch (error) {
@@ -42,15 +46,13 @@ function CommentBox({ post, postUser, userId }) {
     }
 
     let uniqueFileName = null;
-
-    // Upload the file if present
     if (commentPicture) {
       try {
         const data = new FormData();
         data.append("file", commentPicture);
 
         const uploadResponse = await axios.post(
-          "https://social-media-backend-eight-azure.vercel.app/api/uploads",
+          "/api/uploads",
           data,
           {
             headers: { "Content-Type": "multipart/form-data" },
@@ -58,7 +60,7 @@ function CommentBox({ post, postUser, userId }) {
         );
 
         uniqueFileName = uploadResponse.data;
-        console.log("Received unique filename:", uniqueFileName);
+        // console.log("Received unique filename:", uniqueFileName);
       } catch (error) {
         console.error(
           "File upload failed:",
@@ -136,7 +138,9 @@ function CommentBox({ post, postUser, userId }) {
             scrollbarColor: "lightgray transparent",
           }}
         >
-          {postId && comments?.length > 0 ? (
+          {fetchingComments ? (
+            <p className="text-sm text-gray-500">Loading comments.</p>
+          ) : postId && comments?.length > 0 ? (
             comments.map((comment) => (
               <Comment
                 userId={userId}

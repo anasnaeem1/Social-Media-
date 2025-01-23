@@ -1,4 +1,4 @@
-function PostSkeleton() {
+function PostSkeleton({ isImg }) {
   return (
     <div className="bg-white mx-4 shadow-md border border-gray-200 rounded-lg flex flex-col max-w-[540px] w-[540px] animate-pulse">
       {/* Post Header Skeleton */}
@@ -25,6 +25,11 @@ function PostSkeleton() {
         <div className="w-3/4 h-[16px] bg-gray-300 rounded-md"></div>
       </div>
 
+      {/* Photo Skeleton */}
+      {isImg && (
+        <div className="w-full h-[250px] bg-gray-300 rounded-md my-2"></div>
+      )}
+
       {/* Like and Comments Section Skeleton */}
       <div className="flex items-center justify-between py-2 px-4">
         <div className="flex items-center gap-2">
@@ -38,20 +43,20 @@ function PostSkeleton() {
       </div>
 
       {/* Share Buttons Skeleton */}
-      <div className="flex justify-around border">
-        <div className="flex flex-col items-center justify-center gap-2 w-full px-3 py-2">
+      <div className="flex justify-around border-t pt-2">
+        <div className="flex flex-col items-center justify-center gap-2 w-full px-3">
           <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
           <div className="w-12 h-[12px] bg-gray-300 rounded-md"></div>
         </div>
-        <div className="flex flex-col items-center justify-center gap-2 w-full px-3 py-2">
+        <div className="flex flex-col items-center justify-center gap-2 w-full px-3">
           <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
           <div className="w-12 h-[12px] bg-gray-300 rounded-md"></div>
         </div>
-        <div className="flex flex-col items-center justify-center gap-2 w-full px-3 py-2">
+        <div className="flex flex-col items-center justify-center gap-2 w-full px-3">
           <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
           <div className="w-12 h-[12px] bg-gray-300 rounded-md"></div>
         </div>
-        <div className="flex flex-col items-center justify-center gap-2 w-full px-3 py-2">
+        <div className="flex flex-col items-center justify-center gap-2 w-full px-3">
           <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
           <div className="w-12 h-[12px] bg-gray-300 rounded-md"></div>
         </div>

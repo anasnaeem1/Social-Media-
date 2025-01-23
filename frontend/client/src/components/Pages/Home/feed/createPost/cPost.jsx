@@ -35,21 +35,23 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
   const postSubmit = async (e) => {
     e.preventDefault();
 
-    if (!postFile) {
-      console.error("No file selected.");
-      return;
-    }
-    console.log("File to be uploaded:", postFile);
+    // if (!postFile) {
+    //   console.error("No file selected.");
+    //   return;
+    // }
+    // console.log("File to be uploaded:", postFile);
 
     try {
       const data = new FormData();
-      data.append("file", postFile);
+      if (postFile) {
+        data.append("file", postFile);
 
-      const uploadResponse = await axios.post("/api/uploads", data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      const uniqueFileName = uploadResponse.data;
-      console.log("Received unique filename:", uniqueFileName);
+        const uploadResponse = await axios.post("/api/uploads", data, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        const uniqueFileName = uploadResponse.data;
+        console.log("Received unique filename:", uniqueFileName);
+      }
 
       const newPost = submittingPost(
         user._id,
