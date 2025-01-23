@@ -41,7 +41,7 @@ app.use(
   })
 );
 
-app.use("/images", express.static(path.join(__dirname, "./src/public/images")));
+app.use("/images",  express.static(path.join(__dirname, "./src/public/images")));
 
 app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
