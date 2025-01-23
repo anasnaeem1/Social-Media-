@@ -7,10 +7,11 @@ const isProd = process.env.NODE_ENV === "production";
  *  @type {import('vite').UserConfig}
  */
 const config = defineConfig({
+  base: "./", // Add this line
   plugins: [react()],
-  build:{
+  build: {
     outDir: "../../api/src/public/dist",
-    emptyOutDir:true
+    emptyOutDir: true,
   },
   server: {
     host: "localhost",
@@ -25,7 +26,7 @@ const config = defineConfig({
   },
 });
 
-if(isProd) {
+if (isProd) {
   delete config.server;
 }
 
