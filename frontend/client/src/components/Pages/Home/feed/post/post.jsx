@@ -212,7 +212,7 @@ function Post({ post, userId, searchInput }) {
           {post.img && (
             <Link to={`/photo/${[post.img]}`}>
               <div
-                className="mt-3 w-full h-[240px] bg-cover  bg-no-repeat bg-center rounded-md"
+                className="mt-3  w-full h-[240px] bg-cover  bg-no-repeat bg-center rounded-md"
                 style={{
                   backgroundImage: `url(${post.img ? `${PF}${post.img}` : ""})`,
                 }}
