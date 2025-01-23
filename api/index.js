@@ -26,9 +26,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 connectDB(process.env.MONGO_URI);
 
-const STATIC_PATH = path.join(__dirname, "./src/public/dist");
-
+const STATIC_PATH = path.resolve(__dirname, "./src/public/dist");
 app.use(express.static(STATIC_PATH));
+
 
 // Middleware
 
