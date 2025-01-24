@@ -8,16 +8,13 @@ function FollowSuggestion() {
   const { user, dispatch } = useContext(UserContext);
   const [mutualFriends, setMutualFriends] = useState([]);
   const [loadingFriends, setLoadingFriends] = useState(true);
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images/";
   const PA = import.meta.env.VITE_PUBLIC_API;
 
   useEffect(() => {
     if (user._id) {
       const fetchFriends = async () => {
         try {
-          const res = await axios.get(
-            `/api/users/mutuals?userId=${user._id}`
-          );
+          const res = await axios.get(`/api/users/mutuals?userId=${user._id}`);
           if (res.data) {
             const sanitizedResponse = res.data.filter(
               (e) => e._id !== user._id
@@ -42,8 +39,6 @@ function FollowSuggestion() {
       if (isCurrentlyFollowed) {
         await axios.put(`/api/users/${friendId}/unfollow`, {
           userId: user._id,
-
-          
         });
         dispatch({ type: "UNFOLLOW", payload: friendId });
       } else {
@@ -67,7 +62,7 @@ function FollowSuggestion() {
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto p-6 bg-gray-50 rounded-lg">
+    <div className="w-full max-w-lg  bg-gray-50 rounded-lg">
       <h1 className="text-2xl font-bold text-gray-800 mb-6">Mutual Friends</h1>
 
       <ul className="flex flex-col gap-4">
@@ -77,7 +72,7 @@ function FollowSuggestion() {
           mutualFriends.map((friend) => (
             <div
               key={friend._id}
-              className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200"
+              className="flex items-center max-w-[800px] justify-between py-3 px-2 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200"
             >
               {/* User Info */}
               <div className="flex items-center gap-4">
@@ -87,7 +82,11 @@ function FollowSuggestion() {
                   className="w-12 h-12 rounded-full border border-gray-300"
                 />
                 <Link to={`/profile/${friend._id}`} className="text-left">
-                  <p className="text-lg font-medium text-gray-800 hover:underline cursor-pointer">
+                  <p
+                    className={`${
+                      Array.isArray(friend.username).length > 7 ? "text-sm" : "text-lg"
+                    } font-medium text-sm text-gray-800 hover:underline cursor-pointer`}
+                  >
                     {friend.username}
                   </p>
                   <p className="text-sm text-blue-500 hover:text-blue-700 cursor-pointer">

@@ -43,6 +43,7 @@ export const submittingPost = async (userId, desc, img, dispatch) => {
         type: "YOURNEWPOST",
         payload: postResponse.data,
       });
+      return postResponse.data
   } catch (error) {
     console.error(error);
     throw error;

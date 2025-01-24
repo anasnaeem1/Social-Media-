@@ -61,7 +61,7 @@ function Post({ post, userId, searchInput }) {
 
   useEffect(() => {
     if (Array.isArray(post.likes)) {
-      setPostLikeArray(post.likes)
+      setPostLikeArray(post.likes);
       setLikes(post.likes.length);
     }
   }, [post.likes]);
@@ -211,14 +211,16 @@ function Post({ post, userId, searchInput }) {
           {/* Image Section */}
           {post.img && (
             <Link to={`/photo/${[post.img]}`}>
-              <div
-                className="mt-3  w-full h-[240px] bg-cover bg-no-repeat bg-center rounded-md"
-                style={{
-                  backgroundImage: `url(${post.img ? `${PF}${post.img}` : ""})`,
-                }}
-              ></div>
+              <div className="mt-3 w-full rounded-md overflow-hidden">
+                <img
+                  src={`/images/${post.img}`}
+                  alt="Post Image"
+                  className="w-full object-contain h-auto"
+                />
+              </div>
             </Link>
           )}
+
           {/* Like and Comments Section */}
           {likes > 0 && (
             <div className="flex items-center justify-between py-2 px-4">

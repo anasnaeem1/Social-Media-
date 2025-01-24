@@ -7,7 +7,7 @@ import CurrentUserPhoto from "../../../../currentUserPhoto";
 function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
   const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images/";
   const PA = import.meta.env.VITE_PUBLIC_API;
-  const { user, dispatch } = useContext(UserContext);
+  const { user, dispatch, yourNewPost } = useContext(UserContext);
   const [postFile, setPostFile] = useState(null);
   const [previewImg, setPreviewImg] = useState(null);
   const desc = useRef();
@@ -58,7 +58,6 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
         uniqueFileName,
         dispatch
       );
-      console.log(newPost)
     } catch (error) {
       console.error(
         "An error occurred:",
@@ -66,6 +65,14 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
       );
     }
   };
+
+  useEffect(() => {
+    if (yourNewPost) {
+      setPostFile(null);
+      setPreviewImg(null);
+      desc.current.value = "";
+    }
+  }, [yourNewPost]);
 
   const handleRemoveImage = () => {
     setPostFile(null);
