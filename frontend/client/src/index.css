@@ -81,12 +81,34 @@
   }
 }
 
-@media (max-width: 366px) {
-  .userInfo-Box{
-    width: 320px;
+@keyframes bg-animate {
+  0% {
+    background-color: rgb(5, 195, 5); /* Initial green */
+  }
+  25% {
+    background-color: rgb(7, 183, 7); /* Slightly darker green */
+  }
+  50% {
+    background-color: rgb(6, 184, 6); /* Regular green */
+  }
+  75% {
+    background-color: rgb(115, 236, 115); /* Light green (saved or success) */
+  }
+  100% {
+    background-color: white; /* Final white */
   }
 }
 
+/* Apply the green animation smoothly */
+.bg-animate {
+  animation: bg-animate 0.3s ease-in-out forwards;
+}
+  
+ @media (max-width: 366px) {
+  .userInfo-Box {
+    width: 320px;
+  }
+}
 
 @media (max-width: 640px) {
   #comment-box textarea {

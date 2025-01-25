@@ -5,7 +5,6 @@ import { UserContext } from "./context/UserContext";
 import { Link } from "react-router-dom";
 
 function user() {
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images/";
   const { user } = useContext(UserContext);
 
   return (
@@ -16,8 +15,8 @@ function user() {
           backgroundImage: `url(${
             user
               ? user.profilePic
-                ? `${PF}/${user.profilePic}`
-                : `${PF}/noAvatar.png`
+                ? `${"/images/"}/${user.profilePic}`
+                : `${"/images/"}/noAvatar.png`
               : undefined
           })`,
           opacity: 1,

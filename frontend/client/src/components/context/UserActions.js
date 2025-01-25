@@ -107,3 +107,8 @@ export const setYourNewPost = (post) => ({
   type: "YOURNEWPOST",
   payload: post,
 });
+
+export const setPostID = (post) => ({
+  type: "POSTID",
+  payload: post,
+});

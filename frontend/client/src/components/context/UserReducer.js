@@ -113,31 +113,37 @@ const AuthReducer = (state, action) => {
     case "YOUR_NEW_MESSAGE":
       return {
         ...state,
-        yourNewMessage: action.payload, 
+        yourNewMessage: action.payload,
       };
 
     case "YOUR_NEW_COMMENT":
       return {
         ...state,
-        yourNewMessage: action.payload, 
+        yourNewMessage: action.payload,
       };
 
     case "YOUR_NEW_POST":
       return {
         ...state,
-        yourNewPost: action.payload, 
+        yourNewPost: action.payload,
       };
 
     case "SEARCHEDINPUT":
       return {
         ...state,
-        searchedInput: action.payload, 
+        searchedInput: action.payload,
       };
 
     case "YOURNEWPOST":
       return {
         ...state,
-        yourNewPost: action.payload, 
+        yourNewPost: action.payload,
+      };
+
+    case "POSTID":
+      return {
+        ...state,
+        postId: action.payload,
       };
 
     default:

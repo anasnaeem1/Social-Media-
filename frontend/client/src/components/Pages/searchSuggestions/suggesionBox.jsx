@@ -95,7 +95,7 @@ function SuggestionBox() {
   return (
     <div
       className={`${searchedInput ? "w-[760px]" : "tranform w-0"} 
-      shadow-lg fixed z-10 w-[760px] mx-[255px] bg-white border 
+      shadow-lg fixed z-10  mx-[255px] bg-white border 
       transition-all duration-700 ease-in-out`}
     >
       {searchedInput && searchedPosts && searchedPosts.length > 0 && (
@@ -110,7 +110,9 @@ function SuggestionBox() {
       )}
 
       {/* Loading State */}
-      {userIsLoading && <p className="p-4 text-gray-500">Loading...</p>}
+      {searchedInput && userIsLoading && (
+        <p className="p-4 text-gray-500">Loading...</p>
+      )}
 
       {/* Results Found */}
       {!userIsLoading &&

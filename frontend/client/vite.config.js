@@ -7,10 +7,10 @@ const isProd = process.env.NODE_ENV === "production";
  *  @type {import('vite').UserConfig}
  */
 const config = defineConfig({
-  base: "./", // Ensures relative paths for static assets
+  base: "./",
   plugins: [react()],
   build: {
-    outDir: "../../api/src/public/dist", // Output directory for the build
+    outDir: "../../api/src/public/dist",
     emptyOutDir: true,
   },
   server: {

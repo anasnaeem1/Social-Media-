@@ -82,7 +82,7 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
   return (
     <form
       onSubmit={postSubmit}
-      className="bg-white mx-2 p-4 shadow-[0px_0px_15px_-10px_rgba(0,0,0,0.6)] border border-gray-200 rounded-lg flex flex-col gap-3 max-w-[540px] w-full"
+      className="bg-white relative mx-2 p-4 shadow-[0px_0px_15px_-10px_rgba(0,0,0,0.6)] border border-gray-200 rounded-lg flex flex-col gap-3 max-w-[540px] w-full"
     >
       <div className="flex  items-center gap-3 w-full">
         <div className="hidden sm:block">

@@ -32,11 +32,9 @@ function Navbar() {
       searchInput.current.value = ""; // Clear the input field
     }
   }, [searchedInput]);
-  
 
   const handleInputChange = () => {
     if (searchInput.current) {
-  
       const inputValue = searchInput.current.value || ""; // Ensure inputValue is never null
 
       if (inputValue === "") {
@@ -60,26 +58,25 @@ function Navbar() {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-  
+
     const input = searchInput.current.value;
-  
+
     if (input) {
       // Replace spaces with hyphens for clarity
       const formattedInput = input.trim().replace(/\s+/g, "-");
-  
+
       navigate(`/search/${formattedInput}`);
       dispatch({ type: "SEARCHEDINPUT", payload: "" });
     } else {
       console.log("Search input is not available");
     }
   };
-  
+
   const handleClearInput = () => {
     if (searchedUsername.current) {
       searchedUsername.current.value = "";
     }
   };
-  
 
   useEffect(() => {
     if (SearchedUser && SearchedUser[0] && SearchedUser[0].username) {
@@ -195,35 +192,58 @@ function Navbar() {
 
           {/* Controls Icons */}
           <div className="hidden md:flex">
-            <ul className="flex gap-4 text-xl">
-              {/* User Icon  */}
-              <li className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-sky-400 to-green-300 text-black cursor-pointer relative text-2xl">
-                <span>
-                  <i className="ri-user-fill"></i>
+            <ul className="flex text-2xl items-center">
+              {/* User Icon */}
+              <li className="relative group px-2 cursor-pointer">
+                <span
+                  className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-sky-400 to-green-300 group-hover:bg-gradient-to-r group-hover:from-green-300 group-hover:via-sky-400 group-hover:to-blue-500 transition duration-300"
+                  style={{ WebkitTextFillColor: "transparent" }}
+                >
+                  <i className="ri-user-fill text-2xl"></i>
+                </span>
+                <span className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-gray-600 opacity-0 group-hover:opacity-100 group-hover:translate-y-1 transition duration-300">
+                  Profile
                 </span>
               </li>
-              {/* Message Icon  */}
-              <Link to={`/messages`}>
-                <li className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-sky-400 to-green-300 text-black cursor-pointer relative text-2xl">
-                  <span>
-                    <i className="ri-message-2-fill"></i>
+
+              {/* Message Icon */}
+              <Link to={`/messages`} className=" px-2  relative group cursor-pointer">
+                <li>
+                  <span
+                    className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-sky-400 to-green-300 group-hover:bg-gradient-to-r group-hover:from-green-300 group-hover:via-sky-400 group-hover:to-blue-500 transition duration-300"
+                    style={{ WebkitTextFillColor: "transparent" }}
+                  >
+                    <i className="text-2xl ri-message-2-fill"></i>
                   </span>
-                  <span className="absolute top-0 right-0 bg-orange-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full transform translate-x-1/2 -translate-y-1/2">
+                  <span className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-gray-600 opacity-0 group-hover:opacity-100 group-hover:translate-y-1 transition duration-300">
+                    Messages
+                  </span>
+                  {/* Notification Badge */}
+                  {/* <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
                     3
-                  </span>
+                  </span> */}
                 </li>
               </Link>
-              {/* Notifications Icon  */}
-              <li className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-sky-400 to-green-300 text-black cursor-pointer relative text-2xl">
-                <span>
-                  <i className="ri-notification-2-fill"></i>
+
+              {/* Notifications Icon */}
+              <li className="relative group px-2  cursor-pointer">
+                <span
+                  className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-sky-400 to-green-300 group-hover:bg-gradient-to-r group-hover:from-green-300 group-hover:via-sky-400 group-hover:to-blue-500 transition duration-300"
+                  style={{ WebkitTextFillColor: "transparent" }}
+                >
+                  <i className="ri-notification-2-fill text-2xl"></i>
                 </span>
-                <span className="absolute top-0 right-0 bg-orange-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full transform translate-x-1/2 -translate-y-1/2">
+                <span className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-gray-600 opacity-0 group-hover:opacity-100 group-hover:translate-y-1 transition duration-300">
+                  Notifications
+                </span>
+                {/* Notification Badge */}
+                <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
                   1
                 </span>
               </li>
             </ul>
           </div>
+
           <div className="cursor-pointer flex flex-col justify-start items-center relative">
             <Link onClick={handleMenu}>
               <div

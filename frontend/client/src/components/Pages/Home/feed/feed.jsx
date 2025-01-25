@@ -14,7 +14,8 @@ function Feed({
   userId,
 }) {
   const { ShareOptions } = mainItems;
-  const { reload, user, dispatch, yourNewPost } = useContext(UserContext);
+  const { reload, user, postId, dispatch, yourNewPost } =
+    useContext(UserContext);
   const PA = import.meta.env.VITE_PUBLIC_API;
   const [posts, setPosts] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
@@ -56,7 +57,7 @@ function Feed({
 
   useEffect(() => {
     if (yourNewPost) {
-      yourNewPost
+      yourNewPost;
       setPosts((prevPosts) => [yourNewPost, ...prevPosts]);
     }
   }, [yourNewPost]);
@@ -76,15 +77,17 @@ function Feed({
     }
   }, [reload, page, dispatch]);
 
+  useEffect(() => {
+    if (postId) {
+      setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
+    }
+  }, [postId]);
+
   const handleLoadMore = () => {
     if (hasMore && !isFetching) {
       setPage((prev) => prev + 1);
     }
   };
-
-  if (yourNewPost) {
-    console.log(yourNewPost);
-  }
 
   return (
     <div className={` relative`}>
@@ -125,12 +128,9 @@ function Feed({
             <Post userId={userId} post={post} key={post._id} />
           ))
         ) : (
-          // <p></p>
-          <div className="bg-white mx-4 shadow-md border border-gray-200 rounded-lg flex flex-col max-w-[540px] w-[540px] p-4 items-center justify-center gap-3">
-            {/* Spinner */}
+          <div className="bg-white mx-4 shadow-md border border-gray-200 rounded-lg flex flex-col max-w-[540px] w-full md:w-[540px] p-4 items-center justify-center gap-3">
             <div className="animate-spin w-10 h-10 border-4 border-gray-300 border-t-gray-500 rounded-full"></div>
 
-            {/* Loading Message */}
             <p className="text-gray-500 text-sm font-medium">
               Loading posts, please wait...
             </p>
