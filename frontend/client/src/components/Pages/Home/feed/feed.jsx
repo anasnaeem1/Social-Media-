@@ -121,11 +121,14 @@ function Feed({
             SeperatingLine={SeperatingLine}
           />
         )}
-
         {/* Display posts */}
         {posts.length > 0 ? (
           posts.map((post) => (
-            <Post userId={userId} post={post} key={post._id} />
+            <>
+              {Array.isArray(post?.likes) && (
+                <Post userId={userId} post={post} key={post._id} />
+              )}
+            </>
           ))
         ) : (
           <div className="bg-white mx-4 shadow-md border border-gray-200 rounded-lg flex flex-col max-w-[540px] w-full md:w-[540px] p-4 items-center justify-center gap-3">

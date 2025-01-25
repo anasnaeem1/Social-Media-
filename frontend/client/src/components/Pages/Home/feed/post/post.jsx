@@ -18,8 +18,7 @@ import PostSkeleton from "../../../../Skeleton/postSkeleton";
 function Post({ post, userId, searchInput }) {
   const { dispatch, commentBox, user } = useContext(UserContext);
   const { Friends, Shares } = mainItems;
-  const [likes, setLikes] = useState([]);
-  const [postLikeArray, setPostLikeArray] = useState(null);
+  const [likes, setLikes] = useState(post?.likes.length);
   const [isLiked, setIsLiked] = useState(false);
   const [postUser, setPostUser] = useState({});
   const navigate = useNavigate();
@@ -82,11 +81,21 @@ function Post({ post, userId, searchInput }) {
   ];
 
   useEffect(() => {
-    if (Array.isArray(post.likes)) {
-      setPostLikeArray(post.likes);
-      setLikes(post.likes.length);
+    const fetchUser = async () => {
+      try {
+        setUserLoading(true);
+        const res = await axios.get(`/api/users?userId=${post.userId}`);
+        setPostUser(res.data);
+        setUserLoading(false);
+      } catch (error) {
+        console.log("Error fetching user", error);
+      }
+    };
+    fetchUser();
+    if (post?.likes?.includes(user._id)) {
+      setIsLiked(true);
     }
-  }, [post.likes]);
+  }, [post.userId, post.likes, user._id]);
 
   const likeHandler = async () => {
     if (isProcessing) return;
@@ -104,23 +113,6 @@ function Post({ post, userId, searchInput }) {
     }
     setIsProcessing(false);
   };
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        setUserLoading(true);
-        const res = await axios.get(`/api/users?userId=${post.userId}`);
-        setPostUser(res.data);
-        setUserLoading(false);
-      } catch (error) {
-        console.log("Error fetching user", error);
-      }
-    };
-    fetchUser();
-    if (postLikeArray?.includes(user._id)) {
-      setIsLiked(true);
-    }
-  }, [post.userId, post.likes, user._id]);
 
   useEffect(() => {
     if (post?.img) {

@@ -83,16 +83,16 @@
 
 @keyframes bg-animate {
   0% {
-    background-color: rgb(5, 195, 5); /* Initial green */
+    background-color: rgb(125, 246, 125); /* Initial green */
   }
   25% {
-    background-color: rgb(7, 183, 7); /* Slightly darker green */
+    background-color: rgb(128, 250, 128); /* Slightly darker green */
   }
   50% {
-    background-color: rgb(6, 184, 6); /* Regular green */
+    background-color: rgb(119, 240, 119); /* Regular green */
   }
   75% {
-    background-color: rgb(115, 236, 115); /* Light green (saved or success) */
+    background-color: rgb(174, 247, 174); /* Light green (saved or success) */
   }
   100% {
     background-color: white; /* Final white */
