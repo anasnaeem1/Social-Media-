@@ -19,7 +19,6 @@ function Navbar() {
     user,
     searchedInput,
   } = useContext(UserContext);
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images/";
   const searchedUsername = useRef(null);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const navigate = useNavigate();
@@ -257,8 +256,8 @@ function Navbar() {
                   backgroundImage: `url(${
                     user
                       ? user.profilePic
-                        ? `${PF}/${user.profilePic}`
-                        : `${PF}/noAvatar.png`
+                        ? `/images/${user.profilePic}`
+                        : `/images/noAvatar.png`
                       : undefined
                   })`,
                 }}

@@ -27,7 +27,6 @@ app.use(express.urlencoded({ extended: true }));
 connectDB(process.env.MONGO_URI);
 
 const STATIC_PATH = path.join(__dirname, "./src/public/dist");
-
 app.use(express.static(STATIC_PATH));
 
 // Middleware
@@ -53,6 +52,11 @@ app.use("/api/search", search);
 app.use("/api/messages", messagesRouter);
 app.use("/api/uploads", uploadRouter);
 app.use("/api/delete", deleteRouter);
+
+app.use(
+  "/profile/assets",
+  express.static(path.join(__dirname, "./src/public/dist/assets"))
+);
 
 app.use("/*", async (_req, res, _next) => {
   return res

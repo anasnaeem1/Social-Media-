@@ -25,8 +25,8 @@ function userPhoto({ userId, user, onlineUsers }) {
           style={{
             backgroundImage: `url(${
               user.profilePic
-                ? "/images/" + user.profilePic
-                : "/images/" + "/noAvatar.png"
+                ? `/images/${user.profilePic}`
+                : "/images/noAvatar.png"
             })`,
             backgroundSize: "cover",
             backgroundPosition: "center",

@@ -33,9 +33,7 @@ function Comment({ userId, postId, postUser, comment, newComment }) {
       try {
         if (comment?.userId) {
           setUserFetching(true);
-          const res = await axios.get(
-            `/api/users?userId=${comment.userId}`
-          );
+          const res = await axios.get(`/api/users?userId=${comment.userId}`);
           setCommentUser(res.data);
           setUserFetching(false);
         }
@@ -88,9 +86,7 @@ function Comment({ userId, postId, postUser, comment, newComment }) {
     e.preventDefault();
 
     try {
-      const repliesRes = await axios.get(
-        `/api/commentsReplies/${comment._id}`
-      );
+      const repliesRes = await axios.get(`/api/commentsReplies/${comment._id}`);
       if (repliesRes.data) {
         setReplies(repliesRes.data);
         setRepliesVisibility(!repliesVisibility);
@@ -213,11 +209,11 @@ function Comment({ userId, postId, postUser, comment, newComment }) {
               </p>
               <Link to={`/photo/${comment.img}`} className="flex justify-start">
                 {comment.img && (
-                  <div className="cursor-pointer border relative w-full h-[170px] rounded-xl overflow-hidden">
+                  <div className="cursor-pointer border relative w-full max-w-[500px] max-h-[300px] rounded-xl overflow-hidden">
                     <img
                       src={`${PF}${comment.img}`}
                       alt="Comment"
-                      className="w-full h-full object-contain rounded-xl"
+                      className="w-full h-auto object-contain rounded-xl"
                     />
                   </div>
                 )}
