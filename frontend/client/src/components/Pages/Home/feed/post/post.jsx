@@ -16,7 +16,12 @@ import CommentBox from "./comments/commentBox";
 import PostSkeleton from "../../../../Skeleton/postSkeleton";
 
 function Post({ post, userId, searchInput }) {
-  const { dispatch, commentBox, user } = useContext(UserContext);
+  const {
+    dispatch,
+    commentBox,
+    user,
+    postId: removedPostId,
+  } = useContext(UserContext);
   const { Friends, Shares } = mainItems;
   const [likes, setLikes] = useState(post?.likes.length);
   const [isLiked, setIsLiked] = useState(false);

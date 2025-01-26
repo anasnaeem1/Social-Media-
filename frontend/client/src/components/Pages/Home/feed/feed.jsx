@@ -79,13 +79,7 @@ function Feed({
 
   useEffect(() => {
     if (postId) {
-      setPosts((prevPosts) => {
-        const index = prevPosts.findIndex((post) => post._id === postId);
-        if (index !== -1) {
-          prevPosts.splice(index, 1);
-        }
-        return [...prevPosts];
-      });
+      setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
     }
   }, [postId]);
 
