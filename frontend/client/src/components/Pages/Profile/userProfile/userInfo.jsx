@@ -8,7 +8,6 @@ function UserInfo({ profileUser }) {
   const [isLoading, setIsLoading] = useState(true);
 
   const { user } = useContext(UserContext);
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images/";
 
   useEffect(() => {
     if (profileUser._id) {
@@ -82,8 +81,8 @@ function UserInfo({ profileUser }) {
                   <img
                     src={
                       Friend.profilePic
-                        ? `${PF}/${Friend.profilePic}`
-                        : `${PF}/noAvatar.png`
+                        ? `/images/${Friend.profilePic}`
+                        : `/images/noAvatar.png`
                     }
                     alt={`${Friend.fname} ${Friend.lname}`}
                     className="rounded-md w-[70px] h-[70px] sm:w-[80px] sm:h-[80px] object-cover"

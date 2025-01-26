@@ -11,7 +11,7 @@ import SearchSuggestions from "../searchSuggestions/suggesionBox"
 // import ProfileSkeleton from "../../Skeleton/profileSkeleton/profileSkeleton";
 
 function Profile() {
-  const PA = import.meta.env.VITE_PUBLIC_API;
+  // const PA = import.meta.env.VITE_PUBLIC_API;
   const [user, setUser] = useState({});
   const {userId} = useParams();
   const [profileLoading, setProfileLoading] = useState(true);

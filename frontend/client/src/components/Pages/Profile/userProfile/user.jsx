@@ -18,7 +18,6 @@ function User({
 }) {
   const { dispatch, user: currentUser } = useContext(UserContext);
   const PA = import.meta.env.VITE_PUBLIC_API;
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images/";
   const { Friends } = mainItems;
   const [followed, setFollowed] = useState(false);
   const [editVisibility, setEditVisibility] = useState(false);
@@ -87,23 +86,17 @@ function User({
     setFollowLoading(true);
     try {
       if (followed) {
-        const res = await axios.put(
-          `/api/users/${profileUser._id}/unfollow`,
-          {
-            userId: currentUser._id,
-          }
-        );
+        const res = await axios.put(`/api/users/${profileUser._id}/unfollow`, {
+          userId: currentUser._id,
+        });
         // console.log(res.data);
         if (res.data) {
           dispatch({ type: "UNFOLLOW", payload: profileUser._id });
         }
       } else {
-        const res = await axios.put(
-          `/api/users/${profileUser._id}/follow`,
-          {
-            userId: currentUser._id,
-          }
-        );
+        const res = await axios.put(`/api/users/${profileUser._id}/follow`, {
+          userId: currentUser._id,
+        });
         if (res.data) {
           dispatch({ type: "FOLLOW", payload: profileUser._id });
         }
@@ -253,8 +246,8 @@ function User({
               style={{
                 backgroundImage: `url(${
                   profileUser.coverPic
-                    ? PF + "/" + profileUser.coverPic
-                    : PF + "/noCover.jpg"
+                    ? `/images/${profileUser.coverPic}`
+                    : `/images/noCover.jpg`
                 })`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
@@ -270,12 +263,14 @@ function User({
                     userId === currentUser._id
                       ? "border-[3px] border-white"
                       : ""
-                  }${!profileUser.profilePic && "border-none" } relative border-[2px] border-white h-[170px] w-[170px] md:h-[156px] md:w-[156px] rounded-full shadow-lg mx-auto md:mx-0`}
+                  }${
+                    !profileUser.profilePic && "border-none"
+                  } relative border-[2px] border-white h-[170px] w-[170px] md:h-[156px] md:w-[156px] rounded-full shadow-lg mx-auto md:mx-0`}
                   style={{
                     backgroundImage: `url(${
                       profileUser.profilePic
-                        ? `${PF}/${profileUser.profilePic}`
-                        : `${PF}/noAvatar.png`
+                        ? `/images/${profileUser.profilePic}`
+                        : `/images/noAvatar.png`
                     })`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
