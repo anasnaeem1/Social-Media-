@@ -57,7 +57,7 @@ function userDetails({ user }) {
   return (
     <div
       key={user._id}
-      className="bg-white max-w-[540px] w-full shadow-md border border-gray-200 rounded-lg overflow-hidden"
+      className=""
     >
       {/* User Photo and Info */}
       <div className="p-4 flex flex-col sm:flex-row sm:items-center sm:gap-4">

@@ -14,6 +14,7 @@ const INITIAL_STATE = {
   searchedInput : null,
   postId : null,
   yourNewPost : null,
+  mobileSearchInput : false,
   yourNewMessage:null
 };
 

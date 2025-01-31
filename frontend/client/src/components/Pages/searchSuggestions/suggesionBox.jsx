@@ -62,6 +62,7 @@ function SuggestionBox() {
         setUserIsLoading(false);
         return;
       }
+      console.log(searchedInput);
 
       try {
         setUserIsLoading(true); // Set loading state
@@ -94,8 +95,8 @@ function SuggestionBox() {
 
   return (
     <div
-      className={`${searchedInput ? "w-[760px]" : "tranform w-0"} 
-      shadow-lg fixed z-10  mx-[255px] bg-white border 
+      className={`${searchedInput ? "w-full" : "tranform w-0"} 
+      shadow-lg absolute top-0 left-0 z-10  bg-white
       transition-all duration-700 ease-in-out`}
     >
       {searchedInput && searchedPosts && searchedPosts.length > 0 && (
@@ -110,9 +111,7 @@ function SuggestionBox() {
       )}
 
       {/* Loading State */}
-      {searchedInput && userIsLoading && (
-        <p className="p-4 text-gray-500">Loading...</p>
-      )}
+      {userIsLoading && <p className="p-4 text-gray-500">Loading...</p>}
 
       {/* Results Found */}
       {!userIsLoading &&
@@ -120,15 +119,15 @@ function SuggestionBox() {
         searchedUsers &&
         searchedUsers.length > 0 && (
           <div className="border-b p-4">
-            <ul className="space-y-2">
+            <ul className="">
               {searchedUsers.map((user) => (
                 <li
                   key={user._id}
-                  className="flex cursor-pointer items-center justify-between border-b py-4 hover:bg-gray-50 transition-colors duration-200"
+                  className="flex  cursor-pointer items-center justify-between py-4 hover:bg-gray-50 transition-colors duration-200"
                   onClick={() => handleNavigateToProfile(user._id)}
                 >
                   {/* User Info */}
-                  <div className="flex items-center space-x-4">
+                  <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <UserPhoto
                         userId={user._id}
@@ -140,7 +139,7 @@ function SuggestionBox() {
                       <h1 className="text-base font-semibold text-gray-900 hover:text-blue-600 transition-colors duration-300">
                         {user.username}
                       </h1>
-                      <p className="text-sm text-gray-600 mt-1 truncate">
+                      <p className="hidden md:flex text-sm text-gray-600 mt-1 truncate">
                         {user.bio || "This user has no bio."}
                       </p>
                     </div>
@@ -149,14 +148,15 @@ function SuggestionBox() {
                   {/* Actions */}
                   <div className="flex items-center space-x-3">
                     <button className="bg-blue-500 text-white text-sm font-medium px-4 py-1 rounded-md hover:bg-blue-600 transition duration-200">
-                      Follow
+                      <i class="flex md:hidden ri-user-follow-line"></i>
+                      <span className="hidden md:flex">Follow</span>
                     </button>
                     <button
                       onClick={(e) => {
                         e.stopPropagation(); // Prevent the click event from bubbling up
                         handleNavigateToProfile(user._id); // Navigate on button click
                       }}
-                      className="text-blue-500 text-sm font-medium px-4 py-1 border border-blue-500 rounded-md hover:bg-blue-50 transition duration-200"
+                      className="text-blue-500 hidden md:flex text-sm font-medium px-4 py-1 border border-blue-500 rounded-md hover:bg-blue-50 transition duration-200"
                     >
                       View Profile
                     </button>

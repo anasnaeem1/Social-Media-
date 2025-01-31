@@ -44,10 +44,12 @@ function Feed({
           return array;
         };
         const fetchedPosts = randomizePosts(res.data);
-        setPosts((prev) =>
-          page === 1 ? fetchedPosts : [...prev, ...fetchedPosts]
-        );
-        setHasMore(fetchedPosts.length > 0);
+        if (fetchedPosts) {
+          setPosts((prev) =>
+            page === 1 ? fetchedPosts : [...prev, ...fetchedPosts]
+          );
+          setHasMore(fetchedPosts.length > 0);
+        }
       }
     } catch (error) {
       console.error("Error fetching posts:", error);
@@ -90,17 +92,18 @@ function Feed({
   };
 
   return (
-    <div className={` relative`}>
+    <div className={`${!userId && "mx-0 md:mx-auto "} relative`}>
       {/* Show loading indicator */}
       {!userId && isFetching && (
-        <div className="fixed top-0 left-0 right-0 z-50 flex justify-center items-center h-[65px] reload-slidein translate-y-[-70px]">
+        <div className="fixed top-0  left-0 right-0 z-50 flex justify-center items-center h-[65px] reload-slidein translate-y-[-70px]">
           <div className="bg-white h-[40px] w-[40px] flex justify-center items-center rounded-full shadow-lg border border-gray-200 reload-animation">
             <CircularProgress size={23} />
           </div>
         </div>
       )}
+      <div className={`max-w-[540px] w-full sm:w-[540px] `}></div>
 
-      <div className="flex pt-5 items-center flex-col px-3 gap-10 overflow-x-hidden feed-container">
+      <div className="flex pt-5 justify-center items-center flex-col gap-10 overflow-x-hidden feed-container">
         {/* CreatePost section */}
         {userId ? (
           userId === user._id && (
@@ -131,7 +134,9 @@ function Feed({
             </>
           ))
         ) : (
-          <div className="bg-white mx-4 shadow-md border border-gray-200 rounded-lg flex flex-col max-w-[540px] w-full md:w-[540px] p-4 items-center justify-center gap-3">
+          <div
+            className={` bg-white mx-4 shadow-md border py-3 rounded-lg flex flex-col max-w-[540px] w-full sm:w-[540px] items-center justify-center gap-3`}
+          >
             <div className="animate-spin w-10 h-10 border-4 border-gray-300 border-t-gray-500 rounded-full"></div>
 
             <p className="text-gray-500 text-sm font-medium">

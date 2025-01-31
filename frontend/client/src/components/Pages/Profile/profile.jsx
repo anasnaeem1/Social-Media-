@@ -32,12 +32,12 @@ function Profile() {
   }, [userId]);
 
   // Scroll to top when Profile is loaded or userId changes
-  useEffect(() => {
-    console.log("Scroll to top triggered");
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-    }, 0);
-  }, []);
+  // useEffect(() => {
+  //   console.log("Scroll to top triggered");
+  //   setTimeout(() => {
+  //     window.scrollTo(0, 0);
+  //   }, 0);
+  // }, []);
 
   return (
     <div>

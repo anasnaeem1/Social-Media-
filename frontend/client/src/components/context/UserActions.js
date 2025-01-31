@@ -112,3 +112,8 @@ export const setPostID = (post) => ({
   type: "POSTID",
   payload: post,
 });
+
+export const setMobileSearchInput = (boolean) => ({
+  type: "MOBILESEARCHINPUT",
+  payload: boolean,
+});

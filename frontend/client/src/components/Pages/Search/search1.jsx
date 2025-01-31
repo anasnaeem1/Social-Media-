@@ -63,7 +63,7 @@ function Search1() {
   }, [decodedParams]);
 
   return (
-    <div className="pt-5 search-box w-full max-w-full sm:max-w-[550px] mx-auto border text-gray-800  sm:py-8 sm:px-6 bg-gradient-to-r from-blue-50 via-white to-blue-50">
+    <div className="pt-5 search-box w-full max-w-full sm:max-w-[590px] border text-gray-800 sm:py-8 sm:px-6 bg-gradient-to-r from-blue-50 via-white to-blue-50">
       <div className="mb-6 text-center">
         <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">
           Search Results for:{" "}
@@ -74,7 +74,7 @@ function Search1() {
       {isLoading ? (
         <div className="text-center text-gray-500">Loading...</div>
       ) : (
-        <div className="space-y-6 sm:space-y-8">
+        <div className="">
           {/* Users Section */}
           <section className="text-center">
             {searchedUsers && searchedUsers.length > 0 ? (
@@ -84,7 +84,10 @@ function Search1() {
                 </h2>
                 <div className="space-y-4 sm:space-y-6">
                   {searchedUsers.map((eachUser) => (
-                    <div key={eachUser._id}>
+                    <div
+                      className="bg-white mx-auto relative shadow-md border border-gray-200 rounded-lg flex flex-col max-w-[540px] w-full my-2 "
+                      key={eachUser._id}
+                    >
                       <UserDetails user={eachUser} />
                     </div>
                   ))}

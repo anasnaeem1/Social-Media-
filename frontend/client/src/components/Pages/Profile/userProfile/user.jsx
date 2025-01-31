@@ -18,6 +18,7 @@ function User({
 }) {
   const { dispatch, user: currentUser } = useContext(UserContext);
   const PA = import.meta.env.VITE_PUBLIC_API;
+  // const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images/";
   const { Friends } = mainItems;
   const [followed, setFollowed] = useState(false);
   const [editVisibility, setEditVisibility] = useState(false);
@@ -235,11 +236,11 @@ function User({
 
   return (
     <>
-      <div className="flex-[7]">
+      <div className="flex flex-col flex-[7]">
         {profileLoading ? (
           <ProfilePicSkeleton />
         ) : (
-          <div className="relative z-2">
+          <div className="relative flex flex-col gap-0">
             {/* Cover Photo Section */}
             <div
               className="h-[200px] md:h-[300px] rounded-t-md mx-auto max-w-7xl w-full shadow-md"
@@ -253,10 +254,10 @@ function User({
                 backgroundPosition: "center",
               }}
             ></div>
-
+            {/* -top-[95px] transform md:translate-y-[50px] */}
             {/* Profile and Info Section */}
-            <div className="relative -top-[50px] max-w-7xl mx-auto  rounded-md shadow-md p-6">
-              <div className="flex flex-col items-center md:flex-row md:items-center gap-6">
+            <div className="absolute top-[120px] md:top-[270px] md:left-[20px] left-1/2 transform -translate-x-1/2 md:-translate-x-0 max-w-7xl mx-auto  rounded-md  w-full">  
+              <div className="flex flex-col items-center md:flex-row md:items-center gap-2">
                 {/* Profile Picture */}
                 <div
                   className={`${
@@ -265,7 +266,7 @@ function User({
                       : ""
                   }${
                     !profileUser.profilePic && "border-none"
-                  } relative border-[2px] border-white h-[170px] w-[170px] md:h-[156px] md:w-[156px] rounded-full shadow-lg mx-auto md:mx-0`}
+                  } relative border-[2px] border-white h-[140px] w-[140px] md:h-[156px] md:w-[156px] sm:h-[156px] sm:w-[156px] rounded-full shadow-lg mx-auto md:mx-0`}
                   style={{
                     backgroundImage: `url(${
                       profileUser.profilePic
@@ -293,7 +294,7 @@ function User({
                         className={`fill-none stroke-[4px] ${
                           followed ? "loading-start" : "loading-end"
                         }
-                      `}
+          `}
                         cx="80"
                         cy="80"
                         r="75"
@@ -312,7 +313,7 @@ function User({
                         followed
                           ? "bg-gray-100 hover:bg-gray-200"
                           : "bg-blue-500 hover:bg-blue-600 text-white"
-                      } absolute left-1/2 bottom-[-15px] transform -translate-x-1/2 cursor-pointer w-10 h-10 rounded-full flex justify-center items-center shadow-lg  transition`}
+                      } absolute left-1/2 bottom-[-15px] transform -translate-x-1/2 cursor-pointer w-10 h-10 rounded-full flex justify-center items-center shadow-lg transition`}
                     >
                       {followed ? (
                         <i className="ri-user-minus-line"></i>
@@ -344,10 +345,7 @@ function User({
                       </label>
 
                       {/* More Options (Three Dots) */}
-                      <div
-                        // onClick={handleMoreOptions}
-                        className="p-2 rounded-full hover:bg-gray-100 transition flex justify-center items-center"
-                      >
+                      <div className="p-2 rounded-full hover:bg-gray-100 transition flex justify-center items-center">
                         <i className="text-lg ri-more-2-line text-gray-500"></i>
                       </div>
                     </div>
@@ -357,7 +355,7 @@ function User({
                 </div>
 
                 {/* User Info */}
-                <div className="text-center tranform translate-y-[20px] md:text-left">
+                <div className="text-center transform md:translate-x-2 md:translate-y-[25px] md:text-left">
                   <h1 className="text-xl font-semibold md:text-2xl">
                     {profileUser.username}
                   </h1>
@@ -384,31 +382,26 @@ function User({
                     )}
                     <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg shadow hover:bg-gray-300 transition">
                       {`${profileUser?.followers.length} 
-                      ${
-                        profileUser.followers.length === 1
-                          ? "follower"
-                          : "Followers"
-                      }
-                      `}
+          ${profileUser.followers.length === 1 ? "follower" : "Followers"}`}
                     </button>
                     <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg shadow hover:bg-gray-300 transition">
                       {`${profileUser?.followings.length} 
-                      ${
-                        profileUser.followings.length === 1
-                          ? "following"
-                          : "followings"
-                      }
-                      `}
+          ${profileUser.followings.length === 1 ? "following" : "followings"}`}
                     </button>
                   </div>
                 </div>
               </div>
             </div>
+            <div className=" h-[235px] md:h-[200px]"></div>
           </div>
         )}
 
         {/* Feed and User Info */}
-        <div className="flex flex-col-reverse items-center sm:items-start lg:flex-row mx-auto justify-center gap-6 px-6 max-w-7xl">
+        <div
+          className={`flex ${
+            userId ? "" : ""
+          } flex-col-reverse lg:flex-row mx-auto justify-center gap-6 px-6 max-w-7xl`}
+        >
           <div className="flex-grow">
             <Feed
               cPostFile={cPostFile}

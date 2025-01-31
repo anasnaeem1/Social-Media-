@@ -1,6 +1,10 @@
-function PostSkeleton({ isImg }) {
+function PostSkeleton({ userId, isImg }) {
   return (
-    <div className="bg-white max-w-[540px] w-full shadow-md border border-gray-200 rounded-lg flex flex-col animate-pulse">
+    <div
+      className={`${
+        userId ? "postSkeletonWidthForProfile" : ""
+      } bg-white shadow-md w-full border border-gray-200 rounded-lg flex flex-col animate-pulse `}
+    >
       {/* Post Header Skeleton */}
       <div className="flex px-4 py-3 justify-between items-center">
         <div className="flex items-center gap-3">
@@ -35,29 +39,29 @@ function PostSkeleton({ isImg }) {
             <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
             <div className="w-6 h-6 bg-gray-300 rounded-full ml-1"></div>
           </div>
-          <div className="w-[150px] h-[12px] bg-gray-300 rounded-md"></div>
+          <div className="w-[110px] sm:[150px] h-[12px] bg-gray-300 rounded-md"></div>
         </div>
-        <div className="w-[100px] h-[12px] bg-gray-300 rounded-md"></div>
+        <div className="w-[50px] sm:w-[100px] h-[12px]  bg-gray-300 rounded-md"></div>
       </div>
 
       {/* Share Buttons Skeleton */}
       <div className="flex justify-around border-t py-2">
         <div className="flex items-center justify-center gap-2 w-full px-3">
           <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
-          <div className="w-12 h-[12px] bg-gray-300 rounded-md"></div>
+          <div className="w-8 sm:w-12 h-[12px] bg-gray-300 rounded-md"></div>
+        </div>
+        <div className="flex items-center justify-center gap-2 w-full px-3">
+          <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
+          <div className="w-8 sm:w-12 h-[12px] bg-gray-300 rounded-md"></div>
         </div>
         <div className="flex items-center justify-center gap-2 w-full px-3">
           <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
           <div className="w-12 h-[12px] bg-gray-300 rounded-md"></div>
         </div>
-        <div className="flex items-center justify-center gap-2 w-full px-3">
+        {/* <div className="flex items-center justify-center gap-2 w-full px-3">
           <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
-          <div className="w-12 h-[12px] bg-gray-300 rounded-md"></div>
-        </div>
-        <div className="flex items-center justify-center gap-2 w-full px-3">
-          <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
-          <div className="w-12 h-[12px] bg-gray-300 rounded-md"></div>
-        </div>
+          <div className="w-8 sm:w-12 h-[12px] bg-gray-300 rounded-md"></div>
+        </div> */}
       </div>
     </div>
   );

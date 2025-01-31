@@ -1,4 +1,5 @@
-import { YourNewMessage } from "./UserActions";
+// import searchForMobile from "../Header/SearchButtonsForMobile";
+// import { YourNewMessage } from "./UserActions";
 
 const AuthReducer = (state, action) => {
   // console.log("AuthReducer action:", action.type, "Payload:", action.payload);
@@ -99,7 +100,6 @@ const AuthReducer = (state, action) => {
         ...state,
         uploadProfileBox: false, // Hide the overlay
       };
-
     case "SHOW_COMMENTSBOX":
       return {
         ...state,
@@ -145,6 +145,11 @@ const AuthReducer = (state, action) => {
         ...state,
         postId: action.payload,
       };
+      case "MOBILESEARCHINPUT":
+        return {
+          ...state,
+          mobileSearchInput: action.payload,
+        };
 
     default:
       return state;
