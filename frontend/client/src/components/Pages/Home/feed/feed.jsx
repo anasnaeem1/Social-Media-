@@ -93,6 +93,7 @@ function Feed({
 
   return (
     <div className={`${!userId && "mx-0 md:mx-auto "} relative`}>
+      <div className={`max-w-[540px] h-0 w-full sm:w-[540px] `}></div>
       {/* Show loading indicator */}
       {!userId && isFetching && (
         <div className="fixed top-0  left-0 right-0 z-50 flex justify-center items-center h-[65px] reload-slidein translate-y-[-70px]">
@@ -101,7 +102,6 @@ function Feed({
           </div>
         </div>
       )}
-      <div className={`max-w-[540px] w-full sm:w-[540px] `}></div>
 
       <div className="flex pt-5 justify-center items-center flex-col gap-10 overflow-x-hidden feed-container">
         {/* CreatePost section */}

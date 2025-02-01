@@ -31,7 +31,7 @@ function Navbar() {
 
   useEffect(() => {
     if (!searchedInput) {
-      searchInput.current.value = ""; // Clear the input field
+      searchInput.current.value = "";
     } else {
       searchInput.current.value = searchedInput;
     }
@@ -125,8 +125,12 @@ function Navbar() {
       if (isScreenWide) {
         dispatch({ type: "MOBILESEARCHINPUT", payload: false });
       }
-      console.log("Current Width:", window.innerWidth);
-      console.log("Is Small Screen:", isScreenWide);
+      if (isScreenWide && searchedInput) {
+        setIsMenuVisible(false);
+        dispatch({ type: "MOBILESEARCHINPUT", payload: true });
+      }
+      // console.log("Current Width:", window.innerWidth);
+      // console.log("Is Small Screen:", isScreenWide);
     };
 
     handleResize();
@@ -138,6 +142,7 @@ function Navbar() {
 
   const handleSearchClick = (e) => {
     e.preventDefault();
+    setIsMenuVisible(false);
     dispatch({ type: "MOBILESEARCHINPUT", payload: true });
   };
 

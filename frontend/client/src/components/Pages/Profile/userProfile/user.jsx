@@ -176,11 +176,11 @@ function User({
             };
 
             // console.log("Submitting new post...");
-            const postResponse = await axios.post(
-              "https://social-media-backend-eight-azure.vercel.app/api/posts/",
+            const profilePicPostResponse = await axios.post(
+              "/api/posts/",
               newPost
             );
-            // console.log(postResponse.data)
+            console.log(profilePicPostResponse.data)
           } catch (error) {
             console.error(error);
           }

@@ -9,7 +9,6 @@ router.post("/", (req, res) => {
       return res.status(400).json({ error: "Uploading failed" });
     }
 
-    // Check if files were uploaded
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ error: "No file uploaded" });
     }
