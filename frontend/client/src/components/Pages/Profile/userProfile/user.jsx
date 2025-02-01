@@ -136,9 +136,7 @@ function User({
       data.append("file", profilePicFile);
 
       // Upload the file
-      const uploadResponse = await axios.post(`/api/uploads`, data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const uploadResponse = await axios.post(`/api/uploads`, data);
 
       const uniqueFileName = uploadResponse.data;
       // console.log("Received unique filename:", uniqueFileName);
@@ -180,7 +178,7 @@ function User({
               "/api/posts/",
               newPost
             );
-            console.log(profilePicPostResponse.data)
+            console.log(profilePicPostResponse.data);
           } catch (error) {
             console.error(error);
           }
@@ -256,7 +254,7 @@ function User({
             ></div>
             {/* -top-[95px] transform md:translate-y-[50px] */}
             {/* Profile and Info Section */}
-            <div className="absolute top-[120px] md:top-[270px] md:left-[20px] left-1/2 transform -translate-x-1/2 md:-translate-x-0 max-w-7xl mx-auto  rounded-md  w-full">  
+            <div className="absolute top-[120px] md:top-[270px] md:left-[20px] left-1/2 transform -translate-x-1/2 md:-translate-x-0 max-w-7xl mx-auto  rounded-md  w-full">
               <div className="flex flex-col items-center md:flex-row md:items-center gap-2">
                 {/* Profile Picture */}
                 <div
