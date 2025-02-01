@@ -16,9 +16,7 @@ const commentReplies = require("./src/routes/commentReplies.js");
 const messagesRouter = require("./src/routes/messages.js");
 const search = require("./src/routes/search.js");
 const { readFileSync } = require("fs");
-// const { console } = require("inspector");
 
-// Configure environment variables
 dotenv.config();
 
 const app = express();
@@ -31,13 +29,6 @@ const STATIC_PATH = path.join(__dirname, "./src/public/dist");
 app.use(express.static(STATIC_PATH));
 
 // Middleware
-// app.use(
-//   cors({
-//     origin: "*",
-//     methods: ["GET", "POST", "DELETE"],
-//     allowedHeaders: ["Content-Type", "Authorization"],
-//   })
-// );
 app.use(morgan("common"));
 app.use(
   helmet({

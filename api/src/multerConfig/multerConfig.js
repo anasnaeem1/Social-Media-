@@ -3,16 +3,14 @@ const path = require("path");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const destPath = path.join(__dirname, "../public/images");
-    cb(null, destPath);
+    cb(null, "/tmp"); 
   },
   filename: (req, file, cb) => {
-    const uniqueFileName = `${Date.now()}-${file.originalname.replace(/\s+/g, "")}`;
-    file.uniqueFileName = uniqueFileName;
-    cb(null, uniqueFileName);
+    const uniqueName = Date.now() + "-" + file.originalname;
+    cb(null, uniqueName);
   },
 });
 
-const upload = multer({ storage }).any();
+const upload = multer({ storage });
 
 module.exports = upload;
