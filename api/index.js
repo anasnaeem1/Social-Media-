@@ -1,5 +1,6 @@
 const express = require("express");
 const helmet = require("helmet");
+const cors = require("cors");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
 const path = require("path");
@@ -30,7 +31,13 @@ const STATIC_PATH = path.join(__dirname, "./src/public/dist");
 app.use(express.static(STATIC_PATH));
 
 // Middleware
-
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(morgan("common"));
 app.use(
   helmet({
