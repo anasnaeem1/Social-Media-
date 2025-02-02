@@ -107,9 +107,8 @@
   }
 }
 
-/* Apply the green animation smoothly */
 .bg-animate {
-  animation: bg-animate 0.3s ease-in-out forwards;
+  animation: bg-animate 0.7s ease-in-out forwards;
 }
   
  @media (max-width: 366px) {
@@ -237,7 +236,7 @@
 .skeleton-image {
   flex-shrink: 0;
 }
-.message-container {
+/* .message-container {
   @apply flex self-start max-w-[75%] py-3 px-4 rounded-lg mb-4 gap-2 shadow-md transition-transform;
 }
 .sender-message {
@@ -245,7 +244,7 @@
 }
 .receiver-message {
   @apply bg-white text-black;
-}
+} */
 
 /* :root {
     background-color: rgb(245, 244, 244);
