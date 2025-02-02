@@ -13,9 +13,15 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+console.log("Cloudinary Config:", {
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
 router.use(fileUpload({ useTempFiles: true, tempFileDir: "/tmp/" }));
 
-router.post("/", async (req, res) => {
+router.post("/uploads", async (req, res) => {
   try {
     if (!req.files || Object.keys(req.files).length === 0) {
       return res.status(400).json({ error: "No file uploaded" });
@@ -29,7 +35,7 @@ router.post("/", async (req, res) => {
     res.status(200).json({ url: result.secure_url });
   } catch (error) {
     console.error("Cloudinary Upload Error:", error);
-    res.status(500).json({ error: "Upload failed", details: error.message });
+    res.status(500).json({ error: "Upload f-ailed", details: error.message });
   }
 });
 

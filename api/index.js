@@ -1,6 +1,5 @@
 const express = require("express");
 const helmet = require("helmet");
-// const cors = require("cors");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
 const path = require("path");
@@ -38,7 +37,7 @@ app.use(
   })
 );
 
-// app.use("/images", express.static(path.join(__dirname, "./src/public/images")));
+app.use("/images", express.static(path.join(__dirname, "./src/public/images")));
 
 app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
@@ -48,7 +47,7 @@ app.use("/api/comments", commentsRouter);
 app.use("/api/commentsReplies", commentReplies);
 app.use("/api/search", search);
 app.use("/api/messages", messagesRouter);
-app.use("/api/uploads", uploadRouter);
+app.use("/api", uploadRouter);
 app.use("/api/delete", deleteRouter);
 
 app.use(
