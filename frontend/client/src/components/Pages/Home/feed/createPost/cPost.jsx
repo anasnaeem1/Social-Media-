@@ -37,8 +37,6 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
 
     try {
       let uniqueFileName = null;
-
-      // Handle file upload if `postFile` is not null
       if (postFile) {
         const data = new FormData();
         data.append("file", postFile);
@@ -50,8 +48,6 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
         uniqueFileName = uploadResponse.data;
         console.log("Received unique filename:", uniqueFileName);
       }
-
-      // Submit the post (with or without an image)
       const newPost = await submittingPost(
         user._id,
         desc.current.value,
