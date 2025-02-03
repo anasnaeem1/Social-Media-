@@ -135,15 +135,14 @@ function User({
       if (currentUser.profilePic) {
         try {
           await axios.delete(`/api/delete`, {
-            data: { url: currentUser.profilePic }, // Corrected payload structure
+            data: { url: currentUser.profilePic },
           });
         } catch (error) {
           console.error("Error deleting previous profile picture:", error);
-          return; // Stop execution if delete fails
+          return; 
         }
       }
 
-      // Step 2: Upload new profile picture
       const data = new FormData();
       data.append("file", profilePicFile);
 
