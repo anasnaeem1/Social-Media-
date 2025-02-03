@@ -12,7 +12,6 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
   const [previewImg, setPreviewImg] = useState(null);
   const desc = useRef();
 
-
   const handlePostFileChange = (g) => {
     const selectedPostPic = g.target.files[0];
     if (!userId) {
@@ -53,7 +52,7 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
         uniqueFileName,
         dispatch
       );
-      console.log(newPost.data)
+      console.log(newPost.data);
     } catch (error) {
       console.error(
         "An error occurred:",
@@ -80,17 +79,23 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
       onSubmit={postSubmit}
       className="bg-white relative mx-2 p-4 shadow-[0px_0px_15px_-10px_rgba(0,0,0,0.6)] border border-gray-200 rounded-lg flex flex-col gap-3 max-w-[540px] w-full"
     >
-      <div className="flex  items-center gap-3 w-full">
-        <div className="hidden sm:block">
+      <div className="flex items-center gap-3 w-full">
+        {/* Profile Photo (Visible on Small Screens and Above) */}
+        <div className="w-[50px] h-[50px] sm:flex hidden">
           <CurrentUserPhoto />
         </div>
-        <input
-          ref={desc}
-          className="py-2 w-full px-2 rounded-md border focus:outline-none focus:ring-2 focus:ring-gray-300"
-          placeholder={`What’s on your mind ${user.username}?`}
-          type="text"
-        />
+
+        {/* Input Field */}
+        <div className="flex-1">
+          <input
+            ref={desc}
+            className="w-full py-2 px-3 rounded-md border focus:outline-none focus:ring-2 focus:ring-gray-300"
+            placeholder={`What’s on your mind ${user.username}?`}
+            type="text"
+          />
+        </div>
       </div>
+
       <div className="w-full">
         <SeperatingLine color={"border-gray-300"} />
       </div>

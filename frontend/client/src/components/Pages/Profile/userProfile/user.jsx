@@ -58,7 +58,7 @@ function User({
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [followLoading]);
-  
+
   // Fetching Convo
   useEffect(() => {
     if (profileUser._id) {
@@ -139,7 +139,7 @@ function User({
           });
         } catch (error) {
           console.error("Error deleting previous profile picture:", error);
-          return; 
+          return;
         }
       }
 
@@ -162,12 +162,15 @@ function User({
         `/api/users/${currentUser._id}`,
         newProfilePic
       );
+      if (profilePicResponse.data) {
+        console.log(profilePicResponse.data);
 
-      // Step 4: Update state and reset file input
-      dispatch({
-        type: "UPDATEPROFILEPIC",
-        payload: profilePicResponse.data.profilePic,
-      });
+        // Step 4: Update state and reset file input
+        dispatch({
+          type: "UPDATEPROFILEPIC",
+          payload: profilePicResponse.data.profilePic,
+        });
+      }
 
       setProfilePicFile(null);
       const fileInput = document.getElementById("uploadButton");
@@ -222,7 +225,6 @@ function User({
     }
   };
 
-
   return (
     <>
       <div className="flex flex-col flex-[7]">
@@ -240,7 +242,6 @@ function User({
               alt="Cover"
               className="h-[200px] md:h-[300px] rounded-t-md mx-auto max-w-7xl w-full shadow-md object-cover"
             />
-            {/* -top-[95px] transform md:translate-y-[50px] */}
             {/* Profile and Info Section */}
             <div className="absolute top-[120px] md:top-[270px] md:left-[20px] left-1/2 transform userDetailsBox -translate-x-1/2 md:-translate-x-0 max-w-7xl mx-auto  rounded-md  w-full">
               <div className="flex flex-col items-center md:flex-row md:items-center gap-2">
@@ -248,7 +249,12 @@ function User({
                 <div className="relative">
                   {/* Profile Picture */}
                   <img
-                    src={profileUser.profilePic.replace("/upload/", "/upload/f_auto,q_auto/") || "/images/noAvatar.png"}
+                    src={
+                      profileUser.profilePic.replace(
+                        "/upload/",
+                        "/upload/f_auto,q_auto/"
+                      ) || "/images/noAvatar.png"
+                    }
                     alt="Profile"
                     className={`${
                       userId === currentUser._id

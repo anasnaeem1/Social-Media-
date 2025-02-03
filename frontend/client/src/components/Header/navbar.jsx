@@ -295,33 +295,28 @@ function Navbar() {
                 !mobileSearchInput ? "rounded-full" : "rounded-r-full"
               } cursor-pointer w-full  border-2 sm:border-none border-blue-500 flex justify-start items-center relative`}
             >
-              {/* Profile Picture */}
-
               <Link onClick={handleMenu}>
                 <img
                   onClick={handleMenuClick}
                   src={user?.profilePic || "/images/noAvatar.png"}
                   alt="Profile"
-                  className={`w-[45px] h-[45px] border shadow-xl border-gray-300 sm:w-[55px] sm:h-[55px] sm:rounded-full rounded-l-full transition-all duration-300 object-cover ${
+                  className={`w-[45px] h-[45px] sm:w-[55px] sm:h-[55px] border shadow-xl border-gray-300 sm:rounded-full rounded-l-full transition-all duration-300 object-cover ${
                     isMenuClicked
                       ? "scale-90 shadow-inner opacity-70"
-                      : "scale-100 shadow-none opacity-100"
+                      : "scale-100"
                   }`}
                 />
               </Link>
 
               {/* Search Functionality for Mobile */}
               {!isSmScreen && (
-                <div className="border-black w-full">
-                  {/* Search Button */}
-                  <button
-                    type="button"
-                    className={`w-[45px] h-[45px] lg:w-[55px] lg:h-[55px] flex items-center justify-center rounded-r-full text-white bg-blue-500 hover:bg-blue-600 transition-all duration-300`}
-                    onClick={handleSearchClick}
-                  >
-                    <i className="ri-search-2-line text-xl"></i>
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  className="w-[45px] h-[45px] lg:w-[55px] lg:h-[55px] flex items-center justify-center rounded-r-full text-white bg-blue-500 hover:bg-blue-600 transition-all"
+                  onClick={handleSearchClick}
+                >
+                  <i className="ri-search-2-line text-xl"></i>
+                </button>
               )}
 
               {isMenuVisible && (

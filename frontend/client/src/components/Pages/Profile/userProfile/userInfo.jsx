@@ -81,7 +81,7 @@ function UserInfo({ profileUser }) {
                   <img
                     src={
                       Friend.profilePic
-                        ? `/images/${Friend.profilePic}`
+                        ? `${Friend.profilePic}`
                         : `/images/noAvatar.png`
                     }
                     alt={`${Friend.fname} ${Friend.lname}`}
