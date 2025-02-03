@@ -40,6 +40,7 @@ app.use(
           "'self'",
           "https://cdn.jsdelivr.net",
           "https://cdnjs.cloudflare.com",
+          "https://fonts.googleapis.com", // Add this line
           "'unsafe-inline'",
         ],
         fontSrc: [
