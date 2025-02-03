@@ -10,6 +10,7 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
   const { user, dispatch, yourNewPost } = useContext(UserContext);
   const [postFile, setPostFile] = useState(null);
   const [previewImg, setPreviewImg] = useState(null);
+  const [postSubmitting, setPostSubmitting] = useState(null);
   const desc = useRef();
 
   const handlePostFileChange = (g) => {
@@ -32,7 +33,7 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
 
   const postSubmit = async (e) => {
     e.preventDefault();
-
+    setPostSubmitting(true);
     try {
       let uniqueFileName = null;
       if (postFile) {
@@ -52,7 +53,8 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
         uniqueFileName,
         dispatch
       );
-      console.log(newPost.data);
+      // console.log(newPost.data);
+      setPostSubmitting(false);
     } catch (error) {
       console.error(
         "An error occurred:",
@@ -143,44 +145,65 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
               accept=".png,.jpg,.jpeg"
               className="hidden"
             />
-            <label htmlFor="uploadButton" className=" flex items-center ">
+            <label htmlFor="uploadButton" className="flex items-center">
               <span className="cursor-pointer text-blue-500 text-2xl mr-1">
                 <i className="ri-image-ai-fill"></i>
               </span>
-              <span className="text-gray-600  cursor-pointer sm:block hidden text-xs sm:text-base">
+              <span className="text-gray-600 cursor-pointer sm:block hidden text-xs sm:text-base">
                 Photo or Video
               </span>
             </label>
           </div>
         </div>
 
-        <div className={`flex justify-center items-center`}>
-          <li className={` cursor-pointer  text-red-500 text-2xl mr-1`}>
+        <div className="flex justify-center items-center">
+          <li className="cursor-pointer text-red-500 text-2xl mr-1">
             <i className="ri-hashtag"></i>
           </li>
-          <span
-            className={`text-gray-600 cursor-pointer sm:block hidden text-xs sm:text-base`}
-          >
+          <span className="text-gray-600 cursor-pointer sm:block hidden text-xs sm:text-base">
             Tag
           </span>
         </div>
 
-        <div className={`flex justify-center items-center`}>
-          <li className={` cursor-pointer text-yellow-500 text-2xl mr-1`}>
+        <div className="flex justify-center items-center">
+          <li className="cursor-pointer text-yellow-500 text-2xl mr-1">
             <i className="ri-emoji-sticker-line"></i>
           </li>
-          <span
-            className={`text-gray-600 cursor-pointer sm:block hidden text-xs sm:text-base`}
-          >
+          <span className="text-gray-600 cursor-pointer sm:block hidden text-xs sm:text-base">
             Feeling
           </span>
         </div>
 
         <button
           type="submit"
-          className="py-2 px-4 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-300"
+          className="py-2 px-4 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-300 flex items-center justify-center"
+          disabled={postSubmitting} // Disable the button while submitting
         >
-          Post
+          {postSubmitting ? (
+            <span className="flex items-center gap-2">
+              {/* Loading spinner */}
+              <svg
+                className="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <circle cx="12" cy="12" r="10" strokeWidth="4" />
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="4"
+                  d="M4 12a8 8 0 1 1 16 0A8 8 0 0 1 4 12z"
+                />
+              </svg>
+              Posting...
+            </span>
+          ) : (
+            "Post"
+          )}
         </button>
       </ul>
     </form>

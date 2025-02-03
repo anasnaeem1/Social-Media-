@@ -6,8 +6,6 @@ function UserPhoto({ userId, user, onlineUsers }) {
   const { user: currentUser } = useContext(UserContext);
   const [followed, setFollowed] = useState(false);
   const [imageSrc, setImageSrc] = useState("");
-  const [retryCount, setRetryCount] = useState(0);
-  const maxRetries = 3;
   const location = useLocation();
 
   useEffect(() => {
@@ -21,24 +19,15 @@ function UserPhoto({ userId, user, onlineUsers }) {
     }
   }, [currentUser.followings, user]);
 
-  const handleImageError = () => {
-    if (retryCount < maxRetries) {
-      setRetryCount(retryCount + 1);
-      setImageSrc(`${user?.profilePic}?retry=${Date.now()}`);
-    } else {
-      setImageSrc("/images/noAvatar.png");
-    }
-  };
 
   return (
     <div className="flex flex-col justify-start items-center relative">
       <Link to={`/profile/${userId}`}>
         <div className="relative w-[58px] h-[58px] border-[3px] border-white rounded-full overflow-hidden">
           <img
-            src={imageSrc}
+            src={user.profilePic}
             alt="User Avatar"
             className="w-full h-full object-cover"
-            onError={handleImageError}
           />
 
           {userId !== currentUser._id && (

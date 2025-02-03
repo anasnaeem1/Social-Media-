@@ -27,6 +27,7 @@ function User({
   const [followLoading, setFollowLoading] = useState(false);
   const [profilePicFile, setProfilePicFile] = useState(null);
   const [updateBoxVisibility, setUpdateBoxVisibility] = useState(false);
+  const [updatingProfilePic, setUpdatingProfilePic] = useState(false);
   const [cPostFile, setCPostFile] = useState(true);
   const navigate = useNavigate();
 
@@ -109,15 +110,15 @@ function User({
     }
   };
 
-  // Handle profile picture change
   const handleProfilePicChange = (e) => {
     const selectedPic = e.target.files[0];
-    setProfilePicFile(selectedPic || null);
-    setUpdateBoxVisibility(!!selectedPic);
+
+    if (!selectedPic) return;
+    setProfilePicFile(selectedPic);
+    // setUpdateBoxVisibility(!selectedPic);
     dispatch({ type: "SHOW_UPLOADPROFILEBOX" });
   };
 
-  // Update cPostFile whenever profilePicFile changes
   useEffect(() => {
     setCPostFile(!profilePicFile); // true if profilePicFile is null, false otherwise
   }, [profilePicFile]);
@@ -132,15 +133,11 @@ function User({
     }
 
     try {
+      setUpdatingProfilePic(true);
       if (currentUser.profilePic) {
-        try {
-          await axios.delete(`/api/delete`, {
-            data: { url: currentUser.profilePic },
-          });
-        } catch (error) {
-          console.error("Error deleting previous profile picture:", error);
-          return;
-        }
+        const deletingOldFile = await axios.delete(`/api/delete`, {
+          data: { url: currentUser.profilePic },
+        });
       }
 
       const data = new FormData();
@@ -165,7 +162,6 @@ function User({
       if (profilePicResponse.data) {
         console.log(profilePicResponse.data);
 
-        // Step 4: Update state and reset file input
         dispatch({
           type: "UPDATEPROFILEPIC",
           payload: profilePicResponse.data.profilePic,
@@ -177,6 +173,7 @@ function User({
       if (fileInput) {
         fileInput.value = "";
       }
+      setUpdatingProfilePic(false);
     } catch (error) {
       console.error(
         "An error occurred during profile picture update:",
@@ -247,23 +244,27 @@ function User({
               <div className="flex flex-col items-center md:flex-row md:items-center gap-2">
                 {/* Profile Picture */}
                 <div className="relative">
-                  {/* Profile Picture */}
-                  <img
-                    src={
-                      profileUser.profilePic.replace(
-                        "/upload/",
-                        "/upload/f_auto,q_auto/"
-                      ) || "/images/noAvatar.png"
-                    }
-                    alt="Profile"
-                    className={`${
-                      userId === currentUser._id
-                        ? "border-[3px] border-white"
-                        : ""
-                    }${
-                      !profileUser.profilePic && "border-none"
-                    } border-[2px] border-white h-[140px] w-[140px] md:h-[156px] md:w-[156px] sm:h-[156px] sm:w-[156px] rounded-full shadow-lg mx-auto md:mx-0 object-cover`}
-                  />
+                  {/* Profile Picture or Skeleton Loader */}
+                  {!profileUser.profilePic ? (
+                    <div className="h-[140px] w-[140px] md:h-[156px] md:w-[156px] sm:h-[156px] sm:w-[156px] rounded-full bg-gray-300 animate-pulse shadow-lg mx-auto md:mx-0"></div>
+                  ) : (
+                    <img
+                      src={
+                        profileUser.profilePic.replace(
+                          "/upload/",
+                          "/upload/f_auto,q_auto/"
+                        ) || "/images/noAvatar.png"
+                      }
+                      alt="Profile"
+                      className={`${
+                        userId === currentUser._id
+                          ? "border-[3px] border-white"
+                          : ""
+                      }${
+                        !profileUser.profilePic && "border-none"
+                      } border-[2px] border-white h-[140px] w-[140px] md:h-[156px] md:w-[156px] sm:h-[156px] sm:w-[156px] rounded-full shadow-lg mx-auto md:mx-0 object-cover`}
+                    />
+                  )}
 
                   {/* Circular Progress Bar (for non-current user) */}
                   {userId !== currentUser._id && (
@@ -311,8 +312,7 @@ function User({
                       )}
                     </div>
                   ) : editVisibility ? (
-                    <div className="absolute left-1/2 bottom-[-20px] transform -translate-x-1/2 cursor-pointer w-[140px] h-12 bg-white rounded-full flex items-center justify-between px-4 shadow-lg border border-gray-200">
-                      {/* Hidden File Input */}
+                    <>
                       <input
                         enctype="multipart/form-data"
                         onChange={handleProfilePicChange}
@@ -321,23 +321,17 @@ function User({
                         accept=".png,.jpg,.jpeg"
                         className="hidden"
                       />
-
-                      {/* Profile Picture Update */}
+                      {/* Label wrapping everything to trigger file input */}
                       <label
                         htmlFor="uploadProfilePicBtn"
-                        className="flex items-center gap-2 hover:text-blue-600 transition cursor-pointer"
+                        className="absolute left-1/2 bottom-[-20px] transform -translate-x-1/2 cursor-pointer py-2 bg-white rounded-full flex items-center justify-between hover:bg-blue-100 px-4 shadow-lg border border-gray-200 hover:text-blue-600 transition"
                       >
                         <i className="text-lg ri-image-edit-line text-gray-500"></i>
-                        <button className="text-sm font-medium text-gray-600">
+                        <span className="text-sm font-medium text-gray-600">
                           Update
-                        </button>
+                        </span>
                       </label>
-
-                      {/* More Options (Three Dots) */}
-                      <div className="p-2 rounded-full hover:bg-gray-100 transition flex justify-center items-center">
-                        <i className="text-lg ri-more-2-line text-gray-500"></i>
-                      </div>
-                    </div>
+                    </>
                   ) : (
                     ""
                   )}
@@ -351,7 +345,6 @@ function User({
                   <p className="text-sm text-gray-600 md:text-base">
                     {profileUser.bio}
                   </p>
-
                   {/* Action Buttons */}
                   <div className="mt-4 flex flex-wrap gap-4 justify-center md:justify-start">
                     {userId !== currentUser._id ? (
@@ -448,12 +441,46 @@ function User({
                   Change File
                 </label>
 
+                <input
+                  enctype="multipart/form-data"
+                  onChange={handleProfilePicChange}
+                  type="file"
+                  id="uploadButton"
+                  accept=".png,.jpg,.jpeg"
+                  className="hidden text-xl"
+                />
+
                 {/* Upload Button */}
                 <button
+                  type="submit"
+                  className="py-2 px-4 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-300 flex items-center justify-center"
                   onClick={handleProfilePictureUpdate}
-                  className="bg-green-600 text-white px-5 py-2 rounded-lg hover:bg-green-700 transition w-1/2 text-center"
+                  disabled={updatingProfilePic}
                 >
-                  Upload
+                  {updatingProfilePic ? (
+                    <span className="flex items-center gap-2">
+                      <svg
+                        className="animate-spin h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                      >
+                        <circle cx="12" cy="12" r="10" strokeWidth="4" />
+                        <path
+                          fill="none"
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="4"
+                          d="M4 12a8 8 0 1 1 16 0A8 8 0 0 1 4 12z"
+                        />
+                      </svg>
+                      Uplaoding...
+                    </span>
+                  ) : (
+                    "Upload"
+                  )}
                 </button>
               </div>
 
@@ -469,14 +496,6 @@ function User({
       )}
 
       {/* Hidden File Input */}
-      <input
-        enctype="multipart/form-data"
-        onChange={handleProfilePicChange}
-        type="file"
-        id="uploadButton"
-        accept=".png,.jpg,.jpeg"
-        className="hidden text-xl"
-      />
     </>
   );
 }
