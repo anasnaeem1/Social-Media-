@@ -31,8 +31,11 @@ app.use(express.static(STATIC_PATH));
 app.use(morgan("common"));
 app.use(
   helmet({
-    crossOriginResourcePolicy: {
-      policy: "cross-origin",
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        imgSrc: ["'self'", "https://res.cloudinary.com", "data:", "blob:"],
+      },
     },
   })
 );
@@ -61,15 +64,6 @@ app.use("/*", async (_req, res, _next) => {
     .set("Content-Type", "text/html")
     .send(readFileSync(path.join(STATIC_PATH, "index.html")));
 });
-
-app.use((_req, res, next) => {
-  res.setHeader(
-    "Content-Security-Policy",
-    "default-src 'self'; img-src 'self' https://res.cloudinary.com data:;"
-  );
-  next();
-});
-
 
 app.listen(PORT, () => {
   console.log(`Backend server is running on port ${PORT}`);
