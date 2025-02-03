@@ -1,17 +1,22 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "./context/UserContext";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 function UserPhoto({ userId, user, onlineUsers }) {
   const { user: currentUser } = useContext(UserContext);
   const [followed, setFollowed] = useState(false);
-  const [imageSrc, setImageSrc] = useState(user?.profilePic || "/images/noAvatar.png");
+  const [imageSrc, setImageSrc] = useState("");
   const [retryCount, setRetryCount] = useState(0);
-  const maxRetries = 3; // Prevent infinite loops
+  const maxRetries = 3;
+  const location = useLocation();
+
+  useEffect(() => {
+    setImageSrc(user?.profilePic ? `${user.profilePic}?v=${Date.now()}` : "/images/noAvatar.png");
+  }, [user?.profilePic, location.pathname]); // Reset when user pic or route changes
 
   useEffect(() => {
     if (user._id && Array.isArray(currentUser.followings)) {
-      const isFollowed = currentUser.followings.map((id) => id.toString()).includes(user._id.toString());
+      const isFollowed = currentUser.followings.some((id) => id.toString() === user._id.toString());
       setFollowed(isFollowed);
     }
   }, [currentUser.followings, user]);
@@ -19,9 +24,9 @@ function UserPhoto({ userId, user, onlineUsers }) {
   const handleImageError = () => {
     if (retryCount < maxRetries) {
       setRetryCount(retryCount + 1);
-      setImageSrc(user?.profilePic + `?retry=${retryCount}`); // Add query param to bypass cache
+      setImageSrc(`${user?.profilePic}?retry=${Date.now()}`);
     } else {
-      setImageSrc("/images/noAvatar.png"); // Fallback to default after max retries
+      setImageSrc("/images/noAvatar.png");
     }
   };
 
@@ -33,7 +38,7 @@ function UserPhoto({ userId, user, onlineUsers }) {
             src={imageSrc}
             alt="User Avatar"
             className="w-full h-full object-cover"
-            onError={handleImageError} // Retry if image fails
+            onError={handleImageError}
           />
 
           {userId !== currentUser._id && (
