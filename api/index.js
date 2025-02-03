@@ -29,11 +29,19 @@ app.use(express.static(STATIC_PATH));
 
 // Middleware
 app.use(morgan("common"));
+// Set up CSP headers
 app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "https://cdn.jsdelivr.net"],
+        styleSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
+        fontSrc: [
+          "'self'",
+          "https://fonts.gstatic.com",
+          "https://cdn.jsdelivr.net",
+        ],
         imgSrc: ["'self'", "https://res.cloudinary.com", "data:", "blob:"],
       },
     },
