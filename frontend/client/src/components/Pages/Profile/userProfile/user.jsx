@@ -132,6 +132,19 @@ function User({
     }
 
     try {
+      // Step 1: Delete existing profile picture if it exists
+      if (currentUser.profilePic) {
+        try {
+          await axios.delete(`/api/delete`, {
+            data: { url: currentUser.profilePic }, // Corrected payload structure
+          });
+        } catch (error) {
+          console.error("Error deleting previous profile picture:", error);
+          return; // Stop execution if delete fails
+        }
+      }
+
+      // Step 2: Upload new profile picture
       const data = new FormData();
       data.append("file", profilePicFile);
 
@@ -141,6 +154,7 @@ function User({
 
       const uniqueFileName = uploadResponse.data.url;
 
+      // Step 3: Update user profile with new profile picture
       const newProfilePic = {
         userId: currentUser._id,
         profilePic: uniqueFileName,
@@ -151,6 +165,7 @@ function User({
         newProfilePic
       );
 
+      // Step 4: Update state and reset file input
       dispatch({
         type: "UPDATEPROFILEPIC",
         payload: profilePicResponse.data.profilePic,
@@ -161,28 +176,6 @@ function User({
       if (fileInput) {
         fileInput.value = "";
       }
-
-      // if (uploadResponse.data) {
-      //   if (currentUser.profilePic) {
-      //     try {
-      //       await axios.delete(`/api/delete`, {
-      //         url: currentUser.profilePic,
-      //       });
-      //       const newPhoto = {
-      //         userId: currentUser._id,
-      //         isProfileUpdate: true,
-      //         img: profilePicResponse.data.profilePic,
-      //       };
-      //       const profilePicPostResponse = await axios.post(
-      //         "/api/users/",
-      //         newPhoto
-      //       );
-      //       console.log(profilePicPostResponse.data);
-      //     } catch (error) {
-      //       console.error(error);
-      //     }
-      //   }
-      // }
     } catch (error) {
       console.error(
         "An error occurred during profile picture update:",
