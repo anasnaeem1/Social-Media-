@@ -7,7 +7,7 @@ const connectDB = require("./src/db/index.js");
 const userRouter = require("./src/routes/users.js");
 const authRouter = require("./src/routes/auth.js");
 const postRouter = require("./src/routes/post.js");
-const uploadRouter = require("./src/routes/fileUpload.js");
+const fileManager = require("./src/routes/fileManager.js");
 const deleteRouter = require("./src/routes/fileDelete.js");
 const convosRouter = require("./src/routes/convos.js");
 const commentsRouter = require("./src/routes/comments.js");
@@ -47,7 +47,7 @@ app.use("/api/comments", commentsRouter);
 app.use("/api/commentsReplies", commentReplies);
 app.use("/api/search", search);
 app.use("/api/messages", messagesRouter);
-app.use("/api", uploadRouter);
+app.use("/api", fileManager);
 app.use("/api/delete", deleteRouter);
 
 app.use(

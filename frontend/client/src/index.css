@@ -107,6 +107,7 @@
   }
 }
 
+
 .bg-animate {
   animation: bg-animate 0.7s ease-in-out forwards;
 }
@@ -116,6 +117,13 @@
     width: 320px;
   }
 }
+
+@media (min-width: 1646px) {
+  .userDetailsBox {
+    left: 20% !important;
+  }
+}
+
 
 @media (max-width: 640px) {
   #comment-box textarea {

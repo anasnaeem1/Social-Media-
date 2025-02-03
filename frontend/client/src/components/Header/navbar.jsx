@@ -309,7 +309,7 @@ function Navbar() {
                     backgroundImage: `url(${
                       user
                         ? user.profilePic
-                          ? `/images/${user.profilePic}`
+                          ? `${user.profilePic}`
                           : `/images/noAvatar.png`
                         : undefined
                     })`,

@@ -10,11 +10,13 @@ function Others({ mainItems }) {
       <div className="fixed right-0 top-[65px] custom-scrollbar overflow-y-scroll others-container">
         <div className="flex flex-col gap-5 max-w-[400px] w-full mx-auto">
           {/* Birthday Section */}
-          <div className="flex items-center gap-3 p-4 bg-gray-100 rounded-lg shadow-md">
+          <div className="flex items-center gap-3 p-4 rounded-lg shadow-md">
             <img
-              src={"/images/birthdayGift.png"}
+              src={
+                "https://res.cloudinary.com/datcr1zua/image/upload/v1738545241/uploads/eidjo4mpfimaifk2wxdu.avif"
+              }
               alt="Birthday Gift"
-              className="w-[3.5rem] h-[3.5rem] rounded-full border border-gray-300"
+              className="w-[4rem] tranform -rotate-12 h-[4rem] rounded-full"
             />
             <span className="text-sm md:text-md">
               <span className="font-semibold text-gray-800">Pola Foster</span>{" "}
@@ -30,7 +32,7 @@ function Others({ mainItems }) {
           <div className="flex justify-center items-center">
             <div
               className="relative w-full h-[250px] rounded-xl bg-cover bg-center overflow-hidden"
-              style={{ backgroundImage: `url(${"/images/birthday.jpg"})` }}
+              style={{ backgroundImage: `url(${"https://res.cloudinary.com/datcr1zua/image/upload/v1738545416/uploads/haoudkdk9urtk7nmpl3m.avif"})` }}
             >
               {/* Overlay */}
               <div className="absolute w-full h-full bg-black opacity-40 rounded-xl"></div>

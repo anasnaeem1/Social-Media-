@@ -30,20 +30,29 @@ export const searchUser = async (Username, dispatch) => {
 };
 
 export const submittingPost = async (userId, desc, img, dispatch) => {
-  // const PA = import.meta.env.VITE_PUBLIC_API;
   try {
-    const newPost = {
-      userId: userId,
-      desc: desc,
-      img: img || "",
-    };
+    let newPost;
+    if (img) {
+      newPost = {
+        userId: userId,
+        desc: desc,
+        img: img,
+      };
+    } else {
+      newPost = {
+        userId: userId,
+        desc: desc,
+      };
+    }
+
     const postResponse = await axios.post(`/api/posts/`, newPost);
-    if (postResponse.data)
+    if (postResponse.data) {
       dispatch({
         type: "YOURNEWPOST",
         payload: postResponse.data,
       });
-      return postResponse.data
+    }
+    return postResponse.data;
   } catch (error) {
     console.error(error);
     throw error;

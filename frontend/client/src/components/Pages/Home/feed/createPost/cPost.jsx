@@ -12,7 +12,6 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
   const [previewImg, setPreviewImg] = useState(null);
   const desc = useRef();
 
-  // console.log("userId", userId);
 
   const handlePostFileChange = (g) => {
     const selectedPostPic = g.target.files[0];
@@ -45,7 +44,7 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
           headers: { "Content-Type": "multipart/form-data" },
         });
 
-        uniqueFileName = uploadResponse.data;
+        uniqueFileName = uploadResponse.data.url;
         console.log("Received unique filename:", uniqueFileName);
       }
       const newPost = await submittingPost(
@@ -54,6 +53,7 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
         uniqueFileName,
         dispatch
       );
+      console.log(newPost.data)
     } catch (error) {
       console.error(
         "An error occurred:",
@@ -170,17 +170,6 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
             Feeling
           </span>
         </div>
-
-        {/* {ShareOptions.map((option, id) => {
-          const colorClasses = [
-            "text-red-600",
-            "text-blue-600",
-            "text-green-600",
-            "text-yellow-600",
-          ];
-          return (
-          );
-        })} */}
 
         <button
           type="submit"

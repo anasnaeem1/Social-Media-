@@ -356,7 +356,7 @@ function Post({ post, userId, searchInput }) {
                     <Link to={`/photo/${[post.img]}`}>
                       <div className="mt-3 w-full rounded-md overflow-hidden">
                         <img
-                          src={`/images/${post.img}`}
+                          src={`${post.img}`}
                           alt="Post Image"
                           className="w-full object-contain h-auto"
                         />

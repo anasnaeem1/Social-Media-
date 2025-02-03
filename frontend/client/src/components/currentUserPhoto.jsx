@@ -1,5 +1,5 @@
 // import User from "./assets/user.jpg";
-import { useContext } from "react";  
+import { useContext } from "react";
 // import noAvatar from "./assets/noAvatar.jpg";
 import { UserContext } from "./context/UserContext";
 import { Link } from "react-router-dom";
@@ -15,8 +15,8 @@ function user() {
           backgroundImage: `url(${
             user
               ? user.profilePic
-                ? `${"/images/"}/${user.profilePic}`
-                : `${"/images/"}/noAvatar.png`
+                ? `${user.profilePic}`
+                : `noAvatar.png`
               : undefined
           })`,
           opacity: 1,

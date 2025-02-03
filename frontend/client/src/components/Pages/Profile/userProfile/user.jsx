@@ -135,18 +135,17 @@ function User({
       const data = new FormData();
       data.append("file", profilePicFile);
 
-      // Upload the file
-      const uploadResponse = await axios.post(`/api/uploads`, data);
+      const uploadResponse = await axios.post(`/api/uploads`, data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
-      const uniqueFileName = uploadResponse.data;
-      // console.log("Received unique filename:", uniqueFileName);
+      const uniqueFileName = uploadResponse.data.url;
 
       const newProfilePic = {
         userId: currentUser._id,
         profilePic: uniqueFileName,
       };
 
-      // Submit the profile picture update request
       const profilePicResponse = await axios.put(
         `/api/users/${currentUser._id}`,
         newProfilePic
@@ -163,27 +162,27 @@ function User({
         fileInput.value = "";
       }
 
-      if (uploadResponse.data) {
-        if (currentUser.profilePic) {
-          try {
-            await axios.delete(`/api/delete/${currentUser.profilePic}`);
-            const newPost = {
-              userId: currentUser._id,
-              isProfileUpdate: true,
-              img: profilePicResponse.data.profilePic,
-            };
-
-            // console.log("Submitting new post...");
-            const profilePicPostResponse = await axios.post(
-              "/api/posts/",
-              newPost
-            );
-            console.log(profilePicPostResponse.data);
-          } catch (error) {
-            console.error(error);
-          }
-        }
-      }
+      // if (uploadResponse.data) {
+      //   if (currentUser.profilePic) {
+      //     try {
+      //       await axios.delete(`/api/delete`, {
+      //         url: currentUser.profilePic,
+      //       });
+      //       const newPhoto = {
+      //         userId: currentUser._id,
+      //         isProfileUpdate: true,
+      //         img: profilePicResponse.data.profilePic,
+      //       };
+      //       const profilePicPostResponse = await axios.post(
+      //         "/api/users/",
+      //         newPhoto
+      //       );
+      //       console.log(profilePicPostResponse.data);
+      //     } catch (error) {
+      //       console.error(error);
+      //     }
+      //   }
+      // }
     } catch (error) {
       console.error(
         "An error occurred during profile picture update:",
@@ -245,7 +244,7 @@ function User({
               style={{
                 backgroundImage: `url(${
                   profileUser.coverPic
-                    ? `/images/${profileUser.coverPic}`
+                    ? `${profileUser.coverPic}`
                     : `/images/noCover.jpg`
                 })`,
                 backgroundSize: "cover",
@@ -254,7 +253,7 @@ function User({
             ></div>
             {/* -top-[95px] transform md:translate-y-[50px] */}
             {/* Profile and Info Section */}
-            <div className="absolute top-[120px] md:top-[270px] md:left-[20px] left-1/2 transform -translate-x-1/2 md:-translate-x-0 max-w-7xl mx-auto  rounded-md  w-full">
+            <div className="absolute top-[120px] md:top-[270px] md:left-[20px] left-1/2 transform userDetailsBox -translate-x-1/2 md:-translate-x-0 max-w-7xl mx-auto  rounded-md  w-full">
               <div className="flex flex-col items-center md:flex-row md:items-center gap-2">
                 {/* Profile Picture */}
                 <div
@@ -268,7 +267,7 @@ function User({
                   style={{
                     backgroundImage: `url(${
                       profileUser.profilePic
-                        ? `/images/${profileUser.profilePic}`
+                        ? `${profileUser.profilePic}`
                         : `/images/noAvatar.png`
                     })`,
                     backgroundSize: "cover",
