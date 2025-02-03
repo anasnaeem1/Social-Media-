@@ -55,11 +55,17 @@ app.use(
   express.static(path.join(__dirname, "./src/public/dist/assets"))
 );
 
-app.use("/*", async (_req, res, _next) => {
-  return res
-    .status(200)
-    .set("Content-Type", "text/html")
-    .send(readFileSync(path.join(STATIC_PATH, "index.html")));
+app.use(express.static("public")); // Ensure your HTML is inside "public"
+app.get("/*", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+app.use((_req, res, next) => {
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self'; img-src 'self' https://res.cloudinary.com data:; script-src 'self' 'unsafe-inline' 'unsafe-eval';"
+  );
+  next();
 });
 
 app.listen(PORT, () => {
