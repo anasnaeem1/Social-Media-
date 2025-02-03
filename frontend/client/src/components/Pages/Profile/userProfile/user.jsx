@@ -132,7 +132,6 @@ function User({
     }
 
     try {
-      // Step 1: Delete existing profile picture if it exists
       if (currentUser.profilePic) {
         try {
           await axios.delete(`/api/delete`, {
@@ -249,7 +248,7 @@ function User({
                 <div className="relative">
                   {/* Profile Picture */}
                   <img
-                    src={profileUser.profilePic || "/images/noAvatar.png"}
+                    src={profileUser.profilePic.replace("/upload/", "/upload/f_auto,q_auto/") || "/images/noAvatar.png"}
                     alt="Profile"
                     className={`${
                       userId === currentUser._id
