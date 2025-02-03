@@ -16,7 +16,9 @@ const isCloudinaryConfigured = () => {
 };
 
 if (!isCloudinaryConfigured()) {
-  console.error("Cloudinary configuration is missing. Please check your .env file.");
+  console.error(
+    "Cloudinary configuration is missing. Please check your .env file."
+  );
 }
 
 cloudinary.config({
@@ -29,22 +31,25 @@ router.use(fileUpload({ useTempFiles: true, tempFileDir: "/tmp/" }));
 
 router.post("/uploads", async (req, res) => {
   try {
-    if (!isCloudinaryConfigured()) {
-      return res.status(500).json({ error: "Cloudinary configuration is missing" });
-    }
+    // if (!isCloudinaryConfigured()) {
+    //   return res
+    //     .status(500)
+    //     .json({ error: "Cloudinary configuration is missing" });
+    // }
 
     if (!req.files || Object.keys(req.files).length === 0) {
       return res.status(400).json({ error: "No file uploaded" });
     }
 
-    const file = req.files.file; 
-    console.log("Uploaded file:", file); 
+    const file = req.files.file;
+    console.log("Uploaded file:", file);
 
-    const result = await cloudinary.uploader.upload(file.tempFilePath, {
-      folder: "uploads",
-    });
-
-    res.status(200).json({ url: result.secure_url });
+    if (isCloudinaryConfigured()) {
+      const result = await cloudinary.uploader.upload(file.tempFilePath, {
+        folder: "uploads",
+      });
+      res.status(200).json({ url: result.secure_url });
+    }
   } catch (error) {
     console.error("Cloudinary Upload Error:", error);
     res.status(500).json({ error: "Upload failed", details: error.message });
