@@ -58,7 +58,7 @@ function User({
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [followLoading]);
-
+  
   // Fetching Convo
   useEffect(() => {
     if (profileUser._id) {
@@ -222,6 +222,7 @@ function User({
       console.error(error);
     }
   };
+
 
   return (
     <>

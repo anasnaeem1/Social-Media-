@@ -62,6 +62,15 @@ app.use("/*", async (_req, res, _next) => {
     .send(readFileSync(path.join(STATIC_PATH, "index.html")));
 });
 
+app.use((_req, res, next) => {
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self'; img-src 'self' https://res.cloudinary.com data:;"
+  );
+  next();
+});
+
+
 app.listen(PORT, () => {
   console.log(`Backend server is running on port ${PORT}`);
 });
