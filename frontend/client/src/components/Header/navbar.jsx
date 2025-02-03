@@ -298,23 +298,16 @@ function Navbar() {
               {/* Profile Picture */}
 
               <Link onClick={handleMenu}>
-                <div
+                <img
                   onClick={handleMenuClick}
-                  className={` w-[45px] h-[45px] border-black sm:w-[55px] sm:h-[55px] bg-cover bg-no-repeat sm:rounded-full rounded-l-full transition-all duration-300 ${
+                  src={user?.profilePic || "/images/noAvatar.png"}
+                  alt="Profile"
+                  className={`w-[45px] h-[45px] border shadow-xl border-gray-300 sm:w-[55px] sm:h-[55px] sm:rounded-full rounded-l-full transition-all duration-300 object-cover ${
                     isMenuClicked
                       ? "scale-90 shadow-inner opacity-70"
                       : "scale-100 shadow-none opacity-100"
                   }`}
-                  style={{
-                    backgroundImage: `url(${
-                      user
-                        ? user.profilePic
-                          ? `${user.profilePic}`
-                          : `/images/noAvatar.png`
-                        : undefined
-                    })`,
-                  }}
-                ></div>
+                />
               </Link>
 
               {/* Search Functionality for Mobile */}

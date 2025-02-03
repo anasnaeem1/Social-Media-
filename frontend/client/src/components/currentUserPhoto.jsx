@@ -9,19 +9,11 @@ function user() {
 
   return (
     <Link to={user ? "/profile/" + user._id : undefined}>
-      <div
-        className={` w-[50px] h-[50px] bg-cover bg-no-repeat rounded-full`}
-        style={{
-          backgroundImage: `url(${
-            user
-              ? user.profilePic
-                ? `${user.profilePic}`
-                : `noAvatar.png`
-              : undefined
-          })`,
-          opacity: 1,
-        }}
-      ></div>
+      <img
+        src={user?.profilePic || "noAvatar.png"}
+        alt="User Avatar"
+        className="w-[50px] h-[50px] rounded-full object-cover"
+      />
     </Link>
   );
 }

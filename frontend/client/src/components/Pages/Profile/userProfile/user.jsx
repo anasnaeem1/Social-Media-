@@ -239,41 +239,35 @@ function User({
         ) : (
           <div className="relative flex flex-col gap-0">
             {/* Cover Photo Section */}
-            <div
-              className="h-[200px] md:h-[300px] rounded-t-md mx-auto max-w-7xl w-full shadow-md"
-              style={{
-                backgroundImage: `url(${
-                  profileUser.coverPic
-                    ? `${profileUser.coverPic}`
-                    : `/images/noCover.jpg`
-                })`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-            ></div>
+            <img
+              src={
+                profileUser.coverPic
+                  ? profileUser.coverPic
+                  : "/images/noCover.jpg"
+              }
+              alt="Cover"
+              className="h-[200px] md:h-[300px] rounded-t-md mx-auto max-w-7xl w-full shadow-md object-cover"
+            />
             {/* -top-[95px] transform md:translate-y-[50px] */}
             {/* Profile and Info Section */}
             <div className="absolute top-[120px] md:top-[270px] md:left-[20px] left-1/2 transform userDetailsBox -translate-x-1/2 md:-translate-x-0 max-w-7xl mx-auto  rounded-md  w-full">
               <div className="flex flex-col items-center md:flex-row md:items-center gap-2">
                 {/* Profile Picture */}
-                <div
-                  className={`${
-                    userId === currentUser._id
-                      ? "border-[3px] border-white"
-                      : ""
-                  }${
-                    !profileUser.profilePic && "border-none"
-                  } relative border-[2px] border-white h-[140px] w-[140px] md:h-[156px] md:w-[156px] sm:h-[156px] sm:w-[156px] rounded-full shadow-lg mx-auto md:mx-0`}
-                  style={{
-                    backgroundImage: `url(${
-                      profileUser.profilePic
-                        ? `${profileUser.profilePic}`
-                        : `/images/noAvatar.png`
-                    })`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }}
-                >
+                <div className="relative">
+                  {/* Profile Picture */}
+                  <img
+                    src={profileUser.profilePic || "/images/noAvatar.png"}
+                    alt="Profile"
+                    className={`${
+                      userId === currentUser._id
+                        ? "border-[3px] border-white"
+                        : ""
+                    }${
+                      !profileUser.profilePic && "border-none"
+                    } border-[2px] border-white h-[140px] w-[140px] md:h-[156px] md:w-[156px] sm:h-[156px] sm:w-[156px] rounded-full shadow-lg mx-auto md:mx-0 object-cover`}
+                  />
+
+                  {/* Circular Progress Bar (for non-current user) */}
                   {userId !== currentUser._id && (
                     <svg
                       className="absolute top-0 left-0 h-[162px] w-[162px] transform -translate-y-[5px] -translate-x-[5px] rotate-[90deg]"
@@ -290,8 +284,7 @@ function User({
                       <circle
                         className={`fill-none stroke-[4px] ${
                           followed ? "loading-start" : "loading-end"
-                        }
-          `}
+                        }`}
                         cx="80"
                         cy="80"
                         r="75"
@@ -303,6 +296,7 @@ function User({
                     </svg>
                   )}
 
+                  {/* Follow Button or Edit Options */}
                   {userId !== currentUser._id ? (
                     <div
                       onClick={handleFollow}

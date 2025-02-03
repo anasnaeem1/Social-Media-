@@ -20,23 +20,17 @@ function userPhoto({ userId, user, onlineUsers }) {
   return (
     <div className="flex flex-col justify-start items-center relative">
       <Link to={`/profile/${userId}`}>
-        <div
-          className="relative w-[58px] h-[58px] border-[3px] border-white rounded-full"
-          style={{
-            backgroundImage: `url(${
-              user.profilePic
-                ? `${user.profilePic}`
-                : "/images/noAvatar.png"
-            })`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        >
+        <div className="relative w-[58px] h-[58px] border-[3px] border-white rounded-full overflow-hidden">
+          <img
+            src={user?.profilePic || "/images/noAvatar.png"}
+            alt="User Avatar"
+            className="w-full h-full object-cover"
+          />
+
           {userId !== currentUser._id && (
             <svg
-              className="w-[55px] h-[55px] rounded-full transform -translate-y-[1px] -translate-x-[1px] rotate-[90deg]"
+              className="absolute top-0 left-0 w-full h-full transform rotate-[90deg]"
               xmlns="http://www.w3.org/2000/svg"
-              version="1.1"
               viewBox="0 0 160 160"
             >
               <defs>
@@ -49,7 +43,7 @@ function userPhoto({ userId, user, onlineUsers }) {
               <circle
                 className={`fill-none stroke-[6px] ${
                   !followed ? "loading-end" : "loading-start"
-                }`} // Increased stroke width for visibility
+                }`}
                 cx="80"
                 cy="80"
                 r="75"
