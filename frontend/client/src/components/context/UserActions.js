@@ -117,3 +117,13 @@ export const setMobileSearchInput = (boolean) => ({
   type: "MOBILESEARCHINPUT",
   payload: boolean,
 });
+
+export const setLoadedPosts = (feedRef) => ({
+  type: "UPDATELOADEDPOST",
+  payload: feedRef,
+});
+
+export const setScrollPosition = (scrollPosition) => ({
+  type: "SET_SCROLL_POSITION",
+  payload: scrollPosition,
+});

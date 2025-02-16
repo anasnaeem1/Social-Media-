@@ -105,6 +105,7 @@ function Navbar() {
   const handleReload = () => {
     setIsMenuVisible(false);
     dispatch({ type: "RELOAD", payload: true });
+    dispatch({ type: "UPDATELOADEDPOST", payload: [] });
   };
 
   const handleMenu = (e) => {
@@ -175,7 +176,7 @@ function Navbar() {
             className={` text-white border-black`}
             onClick={() => {
               handleClearInput();
-              handleReload();
+              handleReload();  
             }}
           >
             <Link to="/">
@@ -328,7 +329,7 @@ function Navbar() {
                   <div className="flex items-center px-4 py-4 bg-gray-50 hover:bg-gray-100 transition-colors">
                     <CurrentUserPhoto />
                     <span className="ml-4 text-gray-800 text-lg font-semibold">
-                      {user.username}
+                      {user.fullname}
                     </span>
                   </div>
                   <hr className="border-gray-200" />

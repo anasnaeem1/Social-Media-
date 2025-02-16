@@ -57,7 +57,7 @@ const AuthReducer = (state, action) => {
     case "LOGOUT": // Handle logout
       return {
         ...state,
-        user: null, // Reset user state to null
+        user: null,
         isFetching: false,
         error: false,
       };
@@ -145,11 +145,19 @@ const AuthReducer = (state, action) => {
         ...state,
         postId: action.payload,
       };
-      case "MOBILESEARCHINPUT":
-        return {
-          ...state,
-          mobileSearchInput: action.payload,
-        };
+    case "MOBILESEARCHINPUT":
+      return {
+        ...state,
+        mobileSearchInput: action.payload,
+      };
+
+    case "UPDATELOADEDPOST":
+      return {
+        ...state,
+        loadedPosts: action.payload,
+      };
+    case "SET_SCROLL_POSITION":
+      return { ...state, scrollPosition: action.payload };
 
     default:
       return state;

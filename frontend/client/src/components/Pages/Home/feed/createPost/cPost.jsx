@@ -92,7 +92,7 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
           <input
             ref={desc}
             className="w-full py-2 px-3 rounded-md border focus:outline-none focus:ring-2 focus:ring-gray-300"
-            placeholder={`What’s on your mind ${user.username}?`}
+            placeholder={`What’s on your mind ${user.fullname}?`}
             type="text"
           />
         </div>

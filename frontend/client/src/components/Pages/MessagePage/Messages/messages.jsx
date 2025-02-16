@@ -92,8 +92,8 @@ function Messages({
         if (convo?.members) {
           const sender = convo.members.find((e) => e !== currentUser._id);
           if (sender) {
-            const res = await axios.get(`/api/users?userId=${sender}`);
-            setUser(res.data);
+            const user = await getUser(sender, 0);
+            setUser(user);
           }
         }
       } catch (error) {

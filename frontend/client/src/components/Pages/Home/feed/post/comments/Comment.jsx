@@ -7,10 +7,9 @@ import { UserContext } from "../../../../../context/UserContext";
 import Reply from "../comments/reply";
 import { getFormControlUtilityClasses } from "@mui/material";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { getUser, uploadPhoto } from "../../../../../../apiCalls";
 
-function Comment({ userId, postId, postUser, comment, newComment }) {
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images/";
-  const PA = import.meta.env.VITE_PUBLIC_API;
+function Comment({ userId, postId, viewPhoto, postUser, comment, newComment }) {
   const navigate = useNavigate();
   const [commentUser, setCommentUser] = useState(null);
   const { user } = useContext(UserContext);
@@ -21,6 +20,8 @@ function Comment({ userId, postId, postUser, comment, newComment }) {
   const [replies, setReplies] = useState([]);
   const [repliesVisibility, setRepliesVisibility] = useState(false);
   const [isHighlighted, setIsHighlighted] = useState(newComment);
+  const [replyPicture, setReplyPicture] = useState(null);
+  const [replyPicPreview, setReplyPicPreview] = useState(null);
   const [newReply, setNewReply] = useState(false);
   // const { userId } = useParams();
 
@@ -33,8 +34,8 @@ function Comment({ userId, postId, postUser, comment, newComment }) {
       try {
         if (comment?.userId) {
           setUserFetching(true);
-          const res = await axios.get(`/api/users?userId=${comment.userId}`);
-          setCommentUser(res.data);
+          const user = await getUser(comment?.userId, 0);
+          setCommentUser(user);
           setUserFetching(false);
         }
       } catch (error) {
@@ -56,7 +57,7 @@ function Comment({ userId, postId, postUser, comment, newComment }) {
     if (isHighlighted) {
       const timeout = setTimeout(() => {
         setIsHighlighted(false);
-      }, 400); // Highlight lasts for 3 seconds
+      }, 400);
       return () => clearTimeout(timeout);
     }
   }, [isHighlighted]);
@@ -90,47 +91,38 @@ function Comment({ userId, postId, postUser, comment, newComment }) {
       if (repliesRes.data) {
         setReplies(repliesRes.data);
         setRepliesVisibility(!repliesVisibility);
-
-        // Conditional navigation based on the presence of userId
-        if (!userId) {
-          navigate(`/${postId}/${comment._id}`);
-        } else {
-          navigate(`/profile/${userId}/${postId}/${comment._id}`);
-        }
       }
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleCommentSubmit = async (e) => {
+  const handleReplyImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setReplyPicture(file);
+      const previewURL = URL.createObjectURL(file);
+      setReplyPicPreview(previewURL);
+    }
+  };
+
+  const handleReplySubmit = async (e) => {
     e.preventDefault();
 
-    // if (!commentFile) {
-    //   console.error("No file selected.");
-    //   return;
-    // }
-    // console.log("File to be uploaded:", postFile);
-
     try {
-      // const data = new FormData();
-      // data.append("file", postFile);
+      let uniqueFileName = null;
 
-      // const uploadResponse = await axios.post(
-      //   "http://localhost:8801/api/uploads",
-      //   data,
-      //   {
-      //     headers: { "Content-Type": "multipart/form-data" },
-      //   }
-      // );
-      // const uniqueFileName = uploadResponse.data;
-      // console.log("Received unique filename:", uniqueFileName);
+      if (replyPicture) {
+        uniqueFileName = await uploadPhoto(replyPicture);
+        console.log("Received unique filename:", uniqueFileName);
+      }
 
       if ((user._id, comment._id, replyText.current.value)) {
         const newReply = {
           userId: user._id,
           commentId: comment._id,
           text: replyText.current.value,
+          img: uniqueFileName || undefined,
         };
 
         try {
@@ -148,14 +140,6 @@ function Comment({ userId, postId, postUser, comment, newComment }) {
           console.error(error);
           throw error;
         }
-        // dispatch({
-        //   type: "YOUR_NEW_COMMENT",
-        //   payload: {
-        //     userId: user._id,
-        //     postId: user._id,
-        //     text: commentText.current.value
-        //   },
-        // });
       }
     } catch (error) {
       console.error(
@@ -163,6 +147,11 @@ function Comment({ userId, postId, postUser, comment, newComment }) {
         error.response?.data || error.message || error
       );
     }
+  };
+
+  const handleRemoveReplyPic = () => {
+    setReplyPicPreview(null);
+    setReplyPicture(null);
   };
 
   return (
@@ -194,7 +183,7 @@ function Comment({ userId, postId, postUser, comment, newComment }) {
             <div className="flex-1">
               <div className={`flex justify-between items-center`}>
                 <h3 className="text-base font-semibold text-gray-900 flex items-center gap-2">
-                  {commentUser?.username || "Anonymous User"}
+                  {commentUser?.fullname || "Anonymous User"}
                   {comment.userId === postUser._id && (
                     <i
                       className="ri-shield-user-line text-blue-400"
@@ -211,7 +200,7 @@ function Comment({ userId, postId, postUser, comment, newComment }) {
                 {comment.img && (
                   <div className="cursor-pointer border relative w-full max-w-[500px] max-h-[300px] rounded-xl overflow-hidden">
                     <img
-                      src={`${PF}${comment.img}`}
+                      src={`${comment.img}`}
                       alt="Comment"
                       className="w-full h-auto object-contain rounded-xl"
                     />
@@ -246,12 +235,12 @@ function Comment({ userId, postId, postUser, comment, newComment }) {
 
           {/* Replies Section */}
           {repliesVisibility && (
-            <div className="mt-4 ml-8 border-gray-200 bg-gray-50">
+            <div className="mt-4 ml-8 border-gray-200 bg-gray-50 p-4 rounded-md">
               {/* Render Replies */}
               {replies.length > 0 ? (
                 replies.map((reply) => (
                   <div key={reply._id}>
-                    <Reply reply={reply} newReply={newReply} />
+                    <Reply viewPhoto={viewPhoto} reply={reply} newReply={newReply} />
                   </div>
                 ))
               ) : (
@@ -260,22 +249,53 @@ function Comment({ userId, postId, postUser, comment, newComment }) {
 
               {/* Input for Adding a Reply */}
               <form
-                onSubmit={handleCommentSubmit}
-                className="mt-4 flex items-center gap-2"
+                onSubmit={handleReplySubmit}
+                className="mt-4 flex flex-col gap-3"
               >
-                <input
-                  type="text"
-                  ref={replyText}
-                  // onChange={(e) => setReplyText(e.target.value)}
-                  placeholder="Write a reply..."
-                  className="flex-1 border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-                />
-                <button
-                  type="submit"
-                  className="bg-blue-500 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-600"
-                >
-                  Reply
-                </button>
+                {replyPicture && replyPicPreview && (
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={replyPicPreview}
+                      alt="Selected preview"
+                      className="w-[90px] h-[90px] rounded-md object-cover border"
+                    />
+                    <button
+                      type="button"
+                      className="text-red-500 hover:text-red-600 text-xs"
+                      onClick={handleRemoveReplyPic}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
+
+                {/* Reply Input */}
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    ref={replyText}
+                    placeholder="Write a reply..."
+                    className="flex-1 border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  />
+
+                  {/* Image Upload Icon */}
+                  <label className="cursor-pointer bg-gray-200 hover:bg-gray-300 p-2 rounded-md">
+                    <i className="ri-image-add-line text-xl text-gray-600"></i>
+                    <input
+                      type="file"
+                      className="hidden"
+                      onChange={handleReplyImageChange}
+                    />
+                  </label>
+
+                  {/* Reply Button */}
+                  <button
+                    type="submit"
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-600"
+                  >
+                    Reply
+                  </button>
+                </div>
               </form>
             </div>
           )}

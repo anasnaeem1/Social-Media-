@@ -14,7 +14,10 @@ function Home({ reload }) {
   return (
     <div className="relative flex flex-col md:flex-row justify-center md:justify-between overflow-x-hidden w-full">
       {/* Options Component */}
-      <SearchSuggestions />
+      <div className="fixed w-full top-[65px] left-0 bg-white z-50">
+        <SearchSuggestions />
+      </div>
+
       <Options
         currentUserPhoto={currentUserPhoto}
         mainItems={mainItems}

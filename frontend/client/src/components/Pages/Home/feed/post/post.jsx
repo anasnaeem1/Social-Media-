@@ -14,6 +14,7 @@ import { YourNewComment } from "../../../../context/UserActions";
 import { useNavigate } from "react-router-dom";
 import CommentBox from "./comments/commentBox";
 import PostSkeleton from "../../../../Skeleton/postSkeleton";
+import { getUser } from "../../../../../apiCalls";
 
 function Post({ post, userId, searchInput }) {
   const {
@@ -25,6 +26,7 @@ function Post({ post, userId, searchInput }) {
   const { Friends, Shares } = mainItems;
   const [likes, setLikes] = useState(post?.likes.length);
   const [isLiked, setIsLiked] = useState(false);
+  const [isCommentOpen, setIsCommentOpen] = useState(false);
   const [postUser, setPostUser] = useState({});
   const navigate = useNavigate();
   const [userLoading, setUserLoading] = useState(true);
@@ -34,7 +36,8 @@ function Post({ post, userId, searchInput }) {
   const [isMoreOptionVisible, setIsMoreOptionVisible] = useState(false);
   const [isPostHide, setIsPostHide] = useState(false);
   const [postIsVisibleAgain, setPostIsVisibleAgain] = useState(false);
-  const { postId } = useParams();
+  const [isPostDescHide, setIsPostDescHide] = useState(true);
+  // const { postId } = useParams();
   const dropdownRef = useRef(null);
   const optionButtonRef = useRef(null);
 
@@ -89,8 +92,8 @@ function Post({ post, userId, searchInput }) {
     const fetchUser = async () => {
       try {
         setUserLoading(true);
-        const res = await axios.get(`/api/users?userId=${post.userId}`);
-        setPostUser(res.data);
+        const user = await getUser(post?.userId, 0);
+        setPostUser(user);
         setUserLoading(false);
       } catch (error) {
         console.log("Error fetching user", error);
@@ -127,19 +130,7 @@ function Post({ post, userId, searchInput }) {
 
   const handleCommentBox = async (e) => {
     e.preventDefault();
-    if (postId && postId === post._id) {
-      if (userId) {
-        navigate(`/profile/${userId}`);
-      } else {
-        navigate("/");
-      }
-      return;
-    }
-    if (userId) {
-      navigate(`/profile/${userId}/${post._id}`);
-    } else {
-      navigate(`/${post._id}`);
-    }
+    setIsCommentOpen(!isCommentOpen);
   };
 
   const highlightText = (text, searchTerm) => {
@@ -181,6 +172,11 @@ function Post({ post, userId, searchInput }) {
       type: "POSTID",
       payload: post._id,
     });
+  };
+
+  const handleSeeMore = (e) => {
+    e.preventDefault();
+    setIsPostDescHide(!isPostDescHide);
   };
 
   return (
@@ -311,7 +307,7 @@ function Post({ post, userId, searchInput }) {
                           <div className="w-[120px] h-[120px] mb-1 bg-gray-300 rounded-md animate-pulse"></div>
                         ) : (
                           <h1 className="cursor-pointer text-sm font-semibold text-gray-800">
-                            {postUser.username}
+                            {postUser.fullname}
                           </h1>
                         )}
                         {userLoading ? (
@@ -347,16 +343,56 @@ function Post({ post, userId, searchInput }) {
                         !post.img ? "text-lg py-2 md-text-lg" : "text-sm"
                       } px-4 md-text-sm text-start font-medium text-gray-800`}
                     >
-                      {highlightText(post.desc, searchInput)}
+                      {(() => {
+                        const maxLength = post.img ? 89 : 150; // Adjust limit based on image presence
+                        const isLongText = post.desc.length > maxLength;
+
+                        if (isLongText && isPostDescHide) {
+                          const trimmedText = post.desc.slice(0, maxLength);
+                          const lastSpaceIndex = trimmedText.lastIndexOf(" ");
+                          const finalText =
+                            lastSpaceIndex > 0
+                              ? trimmedText.slice(0, lastSpaceIndex) + "..."
+                              : trimmedText + "...";
+
+                          return (
+                            <>
+                              <span>
+                                {highlightText(finalText, searchInput)}
+                              </span>{" "}
+                              <span
+                                className="text-blue-500 cursor-pointer"
+                                onClick={handleSeeMore}
+                              >
+                                See more...
+                              </span>
+                            </>
+                          );
+                        }
+
+                        return (
+                          <>
+                            <span>{highlightText(post.desc, searchInput)}</span>{" "}
+                            {isLongText && (
+                              <span
+                                className="text-blue-500 cursor-pointer"
+                                onClick={handleSeeMore}
+                              >
+                                Hide post...
+                              </span>
+                            )}
+                          </>
+                        );
+                      })()}
                     </div>
                   )}
 
                   {/* Image Section */}
                   {post.img && (
-                    <Link to={`/photo/${[post.img]}`}>
+                    <Link to={`/photo/${post._id}`}>
                       <div className="mt-3 w-full rounded-md overflow-hidden">
                         <img
-                          src={`${post.img}`}
+                          src={post.img}
                           alt="Post Image"
                           className="w-full object-contain h-auto"
                         />
@@ -439,9 +475,10 @@ function Post({ post, userId, searchInput }) {
                       </span>
                     </button>
                   </div>
-                  {postId && postId === post._id && (
+
+                  {isCommentOpen && (
                     <CommentBox
-                      postId={postId}
+                      // postId={postId}
                       post={post}
                       userId={userId}
                       postUser={postUser}

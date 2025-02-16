@@ -18,6 +18,11 @@ function SuggestionBox() {
     dispatch({ type: "SEARCHEDINPUT", payload: "" });
   };
 
+  const handleWordSearch = (userId) => {
+    navigate(`/search/${searchedInput}`);
+    dispatch({ type: "SEARCHEDINPUT", payload: "" });
+  };
+
   useEffect(() => {
     const searchingUser = async () => {
       if (!searchedInput) {
@@ -100,7 +105,7 @@ function SuggestionBox() {
       transition-all duration-700 ease-in-out`}
     >
       {searchedInput && searchedPosts && searchedPosts.length > 0 && (
-        <div className="border-b p-2">
+        <div onClick={handleWordSearch} className="border-b p-2">
           <div className="px-5 py-3 hover:bg-gray-50 flex justify-between">
             <p className="">{searchedInput}</p>
             <p className="text-blue-500 cursor-pointer">
@@ -137,7 +142,7 @@ function SuggestionBox() {
                     </div>
                     <div>
                       <h1 className="text-base font-semibold text-gray-900 hover:text-blue-600 transition-colors duration-300">
-                        {user.username}
+                        {user.fullname}
                       </h1>
                       <p className="hidden md:flex text-sm text-gray-600 mt-1 truncate">
                         {user.bio || "This user has no bio."}

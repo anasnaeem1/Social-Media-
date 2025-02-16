@@ -4,6 +4,9 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      transitionProperty: {
+        'border': 'border-color',
+      },
       animation: {
         'spin-border': 'spinBorder 1.5s linear infinite',
       },
@@ -31,6 +34,11 @@ export default {
         BgColor: "#0866FF",
         lightGray1: "rgba(0, 12, 20, 0)",
       },
+    },
+  },
+  variants: {
+    extend: {
+      borderColor: ['focus'],
     },
   },
   plugins: [],

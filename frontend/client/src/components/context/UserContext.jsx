@@ -13,7 +13,9 @@ const INITIAL_STATE = {
   error: false,
   searchedInput : null,
   postId : null,
+  loadedPosts : [],
   yourNewPost : null,
+  scrollPosition: 0,
   mobileSearchInput : false,
   yourNewMessage:null
 };

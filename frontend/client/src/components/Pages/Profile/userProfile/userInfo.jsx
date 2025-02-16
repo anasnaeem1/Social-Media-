@@ -29,7 +29,7 @@ function UserInfo({ profileUser }) {
       {/* USER INFO */}
       <div className="bg-white rounded-lg p-3 sm:p-4">
         <h1 className="text-md sm:text-lg font-semibold border-b pb-2 mb-4">
-          About {profileUser.username}
+          About {profileUser.fullname}
         </h1>
         <div className="flex flex-col gap-3">
           {/* City */}
@@ -89,7 +89,7 @@ function UserInfo({ profileUser }) {
                   />
                   <div>
                     <span className="text-xs sm:text-sm font-medium text-gray-800">
-                      {Friend.username}
+                      {Friend.fullname}
                     </span>
                   </div>
                 </div>

@@ -245,15 +245,15 @@ function User({
                 {/* Profile Picture */}
                 <div className="relative">
                   {/* Profile Picture or Skeleton Loader */}
-                  {!profileUser.profilePic ? (
-                    <div className="h-[140px] w-[140px] md:h-[156px] md:w-[156px] sm:h-[156px] sm:w-[156px] rounded-full bg-gray-300 animate-pulse shadow-lg mx-auto md:mx-0"></div>
-                  ) : (
+                  {
                     <img
                       src={
-                        profileUser.profilePic.replace(
-                          "/upload/",
-                          "/upload/f_auto,q_auto/"
-                        ) || "/images/noAvatar.png"
+                        profileUser.profilePic
+                          ? profileUser.profilePic.replace(
+                              "/upload/",
+                              "/upload/f_auto,q_auto/"
+                            )
+                          : "/images/noAvatar.png"
                       }
                       alt="Profile"
                       className={`${
@@ -264,7 +264,7 @@ function User({
                         !profileUser.profilePic && "border-none"
                       } border-[2px] border-white h-[140px] w-[140px] md:h-[156px] md:w-[156px] sm:h-[156px] sm:w-[156px] rounded-full shadow-lg mx-auto md:mx-0 object-cover`}
                     />
-                  )}
+                  }
 
                   {/* Circular Progress Bar (for non-current user) */}
                   {userId !== currentUser._id && (
@@ -340,7 +340,7 @@ function User({
                 {/* User Info */}
                 <div className="text-center transform md:translate-x-2 md:translate-y-[25px] md:text-left">
                   <h1 className="text-xl font-semibold md:text-2xl">
-                    {profileUser.username}
+                    {profileUser.fullname}
                   </h1>
                   <p className="text-sm text-gray-600 md:text-base">
                     {profileUser.bio}

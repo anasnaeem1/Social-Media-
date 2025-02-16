@@ -66,7 +66,7 @@ router.put("/:id/like", async (req, res) => {
 });
 
 //get a post
-router.get("/:id", async (req, res) => {
+router.get("/getPost/:id", async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     const { updatedAt, ...others } = post._doc;

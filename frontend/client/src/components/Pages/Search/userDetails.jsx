@@ -75,7 +75,7 @@ function userDetails({ user }) {
         {/* User Info */}
         <div className="flex-1 text-center sm:text-left">
           <h1 className="text-lg font-semibold text-gray-800">
-            {user.username}
+            {user.fullname}
           </h1>
           <p className="text-sm text-gray-600 mt-1 truncate">
             {user.bio || "No bio available"}

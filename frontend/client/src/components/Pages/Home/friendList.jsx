@@ -3,6 +3,7 @@ import { UserContext } from "../../context/UserContext";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import UserPhoto from "../../userPhoto";
+import { getUser } from "../../../apiCalls";
 
 function FriendList() {
   const { user } = useContext(UserContext);
@@ -15,7 +16,7 @@ function FriendList() {
     if (user._id) {
       const fetchFriends = async () => {
         try {
-          const res = await axios.get(`/api/users/friends/${user._id}`);
+          const res = await axios.get(`/api/users/friends/${user._id}`)
           setFriendList(res.data);
           setIsLoading(false);
         } catch (error) {
@@ -37,7 +38,9 @@ function FriendList() {
               <UserPhoto userId={friend._id} user={friend} />
               <Link to={`/profile/${friend._id}`}>
                 <div>
-                  <p className="cursor-pointer text-black text-lg">{friend.username}</p>
+                  <p className="cursor-pointer text-black text-lg">
+                    {friend.fullname}
+                  </p>
                   <span href="#" className="cursor-pointer text-blue-500">
                     View Profile
                   </span>

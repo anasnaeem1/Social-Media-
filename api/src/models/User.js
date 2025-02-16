@@ -9,6 +9,12 @@ const userSchema = new mongoose.Schema(
       max: 20,
       unique: true,
     },
+    fullname: {
+      type: String,
+      required: true,
+      min: 3,
+      max: 20,
+    },
     email: {
       type: String,
       required: true,
@@ -48,7 +54,7 @@ const userSchema = new mongoose.Schema(
     },
     DOB: {
       type: String,
-    required: true,
+      required: true,
     },
     city: {
       type: String,

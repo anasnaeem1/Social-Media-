@@ -175,6 +175,7 @@ router.get("/friends/:id", async (req, res) => {
       const friendList = friends.map((friend) => ({
         _id: friend.id,
         username: friend.username,
+        fullname: friend.fullname,
         profilePic: friend.profilePic,
       }));
       res.status(200).json(friendList);

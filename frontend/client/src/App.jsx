@@ -12,8 +12,8 @@ import Home from "./components/Pages/Home/home";
 import ViewPhoto from "./components/Pages/viewPhoto/viewPhoto";
 import Profile from "./components/Pages/Profile/profile";
 // import Search from "./components/Pages/Search/search";
-import Login from "./components/Pages/login/login";
-import Register from "./components/Pages/Register/register";
+import Login from "./components/Pages/signingPage/login/login";
+import Register from "./components/Pages/signingPage/register/register";
 import Navbar from "./components/Header/navbar";
 import MessagesPage from "./components/Pages/MessagePage/messagesMain";
 
@@ -47,47 +47,47 @@ function App() {
           <Routes>
             <Route
               path="/"
-              element={!user ? <Navigate to="/register" /> : <Home />}
+              element={!user ? <Navigate to="/login" /> : <Home />}
             >
               <Route
                 path="/search/:searchInput"
-                element={!user ? <Navigate to="/register" /> : <Home />}
+                element={!user ? <Navigate to="/login" /> : <Home />}
               />
               <Route
                 path=":postId"
-                element={!user ? <Navigate to="/register" /> : <Home />}
+                element={!user ? <Navigate to="/login" /> : <Home />}
               >
                 <Route
                   path=":commentId"
-                  element={!user ? <Navigate to="/register" /> : <Home />}
+                  element={!user ? <Navigate to="/login" /> : <Home />}
                 />
               </Route>
             </Route>
             <Route
               path="/profile/:userId"
-              element={!user ? <Navigate to="/register" /> : <Profile />}
+              element={!user ? <Navigate to="/login" /> : <Profile />}
             >
               <Route
                 path=":postId"
-                element={!user ? <Navigate to="/register" /> : <Profile />}
+                element={!user ? <Navigate to="/login" /> : <Profile />}
               >
                 <Route
                   path=":commentId"
-                  element={!user ? <Navigate to="/register" /> : <Profile />}
+                  element={!user ? <Navigate to="/login" /> : <Profile />}
                 />
               </Route>
             </Route>
             <Route
-              path="/photo/:photoName"
-              element={!user ? <Navigate to="/register" /> : <ViewPhoto />}
+              path="/photo/:postId"
+              element={!user ? <Navigate to="/login" /> : <ViewPhoto />}
             />
             <Route
               path="/messages"
-              element={!user ? <Navigate to="/register" /> : <MessagesPage />}
+              element={!user ? <Navigate to="/login" /> : <MessagesPage />}
             >
               <Route
                 path=":convoId"
-                element={!user ? <Navigate to="/register" /> : <MessagesPage />}
+                element={!user ? <Navigate to="/login" /> : <MessagesPage />}
               />
             </Route>
             <Route

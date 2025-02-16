@@ -1,14 +1,21 @@
-import { useContext, useEffect, useState } from "react";
-import UserPhoto from "../../../../../userPhoto";
-import axios from "axios";
-import { UserContext } from "../../../../../context/UserContext";
+import { format } from "timeago.js";
+import {
+  RiThumbUpLine,
+  RiMore2Line,
+  RiThumbUpFill,
+  RiReplyLine,
+} from "react-icons/ri";
 
-function Reply({ reply, newReply, viewPhoto }) {
-  const [replyUser, setReplyUser] = useState(null);
-  const [userFetching, setUserFetching] = useState(false);
+import UserPhoto from "../../../../userPhoto";
+import { getUser } from "../../../../../apiCalls";
+import { useContext, useEffect, useState } from "react";
+import { UserContext } from "../../../../context/UserContext";
+// import axios from "axios";
+
+function singleReply({ reply, newComment }) {
   const { user } = useContext(UserContext);
-  const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images/";
-  const PA = import.meta.env.VITE_PUBLIC_API;
+  const [replyUser, setReplyUser] = useState(null);
+  const [userFetching, setUserFetching] = useState(true);
   const [isHighlighted, setIsHighlighted] = useState(newReply);
 
   useEffect(() => {
@@ -16,8 +23,8 @@ function Reply({ reply, newReply, viewPhoto }) {
       try {
         if (reply?.userId) {
           setUserFetching(true);
-          const res = await axios.get(`/api/users?userId=${reply.userId}`);
-          setReplyUser(res.data);
+          const user = await getUser(reply?.userId, 0);
+          setReplyUser(user);
           setUserFetching(false);
         }
       } catch (error) {
@@ -25,17 +32,7 @@ function Reply({ reply, newReply, viewPhoto }) {
       }
     };
     fetchUser();
-  }, [reply?.userId]);
-
-  // Highlight effect timeout for new replies
-  useEffect(() => {
-    if (isHighlighted) {
-      const timeout = setTimeout(() => {
-        setIsHighlighted(false);
-      }, 400); // Highlight lasts for 400ms
-      return () => clearTimeout(timeout);
-    }
-  }, [isHighlighted]);
+  }, [reply?.userId, reply]);
 
   return (
     <>
@@ -53,9 +50,7 @@ function Reply({ reply, newReply, viewPhoto }) {
       ) : (
         replyUser && (
           <div
-            className={`${
-              viewPhoto ? "p-2 bg-white" : "px-4 py-2"
-            } flex items-start gap-4  border-b transition-all duration-500 ${
+            className={`flex items-start gap-4 px-4 py-2 border-b transition-all duration-500 ${
               isHighlighted ? "bg-green-100 scale-105" : "bg-white"
             }`}
           >
@@ -116,5 +111,4 @@ function Reply({ reply, newReply, viewPhoto }) {
     </>
   );
 }
-
-export default Reply;
+export default singleReply;

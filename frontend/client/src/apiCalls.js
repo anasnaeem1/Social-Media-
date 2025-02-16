@@ -59,6 +59,31 @@ export const submittingPost = async (userId, desc, img, dispatch) => {
   }
 };
 
+export const getComments = async (postId) => {
+  try {
+    const commentsRes = await axios.get(`/api/comments/${postId}`);
+    return commentsRes.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const uploadPhoto = async (commentPicture) => {
+  try {
+    const data = new FormData();
+    data.append("file", commentPicture);
+
+    const uploadResponse = await axios.post("/api/uploads", data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return uploadResponse.data.url;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 // export const submittingComment = async (userId, postId, text) => {
 //   const PA = import.meta.env.VITE_PUBLIC_API;
 //   const newComment = {

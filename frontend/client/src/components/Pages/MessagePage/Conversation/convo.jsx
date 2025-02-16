@@ -4,6 +4,7 @@ import CurrentUserPhoto from "../../../currentUserPhoto";
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../../context/UserContext";
+import { getUser } from "../../../../apiCalls";
 
 function convo({
   onlineUsers,
@@ -45,11 +46,11 @@ function convo({
           );
           // console.log(sender);
           if (sender) {
-            const res = await axios.get(`/api/users?userId=${sender}`);
-            if (!res.data) {
+            const user = await getUser(sender, 0);
+            if (!user) {
               console.log("No message Found");
             } else {
-              setUser(res.data);
+              setUser(user);
             }
           }
         }
@@ -110,7 +111,7 @@ function convo({
         <div className="flex flex-col">
           <div className="flex justify-between">
             <p className="text-black font-semibold text-base">
-              {user.username}
+              {user.fullname}
             </p>
             {arrivalMessages[0]?.senderId &&
               conversation?.members.includes(arrivalMessages[0].senderId) && (

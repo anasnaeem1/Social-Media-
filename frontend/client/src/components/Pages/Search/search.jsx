@@ -61,7 +61,7 @@ function Search() {
       );
       const isFollowed = normalizedFollowings.includes(user._id.toString());
       setFollowed(isFollowed);
-      console.log(followed)
+      console.log(followed);
     }
   }, [currentUser.followings, user._id]);
 

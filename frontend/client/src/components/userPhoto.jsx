@@ -7,6 +7,7 @@ function UserPhoto({ userId, user, onlineUsers }) {
   const [followed, setFollowed] = useState(false);
   const [imageSrc, setImageSrc] = useState("");
   const location = useLocation();
+  
 
   useEffect(() => {
     setImageSrc(user?.profilePic ? `${user.profilePic}?v=${Date.now()}` : "/images/noAvatar.png");

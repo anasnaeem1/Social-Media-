@@ -1,23 +1,24 @@
 import logoPic from "../assets/images/mainLogo.png";
 // import logoPic from "../public/images/socialLogo-removebg-preview.png";
 
-function logo({}) {
+function logo() {
   return (
-    // <div
-    //   style={{ fontFamily: "montserrat, sans-serif" }}
-    // >
-    //   <h1 className="text-3xl text-textColor uppercase font-[600] ">social</h1>
-    // </div>
-    <div className="flex items-end">
-      <div
-        className="w-[44px] h-[44px] bg-cover bg-no-repeat"
+    <div className="pl-2">
+      <h1
         style={{
-          backgroundImage: `url(${logoPic})`,
-          opacity: 1,
+          fontFamily: "'Merienda', cursive",
+          fontSize: "2rem",
         }}
-      ></div>
-      <h1 className="text-2xl tranform -translate-x-2 text-blue-600 font-semibold">ocial</h1>
+        className="text-blue-500 opacity-95 font-bold"
+      >
+        Social
+      </h1>
     </div>
+    // <img
+    //     src="https://res.cloudinary.com/datcr1zua/image/upload/v1738707170/uploads/ros8l0e0ol53ibhng2sl.png"
+    //     alt="Logo"
+    //     className="h-[50px] "
+    //   />
   );
 }
 export default logo;

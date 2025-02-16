@@ -1,10 +1,11 @@
 import { CircularProgress } from "@mui/material"; // Use Material UI for circular progress
 import CreatePost from "./createPost/cPost";
-import { useEffect, useState, memo, useContext } from "react";
+import { useEffect, useState, memo, useContext, useRef } from "react";
 import Post from "./post/post";
 import axios from "axios";
 import PostSkeleton from "../../../Skeleton/postSkeleton";
 import { UserContext } from "../../../context/UserContext";
+import { setLoadedPosts } from "../../../context/UserActions";
 
 function Feed({
   currentUserPhoto,
@@ -14,18 +15,40 @@ function Feed({
   userId,
 }) {
   const { ShareOptions } = mainItems;
-  const { reload, user, postId, dispatch, yourNewPost } =
+  const { reload, user, postId, dispatch, yourNewPost, loadedPosts } =
     useContext(UserContext);
-  const PA = import.meta.env.VITE_PUBLIC_API;
-  const [posts, setPosts] = useState([]);
-  const [isFetching, setIsFetching] = useState(false);
+  // const PA = import.meta.env.VITE_PUBLIC_API;
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  // Fetch posts
+  const [isFetching, setIsFetching] = useState(false);
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const isReload =
+      performance.getEntriesByType("navigation")[0]?.type === "reload";
+    const isBackNavigation =
+      window.history.state &&
+      window.history.state.idx < window.history.length - 1;
+
+    if (isReload && !isBackNavigation) {
+      setLoadedPosts([]);
+      fetchPosts();
+    } else if (isBackNavigation && loadedPosts.length > 0) {
+      setPosts(loadedPosts);
+    } else if (loadedPosts.length === 0) {
+      fetchPosts();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (posts.length > 0) {
+      dispatch({ type: "UPDATELOADEDPOST", payload: posts });
+    }
+  }, [posts]);
+
   const fetchPosts = async () => {
     setIsFetching(true);
-
     try {
       let res;
       if (userId) {
@@ -45,10 +68,7 @@ function Feed({
         };
         const fetchedPosts = randomizePosts(res.data);
         if (fetchedPosts) {
-          setPosts((prev) =>
-            page === 1 ? fetchedPosts : [...prev, ...fetchedPosts]
-          );
-          setHasMore(fetchedPosts.length > 0);
+          setPosts(fetchedPosts);
         }
       }
     } catch (error) {
@@ -65,17 +85,13 @@ function Feed({
   }, [yourNewPost]);
 
   useEffect(() => {
-    fetchPosts();
-  }, [page, userId]);
-
-  useEffect(() => {
-    if (reload) {
+    if (reload && loadedPosts.length === 0) {
       setTimeout(() => {
         window.scrollTo(0, 0);
       }, 0);
       setPosts([]);
       fetchPosts();
-      dispatch({ type: "UNRELOAD", payload: false }); // Reset reload state
+      dispatch({ type: "UNRELOAD", payload: false });
     }
   }, [reload, page, dispatch]);
 
@@ -125,7 +141,7 @@ function Feed({
           />
         )}
         {/* Display posts */}
-        {posts.length > 0 ? (
+        { posts.length > 0 ? (
           posts.map((post) => (
             <>
               {Array.isArray(post?.likes) && (

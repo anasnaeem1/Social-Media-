@@ -19,11 +19,13 @@ function FollowSuggestion() {
             const sanitizedResponse = res.data.filter(
               (e) => e._id !== user._id
             );
-            const friendsWithFollowState = sanitizedResponse.map((friend) => ({
-              ...friend,
-              isFollowed: user.followings.includes(friend._id),
-            }));
-            setMutualFriends(friendsWithFollowState);
+
+            // Remove users that are already followed
+            const filteredMutualFriends = sanitizedResponse.filter(
+              (friend) => !user.followings.includes(friend._id)
+            );
+
+            setMutualFriends(filteredMutualFriends);
           }
           setLoadingFriends(false);
         } catch (error) {
@@ -84,10 +86,12 @@ function FollowSuggestion() {
                 <Link to={`/profile/${friend._id}`} className="text-left">
                   <p
                     className={`${
-                      Array.isArray(friend.username).length > 7 ? "text-sm" : "text-lg"
+                      Array.isArray(friend.fulname).length > 7
+                        ? "text-sm"
+                        : "text-lg"
                     } font-medium text-sm text-gray-800 hover:underline cursor-pointer`}
                   >
-                    {friend.username}
+                    {friend.fullname}
                   </p>
                   <p className="text-sm text-blue-500 hover:text-blue-700 cursor-pointer">
                     View Profile
