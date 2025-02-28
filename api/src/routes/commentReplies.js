@@ -15,12 +15,15 @@ router.post("/", async (req, res) => {
 
 router.get("/:commentId", async (req, res) => {
   try {
-    const comments = await CommentReply.find({ commentId: req.params.commentId });
+    const comments = await CommentReply.find({ commentId: req.params.commentId })
+      .sort({ createdAt: 1 }); // Oldest first, newest last
+
     res.status(200).json(comments);
   } catch (error) {
     res.status(500).json(error);
   }
 });
+
 
 
 // Like/unlike a Comment

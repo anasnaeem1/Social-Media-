@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const express = require("express");
 const User = require("../models/User.js");
+const { set } = require("mongoose");
 const router = express.Router();
 
 // update a user
@@ -69,34 +70,35 @@ router.get("/mutuals", async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    console.log("Fetching user:", userId || username);
-    console.log("User found:", user);
 
-    // Get the list of friends the user follows
+    const friendsId = user.followers.filter((follower) =>
+      user.followings.includes(follower)
+    );
     const friends = await Promise.all(
-      user.followings.map((friendId) => User.findById(friendId))
+      friendsId.map(async (id) => {
+        const user = await User.findById(id);
+        return user;
+      })
     );
 
     // Collect all the users that friends follow (mutuals)
     const mutualsSet = new Set();
-    friends.forEach((friend) => {
+    friends.forEach(async(friend) => {
       if (friend && friend.followings) {
-        friend.followings.forEach((mutualId) => {
-          // Add mutual friend to the set
-          if (mutualId !== userId) {
-            mutualsSet.add(mutualId);
-          }
-        });
+        const mutualsIds = friend.followers.filter((follower) =>
+          friend.followings.includes(follower)
+        );
+        const mutualFriends = await Promise.all(
+          mutualsIds.map(async (id) => {
+            const user = await User.findById(id);
+            return user;
+          })
+        );
       }
     });
 
-    // Convert mutualsSet to an array and fetch user details
-    const mutuals = await Promise.all(
-      Array.from(mutualsSet).map((mutualId) => User.findById(mutualId))
-    );
-
     // Sanitize the mutual friends' data
-    const sanitizedMutuals = mutuals
+    const sanitizedMutuals = mutualFriends
       .filter((mutual) => mutual)
       .map(({ _doc }) => {
         const { password, updatedAt, ...rest } = _doc;
@@ -169,21 +171,110 @@ router.get("/friends/:id", async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (user) {
-      const friends = await Promise.all(
-        user.followings.map((friendId) => User.findById(friendId))
+      const followers = user?.followers;
+
+      // Filter followers who are not in the followings set
+      const friendsId = followers.filter((follower) =>
+        user.followings.includes(follower)
       );
-      const friendList = friends.map((friend) => ({
-        _id: friend.id,
-        username: friend.username,
-        fullname: friend.fullname,
-        profilePic: friend.profilePic,
-      }));
-      res.status(200).json(friendList);
+      const friends = await Promise.all(
+        friendsId.map(async (id) => {
+          const user = await User.findById(id);
+          return user;
+        })
+      );
+      res.status(200).json(friends);
     } else {
       res.status(400).json("user not found");
     }
   } catch (error) {
     res.status(500).json("friendsList Not Found");
+  }
+});
+
+router.get("/birthdayFriends/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (user) {
+      const friends = await Promise.all(
+        user.followings.map((friendId) => User.findById(friendId))
+      );
+
+      const today = new Date();
+      const todayMonthDay = `${today.getDate()}/${today.getMonth() + 1}`; // "17/2"
+      console.log(todayMonthDay);
+
+      // Filter friends with matching DOBs
+      const birthdayFriends = friends.filter((friend) => {
+        if (!friend.DOB) return false; // Ensure DOB exists
+        const [day, month] = friend.DOB.split("/"); // Assuming stored as "17/2/2004"
+        console.log(`${day}/${month}`);
+        return `${day}/${month}` === todayMonthDay;
+      });
+
+      const friendList = birthdayFriends.map((friend) => ({
+        _id: friend.id,
+        username: friend.username,
+        fullname: friend.fullname,
+        profilePic: friend.profilePic,
+      }));
+
+      if (friendList.length > 0) {
+        res.status(200).json(friendList);
+      } else {
+        res.status(200).json("No friends with a birthday today");
+      }
+    } else {
+      res.status(400).json("User not found");
+    }
+  } catch (error) {
+    res.status(500).json("Friends list not found");
+  }
+});
+
+// get all followRequest
+router.get("/followRequests/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    const followers = user?.followers;
+
+    // Filter followers who are not in the followings set
+    const followRequestIds = followers.filter(
+      (follower) => !user.followings.includes(follower)
+    );
+
+    // Fetch user details for each follow request
+    const followRequests = await Promise.all(
+      followRequestIds.map(async (id) => {
+        const user = await User.findById(id);
+        return user;
+      })
+    );
+
+    res.status(200).json(followRequests);
+  } catch (error) {
+    console.error("Error fetching follow requests:", error);
+    res.status(500).json({
+      success: false,
+      message: "Fetching follow requests failed",
+      error: error.message,
+    });
+  }
+});
+
+// get all users
+router.get("/allUsers", async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.status(200).json(users);
+  } catch (error) {
+    console.log(error);
   }
 });
 

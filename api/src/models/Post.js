@@ -19,6 +19,10 @@ const postSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
+    pinned: {
+      type: Boolean,
+      default:false
+    },
   },
   { timestamps: true }
 );

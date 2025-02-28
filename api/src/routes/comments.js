@@ -22,7 +22,15 @@ router.get("/:postId", async (req, res) => {
   }
 });
 
-  
+router.get("/singleComment/:commentId", async (req, res) => {
+  try {
+    const comment = await Comment.findById(req.params.commentId);
+    res.status(200).json(comment);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
 // Like/unlike a Comment
 router.put("/:id/likeComment", async (req, res) => {
   const { id } = req.params;
@@ -45,9 +53,10 @@ router.put("/:id/likeComment", async (req, res) => {
     }
   } catch (error) {
     console.error("Error liking/unliking comment:", error.message);
-    res.status(500).json({ message: "Internal server error", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 });
-
 
 module.exports = router;
