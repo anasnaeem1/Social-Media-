@@ -1,36 +1,34 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "./context/UserContext";
-import { Link, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function UserPhoto({ userId, user, onlineUsers }) {
   const { user: currentUser } = useContext(UserContext);
   const [followed, setFollowed] = useState(false);
-  const [imageSrc, setImageSrc] = useState("");
-  const location = useLocation();
-  
-
-  useEffect(() => {
-    setImageSrc(user?.profilePic ? `${user.profilePic}?v=${Date.now()}` : "/images/noAvatar.png");
-  }, [user?.profilePic, location.pathname]); // Reset when user pic or route changes
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user._id && Array.isArray(currentUser.followings)) {
-      const isFollowed = currentUser.followings.some((id) => id.toString() === user._id.toString());
+      const isFollowed = currentUser.followings.some(
+        (id) => id.toString() === user._id.toString()
+      );
       setFollowed(isFollowed);
     }
   }, [currentUser.followings, user]);
 
-
   return (
     <div className="flex flex-col justify-start items-center relative">
-      <Link to={`/profile/${userId}`}>
+      <span onClick={() => navigate(`/profile/${userId}`)}>
         <div className="relative w-[58px] h-[58px] border-[3px] border-white rounded-full overflow-hidden">
           <img
-            src={user.profilePic}
+            src={
+              user.profilePic
+                ? user.profilePic
+                : "https://res.cloudinary.com/datcr1zua/image/upload/v1739709690/uploads/rindbm34tibrtqcgvpsd.png"
+            }
             alt="User Avatar"
             className="w-full h-full object-cover"
           />
-
           {userId !== currentUser._id && (
             <svg
               className="absolute top-0 left-0 w-full h-full transform rotate-[90deg]"
@@ -59,7 +57,7 @@ function UserPhoto({ userId, user, onlineUsers }) {
             </svg>
           )}
         </div>
-      </Link>
+      </span>
       {onlineUsers?.some((userObj) => userObj.userId === user._id) && (
         <div className="absolute bottom-1 right-[-4px] h-5 w-5 border-[3px] border-white bg-green-400 rounded-full"></div>
       )}

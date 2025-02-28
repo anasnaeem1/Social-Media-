@@ -5,7 +5,7 @@ import { UserContext } from "../../../context/UserContext";
 
 function UserInfo({ profileUser }) {
   const [friendList, setFriendList] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { user } = useContext(UserContext);
 
@@ -13,6 +13,7 @@ function UserInfo({ profileUser }) {
     if (profileUser._id) {
       const fetchFriends = async () => {
         try {
+          setIsLoading(true)
           const res = await axios.get(`/api/users/friends/${profileUser._id}`);
           setFriendList(res.data);
           setIsLoading(false);
@@ -82,7 +83,7 @@ function UserInfo({ profileUser }) {
                     src={
                       Friend.profilePic
                         ? `${Friend.profilePic}`
-                        : `/images/noAvatar.png`
+                        : `https://res.cloudinary.com/datcr1zua/image/upload/v1739709690/uploads/rindbm34tibrtqcgvpsd.png`
                     }
                     alt={`${Friend.fname} ${Friend.lname}`}
                     className="rounded-md w-[70px] h-[70px] sm:w-[80px] sm:h-[80px] object-cover"

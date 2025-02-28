@@ -127,3 +127,8 @@ export const setScrollPosition = (scrollPosition) => ({
   type: "SET_SCROLL_POSITION",
   payload: scrollPosition,
 });
+
+export const setBirthdayFriends = (birthdayFriends) => ({
+  type: "UPDATEBIRTHDAYFRIENDS",
+  payload: birthdayFriends,
+});

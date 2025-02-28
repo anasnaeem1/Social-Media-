@@ -101,13 +101,24 @@ export const uploadPhoto = async (commentPicture) => {
 // };
 
 export const getUser = async (userId, username) => {
-  const PA = import.meta.env.VITE_PUBLIC_API;
   try {
     if (userId) {
       const res = await axios.get(`/api/users?userId=${userId}`);
       return res.data;
     } else if (username) {
       const res = await axios.get(`/api/users?username=${username}`);
+      return res.data;
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const getUserFriends = async (userId) => {
+  try {
+    if (userId) {
+      const res = await axios.get(`/api/users/friends/${userId}`)
       return res.data;
     }
   } catch (error) {

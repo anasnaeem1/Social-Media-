@@ -10,6 +10,7 @@ const INITIAL_STATE = {
   newComment: null,
   newPost: null,
   isFetching: false,
+  birthdayFriends: [],
   error: false,
   searchedInput : null,
   postId : null,

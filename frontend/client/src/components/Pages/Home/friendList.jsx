@@ -3,7 +3,7 @@ import { UserContext } from "../../context/UserContext";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import UserPhoto from "../../userPhoto";
-import { getUser } from "../../../apiCalls";
+import { getUserFriends } from "../../../apiCalls";
 
 function FriendList() {
   const { user } = useContext(UserContext);
@@ -16,8 +16,8 @@ function FriendList() {
     if (user._id) {
       const fetchFriends = async () => {
         try {
-          const res = await axios.get(`/api/users/friends/${user._id}`)
-          setFriendList(res.data);
+          const res = await getUserFriends(user._id)
+          setFriendList(res);
           setIsLoading(false);
         } catch (error) {
           console.error("Error fetching friends:", error);
@@ -41,7 +41,7 @@ function FriendList() {
                   <p className="cursor-pointer text-black text-lg">
                     {friend.fullname}
                   </p>
-                  <span href="#" className="cursor-pointer text-blue-500">
+                  <span className="cursor-pointer text-blue-500">
                     View Profile
                   </span>
                 </div>

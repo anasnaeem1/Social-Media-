@@ -38,70 +38,72 @@ function App() {
 
   return (
     <div
-      className="bg-gray-50"
-      style={{ fontFamily: "Montserrat, sans-serif" }}
-    >
-      <SkeletonTheme baseColor="#D4D9E1" highlightColor="#dde2e9">
-        <Router>
-          {user && <Navbar />}
-          <Routes>
+    className="bg-gray-50 min-h-screen"
+    style={{ fontFamily: "Montserrat, sans-serif" }}
+  >
+    <SkeletonTheme baseColor="#D4D9E1" highlightColor="#dde2e9">
+      <Router>
+        {user && <Navbar />}
+        <Routes>
+          <Route
+            path="/"
+            element={!user ? <Navigate to="/login" /> : <Home />}
+          >
             <Route
-              path="/"
+              path="/search/:searchInput"
+              element={!user ? <Navigate to="/login" /> : <Home />}
+            />
+            <Route
+              path=":postId"
               element={!user ? <Navigate to="/login" /> : <Home />}
             >
+            
               <Route
-                path="/search/:searchInput"
+                path=":commentId"
                 element={!user ? <Navigate to="/login" /> : <Home />}
               />
-              <Route
-                path=":postId"
-                element={!user ? <Navigate to="/login" /> : <Home />}
-              >
-                <Route
-                  path=":commentId"
-                  element={!user ? <Navigate to="/login" /> : <Home />}
-                />
-              </Route>
             </Route>
             <Route
-              path="/profile/:userId"
+              path="/friends"
+              element={!user ? <Navigate to="/login" /> : <Home />}
+            ></Route>
+          </Route>
+          <Route
+            path="/profile/:userId"
+            element={!user ? <Navigate to="/login" /> : <Profile />}
+          >
+            <Route
+              path=":postId"
               element={!user ? <Navigate to="/login" /> : <Profile />}
             >
               <Route
-                path=":postId"
+                path=":commentId"
                 element={!user ? <Navigate to="/login" /> : <Profile />}
-              >
-                <Route
-                  path=":commentId"
-                  element={!user ? <Navigate to="/login" /> : <Profile />}
-                />
-              </Route>
-            </Route>
-            <Route
-              path="/photo/:postId"
-              element={!user ? <Navigate to="/login" /> : <ViewPhoto />}
-            />
-            <Route
-              path="/messages"
-              element={!user ? <Navigate to="/login" /> : <MessagesPage />}
-            >
-              <Route
-                path=":convoId"
-                element={!user ? <Navigate to="/login" /> : <MessagesPage />}
               />
             </Route>
+          </Route>
+          <Route path="photo/:viewPhoto/:photoId" element={<ViewPhoto />} />
+          <Route
+            path="/messages"
+            element={!user ? <Navigate to="/login" /> : <MessagesPage />}
+          >
             <Route
-              path="/login"
-              element={user ? <Navigate to="/" /> : <Login />}
+              path=":convoId"
+              element={!user ? <Navigate to="/login" /> : <MessagesPage />}
             />
-            <Route
-              path="/register"
-              element={user ? <Navigate to="/" /> : <Register />}
-            />
-          </Routes>
-        </Router>
-      </SkeletonTheme>
-    </div>
+          </Route>
+          <Route
+            path="/login"
+            element={user ? <Navigate to="/" /> : <Login />}
+          />
+          <Route
+            path="/register"
+            element={user ? <Navigate to="/" /> : <Register />}
+          />
+        </Routes>
+      </Router>
+    </SkeletonTheme>
+  </div>
   );
 }
 

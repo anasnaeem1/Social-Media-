@@ -9,7 +9,7 @@ import { getFormControlUtilityClasses } from "@mui/material";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getUser, uploadPhoto } from "../../../../../../apiCalls";
 
-function Comment({ userId, postId, viewPhoto, postUser, comment, newComment }) {
+function Comment({ userId, viewPhoto, postUser, comment, newComment }) {
   const navigate = useNavigate();
   const [commentUser, setCommentUser] = useState(null);
   const { user } = useContext(UserContext);
@@ -22,10 +22,12 @@ function Comment({ userId, postId, viewPhoto, postUser, comment, newComment }) {
   const [isHighlighted, setIsHighlighted] = useState(newComment);
   const [replyPicture, setReplyPicture] = useState(null);
   const [replyPicPreview, setReplyPicPreview] = useState(null);
+  // const formRef = useRef(null);
   const [newReply, setNewReply] = useState(false);
-  // const { userId } = useParams();
-
   const replyText = useRef();
+  const repliesContainerRef = useRef(null);
+  const lastReplyRef = useRef(null);
+  // const { userId } = useParams();
 
   console.log("userId in comment component is", userId);
 
@@ -85,7 +87,6 @@ function Comment({ userId, postId, viewPhoto, postUser, comment, newComment }) {
 
   const handleReplies = async (e) => {
     e.preventDefault();
-
     try {
       const repliesRes = await axios.get(`/api/commentsReplies/${comment._id}`);
       if (repliesRes.data) {
@@ -96,6 +97,22 @@ function Comment({ userId, postId, viewPhoto, postUser, comment, newComment }) {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    if (repliesVisibility && replies.length > 0) {
+      setTimeout(() => {
+        lastReplyRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
+
+        // Ensure the input field remains in view after scrolling
+        setTimeout(() => {
+          replyText.current?.focus();
+        }, 200);
+      }, 500);
+    }
+  }, [replies, repliesVisibility]); // Trigger only when replies are updated
 
   const handleReplyImageChange = (e) => {
     const file = e.target.files[0];
@@ -196,7 +213,10 @@ function Comment({ userId, postId, viewPhoto, postUser, comment, newComment }) {
               <p className="text-sm text-gray-700 my-1">
                 {comment.text || "No comment text provided."}
               </p>
-              <Link to={`/photo/${comment.img}`} className="flex justify-start">
+              <Link
+                to={`/photo/comment/${comment._id}`}
+                className="flex justify-start"
+              >
                 {comment.img && (
                   <div className="cursor-pointer border relative w-full max-w-[500px] max-h-[300px] rounded-xl overflow-hidden">
                     <img
@@ -235,67 +255,62 @@ function Comment({ userId, postId, viewPhoto, postUser, comment, newComment }) {
 
           {/* Replies Section */}
           {repliesVisibility && (
-            <div className="mt-4 ml-8 border-gray-200 bg-gray-50 p-4 rounded-md">
+            <div className="w-full mt-3 ml-2 border border-gray-200 bg-gray-50 rounded-md p-3">
               {/* Render Replies */}
               {replies.length > 0 ? (
-                replies.map((reply) => (
-                  <div key={reply._id}>
-                    <Reply viewPhoto={viewPhoto} reply={reply} newReply={newReply} />
-                  </div>
-                ))
+                <div
+                  ref={repliesContainerRef}
+                  className="flex flex-wrap gap-3 overflow-auto max-h-[400px]"
+                >
+                  {replies.map((reply, index) => (
+                    <div
+                      key={reply._id}
+                      ref={index === replies.length - 1 ? lastReplyRef : null}
+                      className="flex-grow min-w-[200px]"
+                    >
+                      <Reply
+                        viewPhoto={viewPhoto}
+                        reply={reply}
+                        newReply={newReply}
+                      />
+                    </div>
+                  ))}
+                </div>
               ) : (
                 <p className="text-sm text-gray-500">No replies yet.</p>
               )}
 
               {/* Input for Adding a Reply */}
               <form
+                // ref={formRef}
                 onSubmit={handleReplySubmit}
-                className="mt-4 flex flex-col gap-3"
+                className="mt-4 w-full flex items-center gap-3"
               >
-                {replyPicture && replyPicPreview && (
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={replyPicPreview}
-                      alt="Selected preview"
-                      className="w-[90px] h-[90px] rounded-md object-cover border"
-                    />
-                    <button
-                      type="button"
-                      className="text-red-500 hover:text-red-600 text-xs"
-                      onClick={handleRemoveReplyPic}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                )}
-
                 {/* Reply Input */}
-                <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  ref={replyText}
+                  placeholder="Write a reply..."
+                  className="flex-1 min-w-[200px] border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+
+                {/* Image Upload Icon */}
+                <label className="cursor-pointer bg-gray-200 hover:bg-gray-300 p-2 rounded-md">
+                  <i className="ri-image-add-line text-xl text-gray-600"></i>
                   <input
-                    type="text"
-                    ref={replyText}
-                    placeholder="Write a reply..."
-                    className="flex-1 border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    type="file"
+                    className="hidden"
+                    onChange={handleReplyImageChange}
                   />
+                </label>
 
-                  {/* Image Upload Icon */}
-                  <label className="cursor-pointer bg-gray-200 hover:bg-gray-300 p-2 rounded-md">
-                    <i className="ri-image-add-line text-xl text-gray-600"></i>
-                    <input
-                      type="file"
-                      className="hidden"
-                      onChange={handleReplyImageChange}
-                    />
-                  </label>
-
-                  {/* Reply Button */}
-                  <button
-                    type="submit"
-                    className="bg-blue-500 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-600"
-                  >
-                    Reply
-                  </button>
-                </div>
+                {/* Reply Button */}
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-600"
+                >
+                  Reply
+                </button>
               </form>
             </div>
           )}

@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import UserPhoto from "../../../../../userPhoto";
 import axios from "axios";
 import { UserContext } from "../../../../../context/UserContext";
+import { format } from "timeago.js";
 
 function Reply({ reply, newReply, viewPhoto }) {
   const [replyUser, setReplyUser] = useState(null);
@@ -10,6 +11,16 @@ function Reply({ reply, newReply, viewPhoto }) {
   const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images/";
   const PA = import.meta.env.VITE_PUBLIC_API;
   const [isHighlighted, setIsHighlighted] = useState(newReply);
+  const [likingReply, setLikingReply] = useState(false);
+  const [likes, setLikes] = useState(null);
+  const [isLiked, setIsLiked] = useState(false);
+
+  useEffect(() => {
+    if (Array.isArray(reply.likes)) {
+      setIsLiked(reply.likes.includes(user._id));
+      setLikes(reply.likes.length);
+    }
+  }, [reply.likes, user._id]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -27,7 +38,6 @@ function Reply({ reply, newReply, viewPhoto }) {
     fetchUser();
   }, [reply?.userId]);
 
-  // Highlight effect timeout for new replies
   useEffect(() => {
     if (isHighlighted) {
       const timeout = setTimeout(() => {
@@ -36,6 +46,27 @@ function Reply({ reply, newReply, viewPhoto }) {
       return () => clearTimeout(timeout);
     }
   }, [isHighlighted]);
+
+  const handleCommentLike = async (e) => {
+    e.preventDefault();
+    if (likingReply) return;
+
+    setLikingReply(true);
+    const userId = user._id;
+
+    try {
+      await axios.put(`/api/commentsReplies/${reply._id}/likeCommentReply`, {
+        userId: userId,
+      });
+
+      setLikes(isLiked ? likes - 1 : likes + 1);
+      setIsLiked(!isLiked);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLikingReply(false);
+    }
+  };
 
   return (
     <>
@@ -54,8 +85,8 @@ function Reply({ reply, newReply, viewPhoto }) {
         replyUser && (
           <div
             className={`${
-              viewPhoto ? "p-2 bg-white" : "px-4 py-2"
-            } flex items-start gap-4  border-b transition-all duration-500 ${
+              viewPhoto ? "py-3 px-3 bg-white" : "pl-9 py-2"
+            } flex items-start gap-4 border-b transition-all duration-500 ${
               isHighlighted ? "bg-green-100 scale-105" : "bg-white"
             }`}
           >
@@ -64,14 +95,14 @@ function Reply({ reply, newReply, viewPhoto }) {
               <UserPhoto userId={replyUser._id} user={replyUser} />
             </div>
 
-            {/* Comment Content */}
+            {/* reply Content */}
             <div className="flex-1">
               {/* Username */}
               <h4 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
                 {replyUser?.fullname?.split(" ")[0] || "Anonymous User"}
               </h4>
 
-              {/* Comment Text */}
+              {/* reply Text */}
               <p className="text-sm text-gray-700 mt-1">{reply.text}</p>
 
               {/* Image Preview (if available) */}
@@ -88,19 +119,13 @@ function Reply({ reply, newReply, viewPhoto }) {
               {/* Like & Reply Buttons */}
               <div className="flex items-center gap-4 mt-2">
                 <span
-                  // onClick={handleCommentLike}
-                  className={` cursor-pointer text-sm font-medium hover:underline`}
+                  onClick={handleCommentLike}
+                  className={`${
+                    isLiked ? "text-red-600" : "text-blue-600"
+                  } cursor-pointer text-sm font-medium hover:underline`}
                 >
                   Like
                 </span>
-                {/* <span
-                // onClick={handleCommentLike}
-                className={`${
-                  isLiked ? "text-red-600" : "text-blue-600"
-                } cursor-pointer text-sm font-medium hover:underline`}
-              >
-                Like
-              </span> */}
 
                 <button
                   // onClick={handleReplies}
@@ -108,8 +133,19 @@ function Reply({ reply, newReply, viewPhoto }) {
                 >
                   Reply
                 </button>
+                {likes > 0 && (
+                  <span className="text-sm text-gray-600">
+                    <span className="font-semibold text-gray-900">{likes}</span>{" "}
+                    {likes === 1 ? "like" : "likes"}
+                  </span>
+                )}
               </div>
             </div>
+
+            {/* Timestamp */}
+            <span className="text-[12px] mr-3 text-gray-500">
+              {format(reply.createdAt)}
+            </span>
           </div>
         )
       )}

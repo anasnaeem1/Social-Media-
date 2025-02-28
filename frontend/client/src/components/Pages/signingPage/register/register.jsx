@@ -14,8 +14,8 @@ import dayjs from "dayjs";
 import { useEffect } from "react";
 
 function register() {
-  const [dobForDayjs, setDobForDayjs] = useState(dayjs("2025-01-01"));
-  const [dob, setDob] = useState("2025-01-01");
+  const [dobForDayjs, setDobForDayjs] = useState(dayjs("2-17-2025"));
+  const [dob, setDob] = useState("2-17-2025");
   const [showPass, setShowPass] = useState(false);
   const [showCPass, setShowCPass] = useState(false);
   //   const PA = import.meta.env.VITE_PUBLIC_API;
@@ -239,9 +239,10 @@ function register() {
               <div className="hidden md:block">
                 <DesktopDatePicker
                   label="Date of Birth"
-                  value={dobForDayjs} // Controlled value
-                  onChange={handleDateChange} // Handle change
-                  renderInput={(params) => <input {...params} />} // Render custom input if necessary
+                  value={dobForDayjs}
+                  onChange={(newDate) => handleDateChange(newDate)}
+                  inputFormat="M/D/YYYY"
+                  renderInput={(params) => <input {...params} />} 
                 />
               </div>
 
@@ -250,7 +251,8 @@ function register() {
                 <MobileDatePicker
                   label="Date of Birth"
                   value={dobForDayjs} // Controlled value
-                  onChange={handleDateChange} // Handle change
+                  onChange={(newDate) => handleDateChange(newDate)} // Handle change
+                  inputFormat="M/D/YYYY" // Date format m/d/y
                   renderInput={(params) => <input {...params} />} // Render custom input if necessary
                 />
               </div>

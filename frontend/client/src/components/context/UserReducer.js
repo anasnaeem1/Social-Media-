@@ -159,6 +159,9 @@ const AuthReducer = (state, action) => {
     case "SET_SCROLL_POSITION":
       return { ...state, scrollPosition: action.payload };
 
+    case "UPDATEBIRTHDAYFRIENDS":
+      return { ...state, birthdayFriends: action.payload };
+
     default:
       return state;
   }

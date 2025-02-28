@@ -1,6 +1,4 @@
 import Feed from "../../Home/feed/feed";
-// import noAvatar from "../../../../assets/noAvatar.jpg";
-// import noCover from "../../../../assets/noCover.jpg";
 import UserInfo from "./userInfo";
 import ProfilePicSkeleton from "../../../Skeleton/profileSkeleton/profilePicSkeleton";
 import { useContext, useEffect, useState } from "react";
@@ -253,7 +251,7 @@ function User({
                               "/upload/",
                               "/upload/f_auto,q_auto/"
                             )
-                          : "/images/noAvatar.png"
+                          : "https://res.cloudinary.com/datcr1zua/image/upload/v1739709690/uploads/rindbm34tibrtqcgvpsd.png"
                       }
                       alt="Profile"
                       className={`${

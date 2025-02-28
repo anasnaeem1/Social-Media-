@@ -1,3 +1,4 @@
+import React from "react";
 import { CircularProgress } from "@mui/material"; // Use Material UI for circular progress
 import CreatePost from "./createPost/cPost";
 import { useEffect, useState, memo, useContext, useRef } from "react";
@@ -13,6 +14,7 @@ function Feed({
   mainItems,
   SeperatingLine,
   userId,
+  home,
 }) {
   const { ShareOptions } = mainItems;
   const { reload, user, postId, dispatch, yourNewPost, loadedPosts } =
@@ -20,26 +22,42 @@ function Feed({
   // const PA = import.meta.env.VITE_PUBLIC_API;
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-
+  const [isBackNavigation, setIsBackNavigation] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     const isReload =
       performance.getEntriesByType("navigation")[0]?.type === "reload";
-    const isBackNavigation =
+
+    const backNavigation =
       window.history.state &&
+      window.history.state.idx &&
       window.history.state.idx < window.history.length - 1;
 
-    if (isReload && !isBackNavigation) {
-      setLoadedPosts([]);
+    if (userId && !home) {
       fetchPosts();
-    } else if (isBackNavigation && loadedPosts.length > 0) {
+      return;
+    }
+
+    if (reload) {
+      setIsBackNavigation(false);
+    } else if (backNavigation && loadedPosts.length > 0) {
+      setIsBackNavigation(true);
       setPosts(loadedPosts);
+      return;
+    }
+
+    if (reload && home) {
+      setLoadedPosts([]);
+      dispatch({ type: "UNRELOAD", payload: false });
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 0);
     } else if (loadedPosts.length === 0) {
       fetchPosts();
     }
-  }, []);
+  }, [reload, page, userId, dispatch]);
 
   useEffect(() => {
     if (posts.length > 0) {
@@ -53,8 +71,12 @@ function Feed({
       let res;
       if (userId) {
         res = await axios.get(`/api/posts/profile/${userId}`);
-        setPosts(res.data);
+        const pinnedPosts = res.data.filter((post) => post.pinned);
+        const nonPinnedPosts = res.data.filter((post) => !post.pinned);
+        const sortedPosts = [...pinnedPosts, ...nonPinnedPosts];
+        setPosts(sortedPosts);
         setHasMore(false);
+        return;
       } else {
         res = await axios.get(
           `/api/posts/timeline/${user._id}?page=${page}&limit=5`
@@ -85,17 +107,6 @@ function Feed({
   }, [yourNewPost]);
 
   useEffect(() => {
-    if (reload && loadedPosts.length === 0) {
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-      }, 0);
-      setPosts([]);
-      fetchPosts();
-      dispatch({ type: "UNRELOAD", payload: false });
-    }
-  }, [reload, page, dispatch]);
-
-  useEffect(() => {
     if (postId) {
       setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
     }
@@ -108,9 +119,11 @@ function Feed({
   };
 
   return (
-    <div className={`${!userId && "mx-0 md:mx-auto "} relative`}>
-      <div className={`max-w-[540px] h-0 w-full sm:w-[540px] `}></div>
-      {/* Show loading indicator */}
+    <div
+      className={`${
+        !userId && "mx-0 md:mx-auto "
+      } w-full max-w-full md:max-w-[550px] relative`}
+    >
       {!userId && isFetching && (
         <div className="fixed top-0  left-0 right-0 z-50 flex justify-center items-center h-[65px] reload-slidein translate-y-[-70px]">
           <div className="bg-white h-[40px] w-[40px] flex justify-center items-center rounded-full shadow-lg border border-gray-200 reload-animation">
@@ -119,7 +132,7 @@ function Feed({
         </div>
       )}
 
-      <div className="flex pt-5 justify-center items-center flex-col gap-10 overflow-x-hidden feed-container">
+      <div className="flex relative mt-3 justify-center items-center flex-col gap-4 overflow-x-hidden">
         {/* CreatePost section */}
         {userId ? (
           userId === user._id && (
@@ -141,13 +154,17 @@ function Feed({
           />
         )}
         {/* Display posts */}
-        { posts.length > 0 ? (
+        {posts.length > 0 ? (
           posts.map((post) => (
-            <>
+            <React.Fragment key={post._id}>
               {Array.isArray(post?.likes) && (
-                <Post userId={userId} post={post} key={post._id} />
+                <Post
+                  userId={userId}
+                  isBackNavigation={isBackNavigation}
+                  post={post}
+                />
               )}
-            </>
+            </React.Fragment>
           ))
         ) : (
           <div

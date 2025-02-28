@@ -28,14 +28,6 @@
   background: rgb(163, 162, 162);
 }
 
-/* Default layout for larger screens */
-.options-container {
-  width: 250px;
-  height: calc(100vh - 65px);
-  padding-left: 1rem;
-  margin-right: 50px;
-}
-
 @media (max-width: 1149px) {
   .custom-width {
     width: 200px !important; /* Or whatever width you prefer */
@@ -45,16 +37,43 @@
 @media (max-width: 1280px) {
   /* xl breakpoint */
   .options-container {
-    width: 150px; /* Fixed width for smaller screens */
+    width: 250px; /* Fixed width for smaller screens */
   }
 }
 
 .others-container {
-  width: 30%;
-  height: 90vh;
-  padding: 1rem;
-  margin-right: 0 !important;
-  overflow-y: auto;
+  width: 350px;
+}
+
+@media (max-width: 1148px) {
+  .options-container {
+    width: 200px; /* Fixed width for smaller screens */
+  }
+  .others-container {
+    max-width: 310px;
+  }
+}
+
+@media (max-width: 1114px) {
+  .others-container {
+    width: 290px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .others-container {
+    width: 270px;
+  }
+}
+@media (max-width: 1090px) {
+  .others-container {
+    width: 250px;
+  }
+}
+@media (max-width: 1054px) {
+  .others-container {
+    width: 230px;
+  }
 }
 
 @media (max-width: 1085px) {
@@ -64,10 +83,6 @@
 }
 
 @media (max-width: 1024px) {
-  .others-container {
-    display: none;
-    width: 35%; /* Adjust the width for medium screens */
-  }
   .search-box {
     width: 600px;
     margin-right: 0;
@@ -80,7 +95,6 @@
     margin-right: 0;
   }
 }
-
 
 /* @media (max-width: 455px) {
   .postSkeletonWidthForProfile {
@@ -107,12 +121,11 @@
   }
 }
 
-
 .bg-animate {
   animation: bg-animate 0.7s ease-in-out forwards;
 }
-  
- @media (max-width: 366px) {
+
+@media (max-width: 366px) {
   .userInfo-Box {
     width: 320px;
   }
@@ -123,7 +136,6 @@
     left: 20% !important;
   }
 }
-
 
 @media (max-width: 640px) {
   #comment-box textarea {

@@ -299,7 +299,7 @@ function Navbar() {
               <Link onClick={handleMenu}>
                 <img
                   onClick={handleMenuClick}
-                  src={user?.profilePic || "/images/noAvatar.png"}
+                  src={user?.profilePic || "https://res.cloudinary.com/datcr1zua/image/upload/v1739709690/uploads/rindbm34tibrtqcgvpsd.png"}
                   alt="Profile"
                   className={`w-[45px] h-[45px] sm:w-[55px] sm:h-[55px] border shadow-xl border-gray-300 sm:rounded-full rounded-l-full transition-all duration-300 object-cover ${
                     isMenuClicked

@@ -16,7 +16,7 @@ import CommentBox from "./comments/commentBox";
 import PostSkeleton from "../../../../Skeleton/postSkeleton";
 import { getUser } from "../../../../../apiCalls";
 
-function Post({ post, userId, searchInput }) {
+function Post({ post, userId, searchInput, isBackNavigation }) {
   const {
     dispatch,
     commentBox,
@@ -231,7 +231,7 @@ function Post({ post, userId, searchInput }) {
                 "animate__animated  animate__fadeIn bg-animate"
               }`}
             >
-              {userLoading ? (
+              {!isBackNavigation && userLoading ? (
                 isImg ? (
                   <PostSkeleton userId={userId} isImg={isImg} />
                 ) : (
@@ -289,7 +289,7 @@ function Post({ post, userId, searchInput }) {
                     <div className="flex items-center gap-3">
                       {/* User Photo */}
                       {userLoading ? (
-                        <div className=" bg-gray-300 rounded-full animate-pulse"></div>
+                        <div className="w-[40px] h-[40px] bg-gray-300 rounded-full animate-pulse"></div> // Skeleton for user photo
                       ) : params === `/profile/${postUser._id}` ? (
                         postUser._id === user._id ? (
                           <CurrentUserPhoto />
@@ -301,17 +301,25 @@ function Post({ post, userId, searchInput }) {
                       ) : (
                         <UserPhoto userId={post.userId} user={postUser} />
                       )}
+
                       {/* User Info */}
                       <div>
                         {userLoading ? (
-                          <div className="w-[120px] h-[120px] mb-1 bg-gray-300 rounded-md animate-pulse"></div>
+                          <div className="w-[120px] h-[16px] bg-gray-300 rounded-md animate-pulse mb-1"></div> // Skeleton for the username
                         ) : (
-                          <h1 className="cursor-pointer text-sm font-semibold text-gray-800">
-                            {postUser.fullname}
-                          </h1>
+                          <div className="flex items-center gap-2">
+                            <h1 className="cursor-pointer text-sm font-semibold text-gray-800">
+                              {postUser.fullname}
+                            </h1>
+                            {/* Pinned Post Icon */}
+                            {userId && post?.pinned && (
+                              <i className="text-base text-gray-500 ri-pushpin-fill"></i>
+                            )}
+                          </div>
                         )}
+
                         {userLoading ? (
-                          <div className="w-[80px] h-[10px] bg-gray-300 rounded-md animate-pulse"></div>
+                          <div className="w-[80px] h-[10px] bg-gray-300 rounded-md animate-pulse"></div> // Skeleton for date
                         ) : (
                           <span className="text-xs text-gray-500">
                             {format(post.createdAt)}
@@ -319,6 +327,7 @@ function Post({ post, userId, searchInput }) {
                         )}
                       </div>
                     </div>
+
                     {/* Action Buttons */}
                     <div className="flex gap-2">
                       <button
@@ -330,12 +339,13 @@ function Post({ post, userId, searchInput }) {
                       </button>
                       <button
                         onClick={handleRemovePostAlert}
-                        className="flex justify-center items- center hover:bg-gray-100 w-8 h-8 rounded-full text-xl"
+                        className="flex justify-center items-center hover:bg-gray-100 w-8 h-8 rounded-full text-xl"
                       >
                         <i className="ri-close-line"></i>
                       </button>
                     </div>
                   </div>
+
                   {/* Post Content */}
                   {post?.desc && (
                     <div
@@ -389,7 +399,7 @@ function Post({ post, userId, searchInput }) {
 
                   {/* Image Section */}
                   {post.img && (
-                    <Link to={`/photo/${post._id}`}>
+                    <Link to={`/photo/post/${post._id}`}>
                       <div className="mt-3 w-full rounded-md overflow-hidden">
                         <img
                           src={post.img}
