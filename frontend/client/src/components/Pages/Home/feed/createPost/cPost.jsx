@@ -11,8 +11,8 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
   const [postFile, setPostFile] = useState(null);
   const [previewImg, setPreviewImg] = useState(null);
   const [postSubmitting, setPostSubmitting] = useState(null);
-  const desc = useRef();
-
+  const [desc, setDesc] = useState(null);
+  const postDescRef = useRef();
   const handlePostFileChange = (g) => {
     const selectedPostPic = g.target.files[0];
     if (!userId) {
@@ -31,10 +31,21 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
     }
   };
 
+  const handlePostDescChange = (e) => {
+    setDesc(e.target.value);
+  };
+
+  useEffect(() => {
+    if (yourNewPost) {
+      setDesc(""); // Clears the textarea when a new post is created
+    }
+  }, [yourNewPost]);
+
   const postSubmit = async (e) => {
     e.preventDefault();
     setPostSubmitting(true);
     try {
+      const formattedDesc = desc?.replace(/\n/g, " /n ") || "";
       let uniqueFileName = null;
       if (postFile) {
         const data = new FormData();
@@ -49,7 +60,7 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
       }
       const newPost = await submittingPost(
         user._id,
-        desc.current.value,
+        formattedDesc,
         uniqueFileName,
         dispatch
       );
@@ -67,13 +78,28 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
     if (yourNewPost) {
       setPostFile(null);
       setPreviewImg(null);
-      desc.current.value = "";
     }
   }, [yourNewPost]);
 
   const handleRemoveImage = () => {
     setPostFile(null);
     setPreviewImg(null);
+  };
+
+  useEffect(() => {
+    const textarea = document.querySelector("textarea");
+    textarea.style.height = "auto";
+    textarea.style.height = Math.min(textarea.scrollHeight, 128) + "px"; // Max 4 rows
+  }, [desc]);
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      if (e.shiftKey) {
+        return;
+      }
+      e.preventDefault(); // Prevent new line
+      postSubmit();
+    }
   };
 
   return (
@@ -89,12 +115,15 @@ function cPost({ ShareOptions, cPostFile, userId, SeperatingLine }) {
 
         {/* Input Field */}
         <div className="flex-1">
-          <input
-            ref={desc}
-            className="w-full py-2 px-3 rounded-md border focus:outline-none focus:ring-2 focus:ring-gray-300"
+          <textarea
+            onChange={handlePostDescChange}
+            onKeyDown={handleKeyDown}
+            value={desc}
+            className="w-full py-2 px-3 rounded-md border focus:outline-none focus:ring-2 focus:ring-gray-300 resize-none overflow-hidden"
             placeholder={`What’s on your mind ${user.fullname}?`}
-            type="text"
-          />
+            rows={1}
+            style={{ minHeight: "auto", maxHeight: "8rem" }} // Max height for 4 rows
+          ></textarea>
         </div>
       </div>
 

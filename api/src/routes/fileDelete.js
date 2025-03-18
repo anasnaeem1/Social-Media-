@@ -7,7 +7,6 @@ const router = express.Router();
 router.delete("/:filename", (req, res) => {
   const { filename } = req.params;
 
-  // Path to the file to be deleted (matching multer storage destination)
   const filePath = path.join(__dirname, "../public/images", filename);
 
   fs.unlink(filePath, (err) => {

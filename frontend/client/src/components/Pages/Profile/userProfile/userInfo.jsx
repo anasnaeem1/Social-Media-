@@ -6,16 +6,18 @@ import { UserContext } from "../../../context/UserContext";
 function UserInfo({ profileUser }) {
   const [friendList, setFriendList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
   const { user } = useContext(UserContext);
-
+  
   useEffect(() => {
     if (profileUser._id) {
       const fetchFriends = async () => {
         try {
-          setIsLoading(true)
+          setIsLoading(true);
           const res = await axios.get(`/api/users/friends/${profileUser._id}`);
-          setFriendList(res.data);
+          if (res.data) {
+            setFriendList(res.data);
+            // console.log("friendsList", res.data);
+          }
           setIsLoading(false);
         } catch (error) {
           console.error("Error fetching friends:", error);
@@ -26,13 +28,13 @@ function UserInfo({ profileUser }) {
   }, [profileUser]);
 
   return (
-    <div className="lg:sticky top-[80px] h-auto userInfo-Box right-0 w-full lg:w-[300px] flex flex-col gap-4">
+    <div className="lg:sticky top-[80px] flex flex-col h-auto right-0 w-full max-w-[540px] gap-4">
       {/* USER INFO */}
-      <div className="bg-white rounded-lg p-3 sm:p-4">
+      <div className="bg-white w-full rounded-lg p-3 sm:p-4">
         <h1 className="text-md sm:text-lg font-semibold border-b pb-2 mb-4">
           About {profileUser.fullname}
         </h1>
-        <div className="flex flex-col gap-3">
+        <div className="flex w-fulls flex-col gap-3">
           {/* City */}
           <div className="flex items-center justify-between text-xs sm:text-sm">
             <span className="font-medium text-gray-800">City:</span>
@@ -64,7 +66,7 @@ function UserInfo({ profileUser }) {
       </div>
 
       {/* USER FRIENDS */}
-      <div className="bg-white rounded-lg p-3 sm:p-4">
+      <div className="bg-white rounded-lg p-3 w-full sm:p-4">
         <h2 className="text-md sm:text-lg font-semibold border-b pb-2 mb-4">
           Friends
         </h2>

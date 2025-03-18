@@ -9,7 +9,14 @@ import { getFormControlUtilityClasses } from "@mui/material";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getUser, uploadPhoto } from "../../../../../../apiCalls";
 
-function Comment({ userId, viewPhoto, postUser, comment, newComment }) {
+function Comment({
+  userId,
+  newCommentDetails,
+  viewPhoto,
+  postUser,
+  comment,
+  newComment,
+}) {
   const navigate = useNavigate();
   const [commentUser, setCommentUser] = useState(null);
   const { user } = useContext(UserContext);
@@ -26,10 +33,9 @@ function Comment({ userId, viewPhoto, postUser, comment, newComment }) {
   const [newReply, setNewReply] = useState(false);
   const replyText = useRef();
   const repliesContainerRef = useRef(null);
+  const commentRef = useRef(null);
   const lastReplyRef = useRef(null);
   // const { userId } = useParams();
-
-  console.log("userId in comment component is", userId);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -84,6 +90,16 @@ function Comment({ userId, viewPhoto, postUser, comment, newComment }) {
       setLikingComment(false);
     }
   };
+
+  useEffect(() => {
+    if (comment?._id === newCommentDetails?._id) {
+      // Scroll the comment into view
+      commentRef.current?.scrollIntoView({
+        behavior: "smooth", // Smooth scrolling
+        block: "center", // Center the comment in the viewport
+      });
+    }
+  }, [newCommentDetails]);
 
   const handleReplies = async (e) => {
     e.preventDefault();
@@ -173,9 +189,11 @@ function Comment({ userId, viewPhoto, postUser, comment, newComment }) {
 
   return (
     <div
-      className={`px-2 py-4 border-t border-gray-200 transition-all duration-500 ${
-        isHighlighted ? "bg-green-100 scale-105" : "bg-white"
-      }`}
+      ref={commentRef}
+      className={` py-4 comments-container
+       border-t border-gray-200 transition-all duration-500 ${
+         isHighlighted ? "bg-green-100 scale-105" : "bg-white"
+       }`}
     >
       {userFetching ? (
         <div className="flex items-center gap-4">
@@ -188,15 +206,14 @@ function Comment({ userId, viewPhoto, postUser, comment, newComment }) {
       ) : (
         <div>
           <div
-            className={`flex items-start gap-4 px-2 rounded-lg ${
+            className={`flex items-start gap-4 rounded-lg ${
               comment.userId === postUser._id
                 ? "border-l-4 border-blue-400"
                 : ""
             }`}
           >
-            <div className="overflow-hidden">
-              <UserPhoto userId={commentUser._id} user={commentUser} />
-            </div>
+            <UserPhoto userId={commentUser._id} user={commentUser} />
+
             <div className="flex-1">
               <div className={`flex justify-between items-center`}>
                 <h3 className="text-base font-semibold text-gray-900 flex items-center gap-2">
@@ -255,7 +272,7 @@ function Comment({ userId, viewPhoto, postUser, comment, newComment }) {
 
           {/* Replies Section */}
           {repliesVisibility && (
-            <div className="w-full mt-3 ml-2 border border-gray-200 bg-gray-50 rounded-md p-3">
+            <div className="w-full mt-3 border-black bg-gray-50 rounded-md p-3">
               {/* Render Replies */}
               {replies.length > 0 ? (
                 <div
@@ -286,6 +303,15 @@ function Comment({ userId, viewPhoto, postUser, comment, newComment }) {
                 onSubmit={handleReplySubmit}
                 className="mt-4 w-full flex items-center gap-3"
               >
+                {/* Image Upload Icon */}
+                {/* <label className="cursor-pointer bg-gray-200 hover:bg-gray-300 p-2 rounded-md">
+                  <i className="ri-image-add-line text-xl text-gray-600"></i>
+                  <input
+                    type="file"
+                    className="hidden"
+                    onChange={handleReplyImageChange}
+                  />
+                </label> */}
                 {/* Reply Input */}
                 <input
                   type="text"
@@ -293,16 +319,6 @@ function Comment({ userId, viewPhoto, postUser, comment, newComment }) {
                   placeholder="Write a reply..."
                   className="flex-1 min-w-[200px] border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
-
-                {/* Image Upload Icon */}
-                <label className="cursor-pointer bg-gray-200 hover:bg-gray-300 p-2 rounded-md">
-                  <i className="ri-image-add-line text-xl text-gray-600"></i>
-                  <input
-                    type="file"
-                    className="hidden"
-                    onChange={handleReplyImageChange}
-                  />
-                </label>
 
                 {/* Reply Button */}
                 <button

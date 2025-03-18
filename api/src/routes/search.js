@@ -29,7 +29,7 @@ router.get("/post/:searchInputForPost", async (req, res) => {
 
     const searchedPostDesc = await Post.find({
       desc: { $regex: searchInput, $options: "i" },
-    })
+    });
 
     if (searchedPostDesc.length > 0) {
       res.status(200).json(searchedPostDesc);
@@ -41,7 +41,6 @@ router.get("/post/:searchInputForPost", async (req, res) => {
     res.status(500).json({ message: "Searching failed", error: error.message });
   }
 });
-
 
 // // Geting User DOB and some info
 // router.get("/:id/DOB", async (req, res) => {

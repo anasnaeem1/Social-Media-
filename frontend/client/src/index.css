@@ -8,27 +8,47 @@
   box-sizing: border-box;
 }
 
+.custom-scrollbar {
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: rgba(163, 162, 162, 0.5) transparent; /* For Firefox */
+}
+
 .custom-scrollbar::-webkit-scrollbar {
-  width: 8px;
+  width: 6px; /* Slimmer scrollbar */
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+  background: transparent; /* Transparent track */
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgb(172, 171, 171);
-  border-radius: 10px;
-  display: none;
-  transition: display 0.3s ease;
+  background: transparent; /* Hide thumb by default */
+  border-radius: 10px; /* Rounded corners */
+  transition: background 0.3s ease; /* Smooth transition */
 }
 
 .custom-scrollbar:hover::-webkit-scrollbar-thumb {
-  display: block;
-  background: rgb(163, 162, 162);
+  background: rgba(163, 162, 162, 0.5); /* Show thumb on hover */
+}
+
+.custom-scrollbar:hover::-webkit-scrollbar-thumb:hover {
+  background: rgba(163, 162, 162, 0.8); /* Darker on hover */
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
 }
 
 @media (max-width: 1149px) {
+  .feed-container {
+    max-width: 400px;
+  }
   .custom-width {
     width: 200px !important; /* Or whatever width you prefer */
   }
@@ -123,12 +143,6 @@
 
 .bg-animate {
   animation: bg-animate 0.7s ease-in-out forwards;
-}
-
-@media (max-width: 366px) {
-  .userInfo-Box {
-    width: 320px;
-  }
 }
 
 @media (min-width: 1646px) {

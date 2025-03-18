@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import FriendList from "../../Home/friendList";
+import FriendList from "../../Home/UsersLists/usersList";
 import { UserContext } from "../../../context/UserContext";
 import Convo from "./convo";
 

@@ -31,17 +31,28 @@ router.put("/:id", async (req, res) => {
 });
 
 //delete a post
-router.delete("/:id", async (req, res) => {
+router.delete("/deletePost/:id", async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
-    if (post.userId === req.body.userId) {
-      await Post.deleteOne(post);
-      res.status(200).json("The post has been deleted");
+    const userId = req.query.userId;
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    if (post.userId === userId) {
+      const deletedPost = await Post.findByIdAndDelete(post._id);
+      return res
+        .status(200)
+        .json({ message: "Post deleted successfully", deletedPost });
     } else {
-      res.status(403).json("You can delete only your posts");
+      return res
+        .status(403)
+        .json({ message: "You can delete only your posts" });
     }
   } catch (error) {
-    res.status(500).json(error);
+    console.error(error);
+    res.status(500).json({ message: "Server error", error });
   }
 });
 
@@ -96,9 +107,32 @@ router.get("/timeline/:userId", async (req, res) => {
 router.get("/profile/:id", async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const posts = await Post.find({ userId: user._id }).sort({ createdAt: -1 });
+    const pinnedPosts = posts.filter((post) => post.pinned);
+    const notPinnedPosts = posts.filter((post) => !post.pinned);
+    const sortedPosts = [...pinnedPosts, ...notPinnedPosts];
+    res.status(200).json(sortedPosts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// get user top 3 recent posts
+router.get("/topThreeRecentPosts/:userId", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId);
     // console.log(user)
     const posts = await Post.find({ userId: user._id });
-    res.status(200).json(posts);
+    const recentPosts = posts.sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+    const topThreeRecentPosts = recentPosts.slice(0, 3);
+    res.status(200).json(topThreeRecentPosts);
   } catch (error) {
     res.status(500).json(error);
   }

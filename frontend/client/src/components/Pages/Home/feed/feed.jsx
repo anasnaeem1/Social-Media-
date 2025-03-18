@@ -17,8 +17,15 @@ function Feed({
   home,
 }) {
   const { ShareOptions } = mainItems;
-  const { reload, user, postId, dispatch, yourNewPost, loadedPosts } =
-    useContext(UserContext);
+  const {
+    reload,
+    floatingBox,
+    user,
+    postId,
+    dispatch,
+    yourNewPost,
+    loadedPosts,
+  } = useContext(UserContext);
   // const PA = import.meta.env.VITE_PUBLIC_API;
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -39,16 +46,15 @@ function Feed({
       fetchPosts();
       return;
     }
-
     if (reload) {
       setIsBackNavigation(false);
-    } else if (backNavigation && loadedPosts.length > 0) {
+    } else if (loadedPosts.length > 0) {
       setIsBackNavigation(true);
       setPosts(loadedPosts);
       return;
     }
 
-    if (reload && home) {
+    if (reload) {
       setLoadedPosts([]);
       dispatch({ type: "UNRELOAD", payload: false });
       setTimeout(() => {
@@ -57,13 +63,16 @@ function Feed({
     } else if (loadedPosts.length === 0) {
       fetchPosts();
     }
-  }, [reload, page, userId, dispatch]);
+  }, [reload, page, home, userId, dispatch]);
 
+  // Remove deleted post
   useEffect(() => {
-    if (posts.length > 0) {
-      dispatch({ type: "UPDATELOADEDPOST", payload: posts });
+    if (floatingBox.purpose === "postDeleted" && floatingBox.result?._id) {
+      setPosts((prevPosts) =>
+        prevPosts.filter((post) => post._id !== floatingBox.result._id)
+      );
     }
-  }, [posts]);
+  }, [floatingBox.result]);
 
   const fetchPosts = async () => {
     setIsFetching(true);
@@ -71,10 +80,7 @@ function Feed({
       let res;
       if (userId) {
         res = await axios.get(`/api/posts/profile/${userId}`);
-        const pinnedPosts = res.data.filter((post) => post.pinned);
-        const nonPinnedPosts = res.data.filter((post) => !post.pinned);
-        const sortedPosts = [...pinnedPosts, ...nonPinnedPosts];
-        setPosts(sortedPosts);
+        setPosts(res.data);
         setHasMore(false);
         return;
       } else {
@@ -100,6 +106,14 @@ function Feed({
   };
 
   useEffect(() => {
+    if (!userId) {
+      if (posts.length > 0) {
+        dispatch({ type: "UPDATELOADEDPOST", payload: posts });
+      }
+    }
+  }, [posts]);
+
+  useEffect(() => {
     if (yourNewPost) {
       yourNewPost;
       setPosts((prevPosts) => [yourNewPost, ...prevPosts]);
@@ -122,7 +136,7 @@ function Feed({
     <div
       className={`${
         !userId && "mx-0 md:mx-auto "
-      } w-full max-w-full md:max-w-[550px] relative`}
+      } w-full  max-w-[550px] relative`}
     >
       {!userId && isFetching && (
         <div className="fixed top-0  left-0 right-0 z-50 flex justify-center items-center h-[65px] reload-slidein translate-y-[-70px]">
@@ -132,7 +146,7 @@ function Feed({
         </div>
       )}
 
-      <div className="flex relative mt-3 justify-center items-center flex-col gap-4 overflow-x-hidden">
+      <div className="flex w-full max-w-[550px]  relative mt-3 justify-center items-center flex-col gap-4 overflow-x-hidden">
         {/* CreatePost section */}
         {userId ? (
           userId === user._id && (

@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { UserContext } from "../../context/UserContext";
 import Post from "../Home/feed/post/post";
@@ -19,46 +19,59 @@ function Search1() {
   }, [searchInput]);
 
   useEffect(() => {
-    setIsLoading(true);
-    setSearchedUsers([]);
-    setSearchedPosts([]);
-
-    const fetchUsers = async () => {
-      try {
-        const userResponse = await axios.get(
-          `/api/search/user/${decodedParams}`
-        );
-        console.log("Users Response:", userResponse?.data);
-        setSearchedUsers(userResponse?.data || []);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-        setSearchedUsers([]); // Clear results on error
-      }
-    };
-
-    const fetchPosts = async () => {
-      try {
-        const postResponse = await axios.get(
-          `/api/search/post/${decodedParams}`
-        );
-
-        // console.log("Posts Response:", postResponse?.data);
-        setSearchedPosts(postResponse?.data || []);
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-        setSearchedPosts([]);
-      }
-    };
-
-    if (decodedParams) {
+    const fetchData = async () => {
       setIsLoading(true);
       setSearchedUsers([]);
       setSearchedPosts([]);
 
-      fetchUsers();
-      fetchPosts();
+      // Fetch users
+      try {
+        const userResponse = await axios.get(
+          `/api/search/user/${decodedParams}`
+        );
+        const userResponseData = userResponse.data || [];
+        setSearchedUsers(userResponseData);
+      } catch (userError) {
+        console.error("Error fetching users:", userError);
+      }
 
-      setIsLoading(false); // This might need refinement if both calls affect loading state
+      // Fetch posts
+      try {
+        const postResponse = await axios.get(
+          `/api/search/post/${decodedParams}`
+        );
+        const postResponseData = postResponse.data || [];
+        setSearchedPosts(postResponseData);
+      } catch (postError) {
+        console.error("Error fetching posts:", postError);
+      }
+
+      // Fetch top three posts for each user (if users exist)
+      // if (searchedUsers.length > 0) {
+      //   try {
+      //     const allUsersPosts = searchedUsers.map((user) =>
+      //       axios.get(`/api/posts/topThreeRecentPosts/${user._id}`)
+      //     );
+
+      //     const postsResponses = await Promise.all(allUsersPosts);
+      //     const usersTopThreePosts = postsResponses.flatMap(
+      //       (response) => response.data
+      //     );
+      //     // Combine posts from search and user-specific posts
+      //     setSearchedPosts((prevPosts) => [
+      //       ...usersTopThreePosts,
+      //       ...prevPosts,
+      //     ]);
+      //   } catch (userPostsError) {
+      //     console.error("Error fetching user posts:", userPostsError);
+      //   }
+      // }
+
+      setIsLoading(false);
+    };
+
+    if (decodedParams) {
+      fetchData();
     }
   }, [decodedParams]);
 
@@ -86,7 +99,7 @@ function Search1() {
                   {searchedUsers.map((eachUser) => (
                     <div
                       className="bg-white mx-auto relative shadow-md border border-gray-200 rounded-lg flex flex-col max-w-[540px] w-full my-2 "
-                      key={eachUser._id}
+                      key={eachUser?.username}
                     >
                       <UserDetails user={eachUser} />
                     </div>
@@ -107,12 +120,13 @@ function Search1() {
                 </h2>
                 <div className="space-y-4 sm:space-y-6 flex flex-col items-center">
                   {searchedPosts.map((post) => (
-                    <Post
-                      userId={post.userId}
-                      searchInput={decodedParams}
-                      post={post}
-                      key={post._id}
-                    />
+                    <React.Fragment key={post._id}>
+                      <Post
+                        userId={post.userId}
+                        searchInput={decodedParams}
+                        post={post}
+                      />
+                    </React.Fragment>
                   ))}
                 </div>
               </>

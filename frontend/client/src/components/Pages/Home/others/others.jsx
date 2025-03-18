@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import Mutuals from "../../../mutuals";
+import Mutuals from "../Mutuals/mutuals";
 import { UserContext } from "../../../context/UserContext";
 import axios from "axios";
+import { getBirthdayFriends } from "../../../../apiCalls";
 
 function Others({ mainItems }) {
   // const PF = import.meta.env.VITE_PUBLIC_FOLDER || "/images/";
@@ -16,21 +17,20 @@ function Others({ mainItems }) {
             setBirthdayFriends(friends);
             return;
           } else {
-            const res = await axios.get(
-              `/api/users/birthdayFriends/${user._id}`
-            );
-            if (res.data && Array.isArray(res.data)) {
-              const shuffledFriends = res.data.sort(() => Math.random() - 0.5);
+            const birthdayFriendsRes = await getBirthdayFriends(user?._id);
+            if (birthdayFriendsRes && Array.isArray(birthdayFriendsRes)) {
+              const shuffledFriends = birthdayFriendsRes.sort(
+                () => Math.random() - 0.5
+              );
               setBirthdayFriends(shuffledFriends);
               dispatch({
                 type: "UPDATEBIRTHDAYFRIENDS",
                 payload: shuffledFriends,
               });
-              console.log(res.data);
             }
           }
         } catch (error) {
-          console.error("Error fetching friends:", error);
+          console.log("Error fetching friends:", error);
         }
       };
       fetchFriends();
@@ -59,14 +59,21 @@ function Others({ mainItems }) {
 
                   {/* Birthday Text */}
                   <span className="text-gray-800 text-sm md:text-md leading-snug break-words">
-                    <span className="font-semibold">
+                    <span className="font-semibold text-blue-600">
+                      {birthdayFriends.length === 1 ? `Only ` : ""}
                       {birthdayFriends[0].fullname}
                     </span>{" "}
-                    and{" "}
-                    <span className="font-semibold">
-                      {birthdayFriends.length - 1} other friends
+                    <span className="font-semibold text-blue-600">
+                      {birthdayFriends.length - 1 > 0
+                        ? `and ${birthdayFriends.length - 1} other friend${
+                            birthdayFriends.length - 1 > 1 ? "s" : ""
+                          }`
+                        : ""}
                     </span>{" "}
-                    have a birthday today. 🎉
+                    <span className="text-gray-700">
+                      have a birthday today.
+                    </span>{" "}
+                    🎉
                   </span>
                 </div>
 

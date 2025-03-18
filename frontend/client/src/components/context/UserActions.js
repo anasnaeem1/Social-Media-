@@ -107,6 +107,10 @@ export const setYourNewPost = (post) => ({
   type: "YOURNEWPOST",
   payload: post,
 });
+export const yourNewComment = (comment) => ({
+  type: "YOURNEWCOMMENT",
+  payload: comment,
+});
 
 export const setPostID = (post) => ({
   type: "POSTID",
@@ -131,4 +135,23 @@ export const setScrollPosition = (scrollPosition) => ({
 export const setBirthdayFriends = (birthdayFriends) => ({
   type: "UPDATEBIRTHDAYFRIENDS",
   payload: birthdayFriends,
+});
+
+export const setPostDetails = (postDetails) => ({
+  type: "UPDATEPOSTDETAILS",
+  payload: postDetails,
+});
+
+export const setNewUpdateInProfile = (newUpdateInProfile) => ({
+  type: "YOURNEWUPDATEDINPROFILE",
+  payload: newUpdateInProfile,
+});
+
+export const updateUser = (updatedUser) => ({
+  type: "UPDATE_USER",
+  payload: updatedUser,
+});
+export const toggleFloatingBox = (purpose) => ({
+  type: "TOGGLEFLOATINGBOX",
+  payload: purpose,
 });

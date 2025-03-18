@@ -8,7 +8,7 @@ function user() {
 
   return (
     <Link to={`/profile/${user._id}`}>
-    <div className="relative w-[58px] h-[58px] border-[3px] border-white rounded-full overflow-hidden">
+    <div className="relative w-[50px] h-[50px] border-[3px] border-white rounded-full overflow-hidden">
       <img
         src={
           user?.profilePic

@@ -3,6 +3,7 @@ import { UserContext } from "../../context/UserContext";
 import UserPhoto from "../../userPhoto";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import FollowButton from "../Home/Buttons/followButton"
 
 function userDetails({ user }) {
   const PA = import.meta.env.VITE_PUBLIC_API;
@@ -10,7 +11,7 @@ function userDetails({ user }) {
   const [followed, setFollowed] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
 
-  console.log(user.username);
+  // console.log(user.username);
 
   useEffect(() => {
     if (user._id) {
@@ -86,21 +87,7 @@ function userDetails({ user }) {
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row items-center justify-between px-4 py-3 border-t border-gray-200 gap-2 sm:gap-4">
         {user._id === currentUser._id ? null : (
-          <button
-            onClick={handleFollow}
-            className={`flex items-center justify-center gap-2 text-sm px-4 py-2 rounded-md w-full sm:w-auto ${
-              followed
-                ? "bg-gray-200 text-gray-600 hover:bg-gray-300"
-                : "bg-blue-500 text-white hover:bg-blue-600"
-            } transition-all duration-200`}
-          >
-            <i
-              className={`ri-user-${
-                followed ? "unfollow" : "follow"
-              }-line text-lg`}
-            ></i>
-            {followed ? "Unfollow" : "Follow"}
-          </button>
+          <FollowButton otherUser={user} text="Follow" icon={true} />
         )}
 
         <Link

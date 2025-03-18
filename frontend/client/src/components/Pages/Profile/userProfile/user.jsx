@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../../context/UserContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { followUser, isUserFollowed } from "../../../../apiCalls";
 
 function User({
   profileLoading,
@@ -32,16 +33,10 @@ function User({
   // Check currentUser follows this ProfileUser
   useEffect(() => {
     if (profileUser._id) {
-      const normalizedFollowings = currentUser.followings.map((id) =>
-        id.toString()
-      );
-      const isFollowed = normalizedFollowings.includes(
-        profileUser._id.toString()
-      );
-      setFollowed(isFollowed);
-      // console.log("Includes:", isFollowed);
+      // console.log(isUserFollowed(currentUser, profileUser))
+      setFollowed(isUserFollowed(currentUser, profileUser));
     }
-  }, [currentUser.followings, profileUser._id]);
+  }, [currentUser?.followings, profileUser?._id]);
 
   //Handle stop navigating while followLoading
   useEffect(() => {
@@ -85,22 +80,9 @@ function User({
   const handleFollow = async () => {
     setFollowLoading(true);
     try {
-      if (followed) {
-        const res = await axios.put(`/api/users/${profileUser._id}/unfollow`, {
-          userId: currentUser._id,
-        });
-        // console.log(res.data);
-        if (res.data) {
-          dispatch({ type: "UNFOLLOW", payload: profileUser._id });
-        }
-      } else {
-        const res = await axios.put(`/api/users/${profileUser._id}/follow`, {
-          userId: currentUser._id,
-        });
-        if (res.data) {
-          dispatch({ type: "FOLLOW", payload: profileUser._id });
-        }
-      }
+      if ((currentUser, profileUser))
+        await followUser(dispatch, currentUser, profileUser, followed);
+      console.log();
     } catch (error) {
       console.error("Error following/unfollowing user:", error);
     } finally {
@@ -222,7 +204,7 @@ function User({
 
   return (
     <>
-      <div className="flex flex-col flex-[7]">
+      <div className="flex flex-col w-full max-w-[1170px] border-black">
         {profileLoading ? (
           <ProfilePicSkeleton />
         ) : (
@@ -235,7 +217,7 @@ function User({
                   : "/images/noCover.jpg"
               }
               alt="Cover"
-              className="h-[200px] md:h-[300px] rounded-t-md mx-auto max-w-7xl w-full shadow-md object-cover"
+              className="h-[200px] border-green-300 md:h-[300px] rounded-t-md mx-auto max-w-7xl w-full shadow-md object-cover"
             />
             {/* Profile and Info Section */}
             <div className="absolute top-[120px] md:top-[270px] md:left-[20px] left-1/2 transform userDetailsBox -translate-x-1/2 md:-translate-x-0 max-w-7xl mx-auto  rounded-md  w-full">
@@ -247,10 +229,7 @@ function User({
                     <img
                       src={
                         profileUser.profilePic
-                          ? profileUser.profilePic.replace(
-                              "/upload/",
-                              "/upload/f_auto,q_auto/"
-                            )
+                          ? profileUser.profilePic
                           : "https://res.cloudinary.com/datcr1zua/image/upload/v1739709690/uploads/rindbm34tibrtqcgvpsd.png"
                       }
                       alt="Profile"
@@ -267,7 +246,7 @@ function User({
                   {/* Circular Progress Bar (for non-current user) */}
                   {userId !== currentUser._id && (
                     <svg
-                      className="absolute top-0 left-0 h-[162px] w-[162px] transform -translate-y-[5px] -translate-x-[5px] rotate-[90deg]"
+                      className="absolute top-0 left-0 h-[150px] w-[150px] sm:h-[166px] sm:w-[166px] transform -translate-y-[5px] -translate-x-[5px] rotate-[90deg]"
                       xmlns="http://www.w3.org/2000/svg"
                       version="1.1"
                       viewBox="0 0 160 160"
@@ -336,7 +315,7 @@ function User({
                 </div>
 
                 {/* User Info */}
-                <div className="text-center transform md:translate-x-2 md:translate-y-[25px] md:text-left">
+                <div className="text-center transform md:translate-x-2 mt-3 md:translate-y-[25px] md:text-left">
                   <h1 className="text-xl font-semibold md:text-2xl">
                     {profileUser.fullname}
                   </h1>
@@ -361,7 +340,7 @@ function User({
                       </button>
                     )}
                     <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg shadow hover:bg-gray-300 transition">
-                      {`${profileUser?.followers.length} 
+                      {`${profileUser?.followers.length}
           ${profileUser.followers.length === 1 ? "follower" : "Followers"}`}
                     </button>
                     <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg shadow hover:bg-gray-300 transition">
@@ -377,20 +356,19 @@ function User({
         )}
 
         {/* Feed and User Info */}
+
         <div
           className={`flex ${
             userId ? "" : ""
-          } flex-col-reverse lg:flex-row mx-auto justify-center gap-6 px-6 max-w-7xl`}
+          } flex-col-reverse lg:flex-row mx-auto justify-center gap-6 max-w-7xl`}
         >
-          <div className="flex-grow">
-            <Feed
-              cPostFile={cPostFile}
-              userId={userId}
-              UserPhoto={UserPhoto}
-              mainItems={mainItems}
-              SeperatingLine={SeperatingLine}
-            />
-          </div>
+          <Feed
+            cPostFile={cPostFile}
+            userId={userId}
+            UserPhoto={UserPhoto}
+            mainItems={mainItems}
+            SeperatingLine={SeperatingLine}
+          />
           <UserInfo
             userId={userId}
             Friends={Friends}

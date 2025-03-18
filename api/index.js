@@ -14,6 +14,7 @@ const commentsRouter = require("./src/routes/comments.js");
 const commentReplies = require("./src/routes/commentReplies.js");
 const messagesRouter = require("./src/routes/messages.js");
 const search = require("./src/routes/search.js");
+const followReq = require("./src/routes/followReq.js");
 const { readFileSync } = require("fs");
 
 dotenv.config();
@@ -64,6 +65,7 @@ app.use("/api/comments", commentsRouter);
 app.use("/api/commentsReplies", commentReplies);
 app.use("/api/search", search);
 app.use("/api/messages", messagesRouter);
+app.use("/api/followReq", followReq);
 app.use("/api", fileManager);
 app.use("/api/delete", deleteRouter);
 

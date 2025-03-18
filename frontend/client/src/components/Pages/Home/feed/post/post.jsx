@@ -12,9 +12,11 @@ import UserPhoto from "../../../../userPhoto";
 import CurrentUserPhoto from "../../../../currentUserPhoto";
 import { YourNewComment } from "../../../../context/UserActions";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import CommentBox from "./comments/commentBox";
 import PostSkeleton from "../../../../Skeleton/postSkeleton";
 import { getUser } from "../../../../../apiCalls";
+import PostButton from "./postButton";
 
 function Post({ post, userId, searchInput, isBackNavigation }) {
   const {
@@ -24,16 +26,14 @@ function Post({ post, userId, searchInput, isBackNavigation }) {
     postId: removedPostId,
   } = useContext(UserContext);
   const { Friends, Shares } = mainItems;
-  const [likes, setLikes] = useState(post?.likes.length);
-  const [isLiked, setIsLiked] = useState(false);
   const [isCommentOpen, setIsCommentOpen] = useState(false);
   const [postUser, setPostUser] = useState({});
   const navigate = useNavigate();
   const [userLoading, setUserLoading] = useState(true);
   const [isImg, setIsImg] = useState(false);
   const params = useParams();
-  const [isProcessing, setIsProcessing] = useState(false);
   const [isMoreOptionVisible, setIsMoreOptionVisible] = useState(false);
+  const [postDesc, setPostDesc] = useState(false);
   const [isPostHide, setIsPostHide] = useState(false);
   const [postIsVisibleAgain, setPostIsVisibleAgain] = useState(false);
   const [isPostDescHide, setIsPostDescHide] = useState(true);
@@ -60,34 +60,6 @@ function Post({ post, userId, searchInput, isBackNavigation }) {
     };
   }, []);
 
-  const shareIcons = [
-    {
-      id: 1,
-      icon: <i className="ri-thumb-up-line"></i>,
-      liked: <i className="ri-thumb-up-fill"></i>,
-      label: "Like",
-      link: "/",
-    },
-    {
-      id: 2,
-      icon: <i className="ri-chat-1-line"></i>,
-      label: "Comments",
-      link: "/",
-    },
-    {
-      id: 3,
-      icon: <i className="ri-hashtag"></i>,
-      label: "Tag",
-      link: "/",
-    },
-    {
-      id: 4,
-      icon: <i className="ri-share-forward-line"></i>,
-      label: "Share",
-      link: "/",
-    },
-  ];
-
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -100,27 +72,7 @@ function Post({ post, userId, searchInput, isBackNavigation }) {
       }
     };
     fetchUser();
-    if (post?.likes?.includes(user._id)) {
-      setIsLiked(true);
-    }
   }, [post.userId, post.likes, user._id]);
-
-  const likeHandler = async () => {
-    if (isProcessing) return;
-
-    setIsProcessing(true);
-    const userId = user._id;
-    try {
-      await axios.put(`/api/posts/${post._id}/like`, {
-        userId: userId,
-      });
-      setLikes(isLiked ? likes - 1 : likes + 1);
-      setIsLiked(!isLiked);
-    } catch (error) {
-      console.log(error);
-    }
-    setIsProcessing(false);
-  };
 
   useEffect(() => {
     if (post?.img) {
@@ -128,19 +80,18 @@ function Post({ post, userId, searchInput, isBackNavigation }) {
     }
   }, [post.userId, post]);
 
-  const handleCommentBox = async (e) => {
-    e.preventDefault();
-    setIsCommentOpen(!isCommentOpen);
-  };
-
   const highlightText = (text, searchTerm) => {
-    if (!searchTerm) return text;
+    if (typeof text !== "string") text = String(text); // Ensure input is a string
+    if (!searchTerm) return text; // If no search term, return original text
 
-    const regex = new RegExp(`(${searchTerm})`, "gi");
-    const parts = text.split(regex);
+    // Escape special regex characters in searchTerm
+    const escapedSearchTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const regex = new RegExp(`(${escapedSearchTerm})`, "gi");
+
+    const parts = text.split(regex); // Split text at search term
 
     return parts.map((part, index) =>
-      regex.test(part) ? (
+      part.toLowerCase() === searchTerm.toLowerCase() ? (
         <span key={index} className="text-blue-500">
           {part}
         </span>
@@ -152,7 +103,16 @@ function Post({ post, userId, searchInput, isBackNavigation }) {
 
   const handleMoreOptions = (e) => {
     e.preventDefault();
-    setIsMoreOptionVisible(!isMoreOptionVisible);
+    setIsMoreOptionVisible((prev) => !prev);
+
+    setTimeout(() => {
+      if (dropdownRef.current) {
+        dropdownRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
+      }
+    }, 100); // Small delay to ensure visibility
   };
 
   const handleRemovePostAlert = (e) => {
@@ -177,6 +137,41 @@ function Post({ post, userId, searchInput, isBackNavigation }) {
   const handleSeeMore = (e) => {
     e.preventDefault();
     setIsPostDescHide(!isPostDescHide);
+  };
+
+  const handleDeletePost = (e) => {
+    e.preventDefault();
+    setIsMoreOptionVisible(false);
+    dispatch({
+      type: "TOGGLEFLOATINGBOX",
+      payload: { disable: false, purpose: "deletePost", details: post },
+    });
+  };
+
+  const handlePinPost = async (e) => {
+    e.preventDefault();
+
+    if (!user || !post) {
+      toast.error("User or post data is missing.");
+      return;
+    }
+
+    const userId = user._id;
+
+    try {
+      const response = await axios.put(`/api/posts/${post._id}`, {
+        userId: userId,
+        pinned: !post.pinned,
+      });
+
+      if (response.status === 200) {
+        setIsMoreOptionVisible(false);
+        post.pinned = !post.pinned;
+      }
+    } catch (error) {
+      console.error("Failed to pin the post:", error);
+      toast.error("Failed to pin the post. Please try again.");
+    }
   };
 
   return (
@@ -214,15 +209,6 @@ function Post({ post, userId, searchInput, isBackNavigation }) {
           </div>
         ) : (
           <>
-            {/* <div
-              className={` bg-white mx-4 shadow-md border py-3 rounded-lg flex flex-col max-w-[540px] w-[570px] lg:w-full items-center justify-center gap-3`}
-            >
-              <div className="animate-spin w-10 h-10 border-4 border-gray-300 border-t-gray-500 rounded-full"></div>
-
-              <p className="text-gray-500 text-sm font-medium">
-                Loading posts, please wait...
-              </p>
-            </div> */}
             <div
               className={`${
                 userId ? "postSkeletonWidthForProfile" : ""
@@ -243,45 +229,93 @@ function Post({ post, userId, searchInput, isBackNavigation }) {
                   {isMoreOptionVisible && (
                     <div
                       ref={dropdownRef}
-                      className="absolute border rounded-lg z-10 top-[60px] right-[50px] w-[350px] bg-white shadow-md"
+                      className="absolute border rounded-lg z-[9] top-[60px] right-[50px] w-[350px] bg-white shadow-lg"
                     >
-                      <div className="border-b pb-2">
-                        <div className="cursor-pointer font-medium text-gray-600 text-md m-1 hover:bg-gray-100 p-2 ">
-                          <span>
-                            <i className=" text-xl mr-1  ri-pushpin-fill"></i>
-                          </span>{" "}
-                          Pin post
-                        </div>
-                        <div className="cursor-pointer flex items-center font-medium text-gray-600 m-1  hover:bg-gray-100 p-2 ">
-                          {" "}
-                          <span className="mr-2 text-xl">
-                            <i className="ri-save-fill"></i>
-                          </span>{" "}
+                      {/* Header Section */}
+                      <div className="p-4 border-b">
+                        <h3 className="text-lg font-semibold text-gray-800">
+                          Post Options
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          Manage your post settings
+                        </p>
+                      </div>
+
+                      {/* Options Section */}
+                      <div className="p-2">
+                        {/* Pin Post */}
+                        {post.userId === user._id && (
+                          <div
+                            onClick={handlePinPost}
+                            className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-all duration-200"
+                          >
+                            <i className="ri-pushpin-fill text-2xl text-blue-500"></i>
+                            <div className="flex flex-col">
+                              <span className="text-md font-medium text-gray-700">
+                                {post.pinned ? "Unpin" : "Pin"} Post
+                              </span>
+                              <span className="text-sm text-gray-500">
+                                Keep this post at the top
+                              </span>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Save Post */}
+                        <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-all duration-200">
+                          <i className="ri-save-fill text-2xl text-green-500"></i>
                           <div className="flex flex-col">
-                            <span className="text-md">Save a post</span>
-                            <span className="text-xsm text-gray-500">
-                              add this to your save list
+                            <span className="text-md font-medium text-gray-700">
+                              Save Post
+                            </span>
+                            <span className="text-sm text-gray-500">
+                              Add this to your saved items
                             </span>
                           </div>
                         </div>
+
+                        {/* Edit Post */}
+                        {post.userId === user._id && (
+                          <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-all duration-200">
+                            <i className="ri-edit-fill text-2xl text-purple-500"></i>
+                            <div className="flex flex-col">
+                              <span className="text-md font-medium text-gray-700">
+                                Edit Post
+                              </span>
+                              <span className="text-sm text-gray-500">
+                                Modify this post
+                              </span>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Delete Post (Optional) */}
+                        {post.userId === user._id && (
+                          <div
+                            onClick={handleDeletePost}
+                            className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-all duration-200"
+                          >
+                            <i className="ri-delete-bin-fill text-2xl text-red-500"></i>
+                            <div className="flex flex-col">
+                              <span className="text-md font-medium text-gray-700">
+                                Delete Post
+                              </span>
+                              <span className="text-sm text-gray-500">
+                                Remove this post permanently
+                              </span>
+                            </div>
+                          </div>
+                        )}
                       </div>
-                      <div className="cursor-pointer font-medium text-gray-600 text-md m-1 hover:bg-gray-100 p-2 ">
-                        <span>
-                          <i className=" text-xl mr-1  ri-edit-fill"></i>
-                        </span>{" "}
-                        Edit post
-                      </div>
-                      <div className="cursor-pointer font-medium text-gray-600 text-md m-1 hover:bg-gray-100 p-2 ">
-                        <span>
-                          <i className=" text-xl mr-1  ri-edit-fill"></i>
-                        </span>{" "}
-                        Edit post
-                      </div>
-                      <div className="cursor-pointer font-medium text-gray-600 text-md m-1 hover:bg-gray-100 p-2 ">
-                        <span>
-                          <i className=" text-xl mr-1  ri-edit-fill"></i>
-                        </span>{" "}
-                        Edit post
+
+                      {/* Footer Section (Optional) */}
+                      <div className="p-4 border-t">
+                        <p className="text-sm text-gray-500 text-center">
+                          Need help?{" "}
+                          <span className="text-blue-500 cursor-pointer">
+                            Contact support
+                          </span>
+                        </p>
                       </div>
                     </div>
                   )}
@@ -307,7 +341,10 @@ function Post({ post, userId, searchInput, isBackNavigation }) {
                         {userLoading ? (
                           <div className="w-[120px] h-[16px] bg-gray-300 rounded-md animate-pulse mb-1"></div> // Skeleton for the username
                         ) : (
-                          <div className="flex items-center gap-2">
+                          <div
+                            onClick={() => navigate(`/profile/${postUser._id}`)}
+                            className="flex items-center gap-2"
+                          >
                             <h1 className="cursor-pointer text-sm font-semibold text-gray-800">
                               {postUser.fullname}
                             </h1>
@@ -354,8 +391,22 @@ function Post({ post, userId, searchInput, isBackNavigation }) {
                       } px-4 md-text-sm text-start font-medium text-gray-800`}
                     >
                       {(() => {
-                        const maxLength = post.img ? 89 : 150; // Adjust limit based on image presence
+                        const maxLength = post.img ? 89 : 150;
                         const isLongText = post.desc.length > maxLength;
+
+                        // Function to replace \n with <br/>
+                        const formatText = (text) => {
+                          if (typeof text !== "string") {
+                            return text; // Return as-is if it's already JSX (highlighted text)
+                          }
+
+                          return text.split("\n").map((line, index) => (
+                            <React.Fragment key={index}>
+                              {line}
+                              <br />
+                            </React.Fragment>
+                          ));
+                        };
 
                         if (isLongText && isPostDescHide) {
                           const trimmedText = post.desc.slice(0, maxLength);
@@ -367,9 +418,7 @@ function Post({ post, userId, searchInput, isBackNavigation }) {
 
                           return (
                             <>
-                              <span>
-                                {highlightText(finalText, searchInput)}
-                              </span>{" "}
+                              <span>{formatText(finalText)}</span>
                               <span
                                 className="text-blue-500 cursor-pointer"
                                 onClick={handleSeeMore}
@@ -382,7 +431,12 @@ function Post({ post, userId, searchInput, isBackNavigation }) {
 
                         return (
                           <>
-                            <span>{highlightText(post.desc, searchInput)}</span>{" "}
+                            <span>
+                              {formatText(
+                                highlightText(post.desc, searchInput)
+                              )}
+                            </span>
+
                             {isLongText && (
                               <span
                                 className="text-blue-500 cursor-pointer"
@@ -404,96 +458,20 @@ function Post({ post, userId, searchInput, isBackNavigation }) {
                         <img
                           src={post.img}
                           alt="Post Image"
-                          className="w-full object-contain h-auto"
+                          className="w-full object-cover"
                         />
                       </div>
                     </Link>
                   )}
-
-                  {/* Like and Comments Section */}
-                  {likes > 0 && (
-                    <div className="flex items-center justify-between py-2 px-4">
-                      <div className="flex items-center gap-2">
-                        {/* Emoji Logic */}
-                        <div className="flex items-center text-base">
-                          <span className="text-lg">{likes >= 1 && "👍"}</span>
-                          <span className="text-lg">{likes >= 2 && "❤️"}</span>
-                          <span className="text-lg">{likes >= 3 && "😮"}</span>
-                        </div>
-                        <span className="text-xs text-gray-600 font-medium">
-                          {likes === 1
-                            ? "1 person likes this"
-                            : `${likes} people like this`}
-                        </span>
-                      </div>
-                      <button
-                        onClick={handleCommentBox}
-                        className="text-xs text-blue-500 font-medium hover:underline"
-                      >
-                        View comments
-                      </button>
-                    </div>
-                  )}
-                  {/* Share Buttons Section */}
-                  <div className="flex justify-around border">
-                    {/* Like Button */}
-                    <button
-                      onClick={likeHandler}
-                      className="flex items-center sm:px-3  justify-center gap-2 w-full px-1 py-2 bg-gray-50 hover:bg-gray-200 transition-all"
-                    >
-                      <span
-                        className={`${
-                          isLiked && "likeAnimate"
-                        } transition-all duration-300 text-base text-gray-700`}
-                      >
-                        {isLiked ? shareIcons[0].liked : Shares[0].icon}
-                      </span>
-                      <span className="text-xs sm:text-sm font-medium text-gray-700">
-                        {shareIcons[0].label}
-                      </span>
-                    </button>
-
-                    {/* Comments Button */}
-                    <button
-                      onClick={handleCommentBox}
-                      className="flex items-center sm:px-3  justify-center gap-2 w-full px-1 py-2 bg-gray-50 hover:bg-gray-200 transition-all"
-                    >
-                      <span className="transition-all duration-300 text-base text-gray-700">
-                        {shareIcons[1].icon}
-                      </span>
-                      <span className="text-xs sm:text-sm font-medium text-gray-700">
-                        {shareIcons[1].label}
-                      </span>
-                    </button>
-
-                    {/* Tag Button */}
-                    <button className="hidden sm:flex items-center sm:px-3 justify-center gap-2 w-full px-1 py-2 bg-gray-50 hover:bg-gray-200 transition-all">
-                      <span className="transition-all duration-300 text-base text-gray-700">
-                        {shareIcons[2].icon}
-                      </span>
-                      <span className="text-xs sm:text-sm font-medium text-gray-700">
-                        {shareIcons[2].label}
-                      </span>
-                    </button>
-                    {/* Share Button */}
-                    <button className="flex items-center sm:px-1  justify-center gap-2 w-full px-3 py-2 bg-gray-50 hover:bg-gray-200 transition-all">
-                      <span className="transition-all duration-300 text-base text-gray-700">
-                        {shareIcons[3].icon}
-                      </span>
-                      <span className="text-xs sm:text-sm font-medium text-gray-700">
-                        {shareIcons[3].label}
-                      </span>
-                    </button>
-                  </div>
-
-                  {isCommentOpen && (
+                  <PostButton postUser={postUser} post={post} />
+                  {/* {
                     <CommentBox
                       // postId={postId}
                       post={post}
                       userId={userId}
                       postUser={postUser}
                     />
-                  )}
+                  } */}
                 </div>
               )}
             </div>

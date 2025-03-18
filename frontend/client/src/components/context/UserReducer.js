@@ -139,6 +139,16 @@ const AuthReducer = (state, action) => {
         ...state,
         yourNewPost: action.payload,
       };
+    case "YOURNEWCOMMENT":
+      return {
+        ...state,
+        newComment: action.payload,
+      };
+    case "YOURNEWUPDATEDINPROFILE":
+      return {
+        ...state,
+        newUpdateInProfile: action.payload,
+      };
 
     case "POSTID":
       return {
@@ -161,6 +171,15 @@ const AuthReducer = (state, action) => {
 
     case "UPDATEBIRTHDAYFRIENDS":
       return { ...state, birthdayFriends: action.payload };
+    case "UPDATEPOSTDETAILS":
+      return { ...state, postDetails: action.payload };
+    case "UPDATE_USER":
+      return { ...state, user: { ...state.user, ...action.payload } };
+    case "TOGGLEFLOATINGBOX":
+      return {
+        ...state,
+        floatingBox: action.payload,
+      };
 
     default:
       return state;

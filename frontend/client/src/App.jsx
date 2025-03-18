@@ -18,7 +18,7 @@ import Navbar from "./components/Header/navbar";
 import MessagesPage from "./components/Pages/MessagePage/messagesMain";
 
 function App() {
-  const { user } = useContext(UserContext);
+  const { user, dispatch } = useContext(UserContext);
   // const socket = useRef(null);
 
   // useEffect(() => {
@@ -37,73 +37,69 @@ function App() {
   // }, [user]);
 
   return (
-    <div
-    className="bg-gray-50 min-h-screen"
-    style={{ fontFamily: "Montserrat, sans-serif" }}
-  >
-    <SkeletonTheme baseColor="#D4D9E1" highlightColor="#dde2e9">
-      <Router>
-        {user && <Navbar />}
-        <Routes>
-          <Route
-            path="/"
-            element={!user ? <Navigate to="/login" /> : <Home />}
-          >
-            <Route
-              path="/search/:searchInput"
-              element={!user ? <Navigate to="/login" /> : <Home />}
-            />
-            <Route
-              path=":postId"
-              element={!user ? <Navigate to="/login" /> : <Home />}
-            >
-            
+    <>
+      <div
+        className="bg-gray-50 min-h-screen overflow-y-hidden"
+        style={{ fontFamily: "Montserrat, sans-serif" }}
+      >
+        <SkeletonTheme baseColor="#D4D9E1" highlightColor="#dde2e9">
+          <Router>
+            {user && <Navbar />}
+            <Routes>
               <Route
-                path=":commentId"
+                path="/"
                 element={!user ? <Navigate to="/login" /> : <Home />}
-              />
-            </Route>
-            <Route
-              path="/friends"
-              element={!user ? <Navigate to="/login" /> : <Home />}
-            ></Route>
-          </Route>
-          <Route
-            path="/profile/:userId"
-            element={!user ? <Navigate to="/login" /> : <Profile />}
-          >
-            <Route
-              path=":postId"
-              element={!user ? <Navigate to="/login" /> : <Profile />}
-            >
+              >
+                <Route
+                  path="/search/:searchInput"
+                  element={!user ? <Navigate to="/login" /> : <Home />}
+                />
+                <Route
+                  path=":postId"
+                  element={!user ? <Navigate to="/login" /> : <Home />}
+                >
+                  <Route
+                    path=":commentId"
+                    element={!user ? <Navigate to="/login" /> : <Home />}
+                  />
+                </Route>
+                <Route
+                  path="/friends"
+                  element={!user ? <Navigate to="/login" /> : <Home />}
+                >
+                  <Route path="requests" element={<Home />} />
+                  <Route path="list" element={<Home />} />
+                  <Route path="birthdays" element={<Home />} />
+                </Route>
+                <Route path="post/:postId" element={<Home />} />
+              </Route>
               <Route
-                path=":commentId"
+                path="/profile/:userId"
                 element={!user ? <Navigate to="/login" /> : <Profile />}
               />
-            </Route>
-          </Route>
-          <Route path="photo/:viewPhoto/:photoId" element={<ViewPhoto />} />
-          <Route
-            path="/messages"
-            element={!user ? <Navigate to="/login" /> : <MessagesPage />}
-          >
-            <Route
-              path=":convoId"
-              element={!user ? <Navigate to="/login" /> : <MessagesPage />}
-            />
-          </Route>
-          <Route
-            path="/login"
-            element={user ? <Navigate to="/" /> : <Login />}
-          />
-          <Route
-            path="/register"
-            element={user ? <Navigate to="/" /> : <Register />}
-          />
-        </Routes>
-      </Router>
-    </SkeletonTheme>
-  </div>
+              <Route path="photo/:viewPhoto/:photoId" element={<ViewPhoto />} />
+              <Route
+                path="/messages"
+                element={!user ? <Navigate to="/login" /> : <MessagesPage />}
+              >
+                <Route
+                  path=":convoId"
+                  element={!user ? <Navigate to="/login" /> : <MessagesPage />}
+                />
+              </Route>
+              <Route
+                path="/login"
+                element={user ? <Navigate to="/" /> : <Login />}
+              />
+              <Route
+                path="/register"
+                element={user ? <Navigate to="/" /> : <Register />}
+              />
+            </Routes>
+          </Router>
+        </SkeletonTheme>
+      </div>
+    </>
   );
 }
 

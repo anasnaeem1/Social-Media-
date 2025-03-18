@@ -2,29 +2,92 @@ const bcrypt = require("bcrypt");
 const express = require("express");
 const User = require("../models/User.js");
 const { set } = require("mongoose");
+const FollowReq = require("../models/FollowReq.js");
 const router = express.Router();
+
+const getUserFriends = async (user) => {
+  const friendsId = user.followers.filter((follower) =>
+    user.followings.includes(follower)
+  );
+
+  const userFriends = await Promise.all(
+    friendsId.map(async (id) => {
+      const user = await User.findById(id);
+      return user;
+    })
+  );
+  return userFriends;
+};
+
+const isUserFollowed = async (currentUserId, otherUserId) => {
+  try {
+    // Fetch the current user and their followings list
+    const currentUser = await User.findById(currentUserId).select("followings");
+    if (!currentUser) {
+      throw new Error("Current user not found");
+    }
+
+    // Fetch the other user and their followers list
+    const otherUser = await User.findById(otherUserId).select("followers");
+    if (!otherUser) {
+      throw new Error("Other user not found");
+    }
+
+    // Ensure the fields are arrays
+    if (!Array.isArray(currentUser.followings)) {
+      throw new Error("Current user's 'followings' field is not an array");
+    }
+    if (!Array.isArray(otherUser.followers)) {
+      throw new Error("Other user's 'followers' field is not an array");
+    }
+
+    // Check if the current user is following the other user
+    const isFollowed =
+      currentUser.followings.includes(otherUserId) &&
+      otherUser.followers.includes(currentUserId);
+
+    return isFollowed;
+  } catch (error) {
+    console.error("Error in isUserFollowed:", error);
+    throw error; // Re-throw the error for the caller to handle
+  }
+};
 
 // update a user
 router.put("/:id", async (req, res) => {
   if (req.body.userId === req.params.id || req.body.isAdmin) {
+    // Hash password if it exists in the request
     if (req.body.password) {
       try {
         const salt = await bcrypt.genSalt(10);
         req.body.password = await bcrypt.hash(req.body.password, salt);
       } catch (error) {
-        res.status(500).json(error); // Fix typo here
+        return res.status(500).json(error);
       }
     }
+
+    // Filter out null or undefined fields from req.body
+    const filteredBody = Object.fromEntries(
+      Object.entries(req.body).filter(
+        ([_, value]) => value !== null && value !== undefined
+      )
+    );
+
     try {
-      const updatedUser = await User.findByIdAndUpdate(req.params.id, {
-        $set: req.body,
-      });
-      res.status(200).json(req.body);
+      const updatedUser = await User.findByIdAndUpdate(
+        req.params.id,
+        {
+          $set: filteredBody,
+        },
+        { new: true }
+      );
+
+      res.status(200).json(updatedUser);
     } catch (error) {
       res.status(500).json(error);
     }
   } else {
-    res.status(403).json("you can update only your account");
+    res.status(403).json("You can update only your account");
   }
 });
 
@@ -62,7 +125,6 @@ router.get("/mutuals", async (req, res) => {
   const username = req.query.username;
 
   try {
-    // Fetch the current user based on userId or username
     const user = userId
       ? await User.findById(userId)
       : await User.findOne({ username: username });
@@ -71,42 +133,49 @@ router.get("/mutuals", async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    const friendsId = user.followers.filter((follower) =>
-      user.followings.includes(follower)
-    );
-    const friends = await Promise.all(
-      friendsId.map(async (id) => {
-        const user = await User.findById(id);
-        return user;
+    const userFriends = await getUserFriends(user);
+
+    const mutualsMap = new Map();
+
+    await Promise.all(
+      userFriends.map(async (friend) => {
+        if (friend && friend.followers && friend.followings) {
+          const mutualsIds = friend.followers.filter((follower) =>
+            friend.followings.includes(follower)
+          );
+
+          // Fetch mutual friends' details
+          const mutualFriends = await Promise.all(
+            mutualsIds.map(async (id) => {
+              const user = await User.findById(id);
+              return user;
+            })
+          );
+
+          mutualFriends.forEach((singleFriend) => {
+            if (singleFriend) {
+              const isFollowed = user.followings.includes(singleFriend._id);
+              mutualsMap.set(singleFriend._id.toString(), {
+                ...singleFriend.toObject(), // Convert Mongoose document to plain object
+                isFollowed,
+              });
+            }
+          });
+        }
       })
     );
 
-    // Collect all the users that friends follow (mutuals)
-    const mutualsSet = new Set();
-    friends.forEach(async(friend) => {
-      if (friend && friend.followings) {
-        const mutualsIds = friend.followers.filter((follower) =>
-          friend.followings.includes(follower)
-        );
-        const mutualFriends = await Promise.all(
-          mutualsIds.map(async (id) => {
-            const user = await User.findById(id);
-            return user;
-          })
-        );
-      }
-    });
-
-    // Sanitize the mutual friends' data
-    const sanitizedMutuals = mutualFriends
+    // Convert the Map to an array and sanitize the data
+    const sanitizedMutuals = Array.from(mutualsMap.values())
       .filter((mutual) => mutual)
-      .map(({ _doc }) => {
-        const { password, updatedAt, ...rest } = _doc;
+      .map((mutual) => {
+        const { password, updatedAt, ...rest } = mutual;
         return rest;
       });
 
     res.status(200).json(sanitizedMutuals);
   } catch (error) {
+    console.error("Error fetching mutual friends:", error);
     res.status(500).json({
       error: "Failed to fetch mutual friends",
       details: error.message,
@@ -116,54 +185,131 @@ router.get("/mutuals", async (req, res) => {
 
 // Follow a user
 router.put("/:id/follow", async (req, res) => {
-  if (req.body.userId !== req.params.id) {
-    const user = await User.findById(req.params.id);
-    const currentUser = await User.findById(req.body.userId);
-    try {
-      if (
-        !user.followers.includes(req.body.userId) &&
-        !currentUser.followings.includes(req.params.id)
-      ) {
-        await user.updateOne({ $push: { followers: req.body.userId } });
-        await currentUser.updateOne({
-          $push: { followings: req.params.id },
-        });
-        res.status(200).json("user has been followed");
-      } else {
-        res.status(403).json("you already follow this user");
+  try {
+    if (req.body.userId !== req.params.id) {
+      const user = await User.findById(req.params.id);
+      const currentUser = await User.findById(req.body.userId);
+
+      if (!user || !currentUser) {
+        return res.status(404).json({ message: "User not found" });
       }
-    } catch (error) {
-      res.status(500).json(error);
+
+      const isCurrentUserFollowUser = await isUserFollowed(
+        currentUser._id,
+        user._id
+      );
+
+      if (!isCurrentUserFollowUser) {
+        await user.updateOne({ $push: { followers: req.body.userId } });
+        await currentUser.updateOne({ $push: { followings: req.params.id } });
+
+        const isUserFollowCurrentUser = await isUserFollowed(
+          user._id,
+          currentUser._id
+        );
+
+        if (isUserFollowCurrentUser) {
+          const deleteResult = await FollowReq.deleteOne({
+            senderId: user._id.toString(),
+            receiverId: currentUser._id.toString(),
+          });
+          return res.status(200).json({
+            message: "User has been followed.",
+            requestSent: false,
+          });
+        } else {
+          const newFollowReq = new FollowReq({
+            senderId: currentUser._id,
+            receiverId: user._id,
+          });
+          const savedFollowReq = await newFollowReq.save();
+
+          return res.status(200).json({
+            message: "User has been followed. Follow request sent.",
+            requestSent: true,
+            followRequest: savedFollowReq,
+          });
+        }
+      } else {
+        return res
+          .status(403)
+          .json({ message: "You already follow this user" });
+      }
+    } else {
+      return res.status(403).json({ message: "You can't follow yourself" });
     }
-  } else {
-    res.status(403).json("you cant follow your self");
+  } catch (error) {
+    console.error("Error in follow route:", error);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 });
 
 // Unfollow a user
 router.put("/:id/unfollow", async (req, res) => {
   if (req.body.userId !== req.params.id) {
-    const user = await User.findById(req.params.id);
-    const currentUser = await User.findById(req.body.userId);
-
     try {
-      if (
-        user.followers.includes(req.body.userId) &&
-        currentUser.followings.includes(req.params.id)
-      ) {
+      const user = await User.findById(req.params.id);
+      const currentUser = await User.findById(req.body.userId);
+
+      if (!user || !currentUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Check if the current user follows the other user
+      const isCurrentUserFollowUser = await isUserFollowed(
+        currentUser._id,
+        user._id
+      );
+
+      if (isCurrentUserFollowUser) {
+        // Unfollow the user
         await user.updateOne({ $pull: { followers: req.body.userId } });
-        await currentUser.updateOne({
-          $pull: { followings: req.params.id },
+        await currentUser.updateOne({ $pull: { followings: req.params.id } });
+
+        // Find the follow request
+        const followReq = await FollowReq.findOne({
+          senderId: currentUser._id.toString(),
+          receiverId: user._id.toString(),
         });
-        res.status(200).json("user has been unfollowed");
+        if (!followReq) {
+          return res.status(200).json({
+            message: "User has been unfollowed.",
+            deletedFollowReq: false,
+          });
+        } else {
+          console.log("Follow Request ID to Delete:", followReq._id);
+
+          const deleteResult = await FollowReq.deleteOne({
+            _id: followReq._id,
+          });
+
+          console.log("Deletion Result:", deleteResult);
+
+          if (deleteResult.deletedCount === 1) {
+            return res.status(200).json({
+              message: "User has been unfollowed and follow request canceled.",
+              deletedFollowReq: true,
+            });
+          } else {
+            return res.status(500).json({
+              message: "Failed to delete follow request.",
+              deletedFollowReq: false,
+            });
+          }
+        }
       } else {
-        res.status(403).json("you don't follow the user");
+        return res.status(403).json({ message: "You don't follow this user" });
       }
     } catch (error) {
-      res.status(500).json(error);
+      console.error("Error in unfollow route:", error);
+      return res
+        .status(500)
+        .json({ message: "Internal server error", error: error.message });
     }
   } else {
-    res.status(403).json("you cant follow your self");
+    return res.status(403).json({ message: "You can't unfollow yourself" });
   }
 });
 
@@ -171,19 +317,8 @@ router.get("/friends/:id", async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (user) {
-      const followers = user?.followers;
-
-      // Filter followers who are not in the followings set
-      const friendsId = followers.filter((follower) =>
-        user.followings.includes(follower)
-      );
-      const friends = await Promise.all(
-        friendsId.map(async (id) => {
-          const user = await User.findById(id);
-          return user;
-        })
-      );
-      res.status(200).json(friends);
+      const userFriends = await getUserFriends(user);
+      res.status(200).json(userFriends);
     } else {
       res.status(400).json("user not found");
     }
@@ -201,13 +336,12 @@ router.get("/birthdayFriends/:id", async (req, res) => {
       );
 
       const today = new Date();
-      const todayMonthDay = `${today.getDate()}/${today.getMonth() + 1}`; // "17/2"
+      const todayMonthDay = `${today.getDate()}/${today.getMonth() + 1}`;
       console.log(todayMonthDay);
 
-      // Filter friends with matching DOBs
       const birthdayFriends = friends.filter((friend) => {
-        if (!friend.DOB) return false; // Ensure DOB exists
-        const [day, month] = friend.DOB.split("/"); // Assuming stored as "17/2/2004"
+        if (!friend.DOB) return false;
+        const [day, month] = friend.DOB.split("/");
         console.log(`${day}/${month}`);
         return `${day}/${month}` === todayMonthDay;
       });
@@ -217,6 +351,7 @@ router.get("/birthdayFriends/:id", async (req, res) => {
         username: friend.username,
         fullname: friend.fullname,
         profilePic: friend.profilePic,
+        DOB: friend.DOB,
       }));
 
       if (friendList.length > 0) {
@@ -268,34 +403,61 @@ router.get("/followRequests/:id", async (req, res) => {
   }
 });
 
-// get all users
-router.get("/allUsers", async (req, res) => {
+// get all users except friends
+router.get("/allUsers/:userId", async (req, res) => {
+  ``;
   try {
-    const users = await User.find({});
-    res.status(200).json(users);
+    const currentUser = await User.findById(req.params.userId);
+    const allUsers = await User.find({});
+
+    if (currentUser && allUsers) {
+      const filteredUsers = allUsers.filter((singleUser) => {
+        return !currentUser.followings.includes(singleUser._id);
+      });
+
+      const sanitizedUsers = filteredUsers.map((singleUser) => {
+        const { password, ...userData } = singleUser.toObject();
+        return userData;
+      });
+      const withoutCurrentUser = sanitizedUsers.filter((user) => {
+        user._id !== currentUser._id;
+      });
+
+      res.status(200).json(withoutCurrentUser);
+    } else {
+      res.status(404).json({ message: "User not found or no users available" });
+    }
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
-// // Geting User DOB and some info
-// router.get("/:id/DOB", async (req, res) => {
-//   try {
-//     const user = await User.findById(req.params.id);
-//     if (user) {
-//       const userInfo = {
-//         DOB: user.DOB,
-//         username: user.username,
-//         profilePic: user.profilePic,
-//         createdAt: user.createdAt,
-//       };
-//       res.status(200).json(userInfo);
-//     } else {
-//       res.status(400).json("user not found");
-//     }
-//   } catch (error) {
-//     res.status(500).json("friendsList Not Found");
-//   }
-// });
+// get user mutuals
+router.get("/userMutuals", async (req, res) => {
+  try {
+    const { userId, currentUserId } = req.query;
+
+    const user = await User.findById(userId);
+    const currentUser = await User.findById(currentUserId);
+
+    if (!user || !currentUser) {
+      return res.status(404).json({ message: "One or both users not found" });
+    }
+
+    const currentUserFriends = await getUserFriends(currentUser);
+    const userFriends = await getUserFriends(user);
+    const mutualFriends = currentUserFriends.filter((currentUserFriend) =>
+      userFriends.some((userFriend) =>
+        userFriend._id.equals(currentUserFriend._id)
+      )
+    );
+
+    res.status(200).json(mutualFriends);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 module.exports = router;

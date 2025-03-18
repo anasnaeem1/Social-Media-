@@ -42,7 +42,7 @@ router.post("/uploads", async (req, res) => {
 
 router.delete("/delete", async (req, res) => {
   try {
-    const { url } = req.body;
+    const { url } = req.query;
 
     if (!url) {
       return res.status(400).json({ error: "URL is required" });  

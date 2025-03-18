@@ -7,6 +7,7 @@ import { UserContext } from "../../context/UserContext";
 import CommentSection from "./commentSection/commentSection";
 import { getUser } from "../../../apiCalls";
 import CommentBox from "../Home/feed/post/comments/commentBox";
+import CommentSumbitForm from "../Home/feed/post/comments/commentSubmitForm";
 import Reply from "../Home/feed/post/comments/reply";
 
 function ViewPhoto() {
@@ -396,16 +397,18 @@ function ViewPhoto() {
             </div>
 
             {/* Comments Section */}
-            <div className="flex-1 h-[300px] flex flex-col">
+            <div className="flex-1 border border-green-400 relative w-full h-[300px] flex flex-col">
               {/* Comments List */}
               {forPost ? (
                 photoDetails && (
-                  <CommentBox
-                    ViewPhoto={true}
-                    post={photoDetails}
-                    userId={user._id}
-                    postUser={photoUser}
-                  />
+                  <>
+                    <CommentBox
+                      ViewPhoto={true}
+                      post={photoDetails}
+                      userId={user._id}
+                      postUser={photoUser}
+                    />
+                  </>
                 )
               ) : (
                 <div className="w-full border-gray-200 bg-gray-50 rounded-md">
@@ -487,6 +490,7 @@ function ViewPhoto() {
                 </div>
               )}
             </div>
+            <CommentSumbitForm post={photoDetails} viewPhoto={true} />
           </div>
         </div>
       }

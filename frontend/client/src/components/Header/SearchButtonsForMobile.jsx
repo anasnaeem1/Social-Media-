@@ -74,39 +74,18 @@ function SearchForMobile() {
             handleSearchForMobile(e);
           }
         }}
-        className="relative flex items-center gap-2 transition-all duration-300 ease-in-out"
+        className="relative flex w-full"
       >
-        {/* Input Field */}
-        <input
-          ref={searchInputForMobile}
-          onChange={handleInputChangeForMobile}
-          type="text"
-          placeholder="Search..."
-          className={`w-full px-4 py-2 border border-gray-300 shadow-md rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 ease-in-out text-black ${
-            searchInputTransition
-              ? "opacity-100 translate-x-0"
-              : "opacity-0 -translate-x-2"
-          }`}
-        />
-
-        {/* Close Button */}
-        <button
-          type="button"
-          onClick={closeSearchInput}
-          className="w-[45px] h-[40px] flex items-center justify-center rounded-lg text-gray-700 transition-all duration-300 hover:bg-gray-200"
-          aria-label="Close search"
-        >
-          <i className="ri-close-line text-lg"></i>
-        </button>
-
-        {/* Search Button */}
-        <button
-          type="submit"
-          className="w-[55px] h-[40px] flex items-center justify-center rounded-full
-           text-white bg-blue-500 hover:bg-blue-600 transition-all duration-300"
-        >
-          <i className="ri-search-2-line text-xl"></i>
-        </button>
+        <div className="px-4 py-3 flex items-center  w-full border-b bg-white">
+          <i className="ri-search-line text-gray-500 text-xl"></i>
+          <input
+            ref={searchInputForMobile}
+            onChange={handleInputChangeForMobile}
+            type="text"
+            placeholder="Search..."
+            className="ml-3 w-full outline-none bg-transparent text-gray-800 placeholder-gray-500"
+          />
+        </div>
       </form>
     </div>
   );

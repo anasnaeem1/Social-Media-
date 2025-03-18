@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import UserPhoto from "../../userPhoto";
 import axios from "axios";
 
-function SuggestionBox() {
+function SuggestionBox({forMobile}) {
   const { dispatch, user, searchedInput } = useContext(UserContext);
   const [searchedUsers, setSearchedUsers] = useState(null);
   const [searchedPosts, setSearchedPosts] = useState(null);
@@ -53,7 +53,7 @@ function SuggestionBox() {
           setSearchedUsers(null); // Handle other errors gracefully
         }
       } finally {
-        setUserIsLoading(false); // Reset loading state
+        setUserIsLoading(false);
       }
     };
 
@@ -67,7 +67,7 @@ function SuggestionBox() {
         setUserIsLoading(false);
         return;
       }
-      console.log(searchedInput);
+      // console.log(searchedInput);
 
       try {
         setUserIsLoading(true); // Set loading state
@@ -98,10 +98,12 @@ function SuggestionBox() {
     searchingPost();
   }, [searchedInput]);
 
+  console.log(searchedInput)
+
   return (
     <div
-      className={`${searchedInput ? "w-full" : "tranform w-0"} 
-      shadow-lg absolute top-0 left-0 z-10  bg-white
+      className={`${searchedInput ? "w-full" : "tranform w-0"} ${forMobile ? "hidden md:block" : ""}
+      shadow-lg  z-10 bg-white
       transition-all duration-700 ease-in-out`}
     >
       {searchedInput && searchedPosts && searchedPosts.length > 0 && (
@@ -126,47 +128,46 @@ function SuggestionBox() {
           <div className="border-b p-4">
             <ul className="">
               {searchedUsers.map((user) => (
-                <li
-                  key={user._id}
-                  className="flex  cursor-pointer items-center justify-between py-4 hover:bg-gray-50 transition-colors duration-200"
-                  onClick={() => handleNavigateToProfile(user._id)}
+              <li
+              key={user._id}
+              className="flex flex-col hover:bg-gray-100 transition-all duration-300 sm:flex-row items-center justify-between p-4 bg-white rounded-lg cursor-pointer"
+              onClick={() => handleNavigateToProfile(user._id)}
+            >
+              {/* User Info */}
+              <div className="flex items-center w-full sm:w-auto mb-4 sm:mb-0">
+                <UserPhoto
+                  userId={user._id}
+                  user={user}
+                  className="w-16 h-16 rounded-full object-cover border-2 border-blue-500"
+                />
+                <div className="ml-4">
+                  <h1 className="text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors duration-300">
+                    {user.fullname}
+                  </h1>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {user.bio || "This user has no bio."}
+                  </p>
+                </div>
+              </div>
+            
+              {/* Actions */}
+              <div className="flex space-x-3">
+                <button className="flex items-center bg-blue-500 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-blue-600 transition duration-200">
+                  <i className="ri-user-follow-line mr-2"></i>
+                  <span>Follow</span>
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent the click event from bubbling up
+                    handleNavigateToProfile(user._id); // Navigate on button click
+                  }}
+                  className="flex items-center text-blue-500 border border-blue-500 text-sm font-medium px-4 py-2 rounded-md hover:bg-blue-50 transition duration-200"
                 >
-                  {/* User Info */}
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0">
-                      <UserPhoto
-                        userId={user._id}
-                        user={user}
-                        className="w-12 h-12 rounded-full object-cover border"
-                      />
-                    </div>
-                    <div>
-                      <h1 className="text-base font-semibold text-gray-900 hover:text-blue-600 transition-colors duration-300">
-                        {user.fullname}
-                      </h1>
-                      <p className="hidden md:flex text-sm text-gray-600 mt-1 truncate">
-                        {user.bio || "This user has no bio."}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex items-center space-x-3">
-                    <button className="bg-blue-500 text-white text-sm font-medium px-4 py-1 rounded-md hover:bg-blue-600 transition duration-200">
-                      <i class="flex md:hidden ri-user-follow-line"></i>
-                      <span className="hidden md:flex">Follow</span>
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent the click event from bubbling up
-                        handleNavigateToProfile(user._id); // Navigate on button click
-                      }}
-                      className="text-blue-500 hidden md:flex text-sm font-medium px-4 py-1 border border-blue-500 rounded-md hover:bg-blue-50 transition duration-200"
-                    >
-                      View Profile
-                    </button>
-                  </div>
-                </li>
+                  View Profile
+                </button>
+              </div>
+            </li>
+            
               ))}
             </ul>
           </div>
