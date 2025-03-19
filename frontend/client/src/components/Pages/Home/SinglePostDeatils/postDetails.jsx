@@ -29,13 +29,17 @@ function postDetails() {
       navigate(-1);
       setPost([[]]);
       setPostUser([[]]);
-      dispatch({
-        type: "UPDATEPOSTDETAILS",
-        payload: {},
-      });
+      dispatch({ type: "UPDATEPOSTDETAILS", payload: {} });
       dispatch({ type: "UNRELOAD", payload: false });
-    }, 300); // 0.3 seconds delay
+    }, 300); // 3 seconds to match CSS animation
   };
+
+  useEffect(() => {
+    if (isPostPage) {
+      setEndingAnimation(false); // Ensure it starts visible
+    }
+  }, [isPostPage]);
+  
 
   const searchInput = "";
 
@@ -83,34 +87,26 @@ function postDetails() {
     setIsPostDescHide(!isPostDescHide);
   };
 
-  useEffect(() => {
-    const animationDuration = 2000;
-    const animationTimeout = setTimeout(() => {
-      setEndingAnimation(true);
-    }, animationDuration);
-
-    return () => clearTimeout(animationTimeout); // Cleanup
-  }, []);
-
   return (
     <>
       {
         <>
           <div
-            className={`${
-              isPostPage ? "block" : "hidden"
+            className={`${isPostPage ? "block animate-fadeIn" : "hidden"}  ${
+              endingAnimation ? "animate-fadeOut" : ""
             } fixed inset-0 po bg-blue-50 bg-opacity-50 z-40`}
           ></div>
 
           {/* Centered Post Component */}
           <div
-            className={`${
-              isPostPage ? "opacity-100 h-[600px]" : "opacity-0 max-h-0 h-0"
-            } fixed transition-all max-w-[800px] w-full duration-300 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg z-50 shadow-2xl border border-gray-300 overflow-y-auto custom-scrollbar`}
+            className={` ${isPostPage ? "animate-fadeIn" : "hidden"} 
+            ${
+              endingAnimation ? "animate-fadeOut" : ""
+            } fixed transition-all max-w-[800px] w-full md:h-[600px] h-full duration-300 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg z-50 shadow-2xl border border-gray-300 overflow-y-auto custom-scrollbar`}
           >
             {/* Sticky Header Section */}
-            <div className="sticky top-0 py-3 z-[999] bg-white">
-              <div className="flex justify-between items-center border-b p-3">
+            <div className="sticky top-0 z-[999] bg-white">
+              <div className="flex justify-between py-3 md:flex-row flex-row-reverse items-center border-b p-3">
                 {!post ? (
                   <div className="w-full text-center">
                     <div className="h-6 bg-gray-200 rounded w-[120px] mx-auto"></div>
@@ -124,10 +120,16 @@ function postDetails() {
                 )}
                 <button
                   onClick={handleBackToHome}
-                  className="w-8 h-8 flex justify-center items-center bg-gray-50 hover:bg-gray-200 rounded-full transition-all duration-300"
-                  aria-label="Close"
+                  className="w-10 h-10 flex justify-center items-center bg-gray-50 hover:bg-gray-200 rounded-full transition-all duration-300"
+                  // aria-label="Close"
                 >
-                  <i className="ri-close-line text-xl text-gray-600"></i>
+                  <i
+                    className={`${
+                      window.innerWidth >= 768
+                        ? "ri-close-line"
+                        : "ri-arrow-left-line"
+                    } text-2xl text-gray-600`}
+                  ></i>
                 </button>
               </div>
             </div>

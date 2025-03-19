@@ -80,8 +80,10 @@ function postButton({ post, postUser }) {
       type: "UPDATEPOSTDETAILS",
       payload: { post: post, postUser: postUser },
     });
-    navigate(`/post/${post._id}`);
+    navigate(`/post/${post?._id}`);
   };
+
+  console.log(post?._id)
 
   return (
     <>

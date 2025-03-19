@@ -397,7 +397,7 @@ function Post({ post, userId, searchInput, isBackNavigation }) {
                         // Function to replace \n with <br/>
                         const formatText = (text) => {
                           if (typeof text !== "string") {
-                            return text; // Return as-is if it's already JSX (highlighted text)
+                            return text;
                           }
 
                           return text.split("\n").map((line, index) => (
