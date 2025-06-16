@@ -178,7 +178,7 @@ function Post({ post, userId, searchInput, isBackNavigation }) {
     <>
       <>
         {isPostHide ? (
-          <div className="bg-white mx-4 relative shadow-md border border-gray-200 rounded-lg flex flex-col max-w-[540px] w-full p-6">
+          <div className="bg-white mx-4 relative shadow-md border border-gray-200 rounded-lg flex flex-col max-w-[540px] w-full md:w-[540px] p-4 space-y-3">
             {/* Confirmation Message */}
             <>
               <div className="text-center">
@@ -207,6 +207,7 @@ function Post({ post, userId, searchInput, isBackNavigation }) {
               </div>
             </>
           </div>
+          // me : postIsVisibleAgain ? (
         ) : (
           <>
             <div
@@ -225,14 +226,28 @@ function Post({ post, userId, searchInput, isBackNavigation }) {
                 )
               ) : (
                 <div>
-                  {/* Post Header */}
+                  {/* POST OPTIONS */}
                   {isMoreOptionVisible && (
                     <div
                       ref={dropdownRef}
-                      className="absolute border rounded-lg z-[9] top-[60px] right-[50px] w-[350px] bg-white shadow-lg"
+                      className="absolute border rounded-lg z-[9] sm:top-[60px] sm:right-[50px] w-full sm:max-w-[350px] bg-white shadow-lg"
                     >
-                      {/* Header Section */}
-                      <div className="p-4 border-b">
+                    <div
+                        onClick={()=> setIsMoreOptionVisible(false)}
+                        className="absolute md:hidden md:top-0 top-2 right-2 text-gray-400 hover:text-gray-600 text-2xl cursor-pointer transition"
+                      >
+                        <i className="ri-close-line"></i>
+                      </div> 
+                         {/* Close Icon */}
+                      <div
+                        onClick={()=> setIsMoreOptionVisible(false)}
+                        className="absolute md:hidden md:top-0 top-2 right-2 text-gray-400 hover:text-gray-600 text-2xl cursor-pointer transition"
+                      >
+                        <i className="ri-close-line"></i>
+                      </div>
+
+                      {/* Header Section */}``
+                      <div className="md:p-2 p-4 border-b">
                         <h3 className="text-lg font-semibold text-gray-800">
                           Post Options
                         </h3>
@@ -245,6 +260,7 @@ function Post({ post, userId, searchInput, isBackNavigation }) {
                       <div className="p-2">
                         {/* Pin Post */}
                         {post.userId === user._id && (
+
                           <div
                             onClick={handlePinPost}
                             className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-all duration-200"
@@ -289,7 +305,7 @@ function Post({ post, userId, searchInput, isBackNavigation }) {
                           </div>
                         )}
 
-                        {/* Delete Post (Optional) */}
+                        {/* Delete Post */}
                         {post.userId === user._id && (
                           <div
                             onClick={handleDeletePost}
@@ -308,7 +324,7 @@ function Post({ post, userId, searchInput, isBackNavigation }) {
                         )}
                       </div>
 
-                      {/* Footer Section (Optional) */}
+                      {/* Footer Section */}
                       <div className="p-4 border-t">
                         <p className="text-sm text-gray-500 text-center">
                           Need help?{" "}

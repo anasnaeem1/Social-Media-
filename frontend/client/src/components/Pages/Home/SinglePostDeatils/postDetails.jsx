@@ -39,7 +39,6 @@ function postDetails() {
       setEndingAnimation(false); // Ensure it starts visible
     }
   }, [isPostPage]);
-  
 
   const searchInput = "";
 
@@ -74,10 +73,10 @@ function postDetails() {
       if (post && postUser) {
         setPost(post);
         setPostUser(postUser);
-      } else {
+      } else if (postId) {
+        // setPost({});
+        // setPostUser({});
         fetchPostAndPostUser();
-        setPost({});
-        setPostUser({});
       }
     }
   }, [postDetails]);
@@ -92,102 +91,96 @@ function postDetails() {
       {
         <>
           <div
-            className={`${isPostPage ? "block animate-fadeIn" : "hidden"}  ${
+            className={`${!isPostPage ? "hidden" : "block"}  ${
               endingAnimation ? "animate-fadeOut" : ""
             } fixed inset-0 po bg-blue-50 bg-opacity-50 z-40`}
           ></div>
 
           {/* Centered Post Component */}
           <div
-            className={` ${isPostPage ? "animate-fadeIn" : "hidden"} 
-            ${
-              endingAnimation ? "animate-fadeOut" : ""
-            } fixed transition-all max-w-[800px] w-full md:h-[600px] h-full duration-300 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg z-50 shadow-2xl border border-gray-300 overflow-y-auto custom-scrollbar`}
+            className={`
+     ${isPostPage ? "block" : "hidden"} 
+     ${endingAnimation ? "hidden" : ""}
+     fixed transition-all max-w-[800px] w-full md:h-[600px] h-full duration-300 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg z-50 shadow-2xl border border-gray-300 overflow-y-auto custom-scrollbar
+  `}
           >
-            {/* Sticky Header Section */}
-            <div className="sticky top-0 z-[999] bg-white">
-              <div className="flex justify-between py-3 md:flex-row flex-row-reverse items-center border-b p-3">
-                {!post ? (
-                  <div className="w-full text-center">
-                    <div className="h-6 bg-gray-200 rounded w-[120px] mx-auto"></div>
-                  </div>
-                ) : (
-                  <div className="w-full text-center">
-                    <h1 className="text-lg font-semibold text-gray-800">
-                      {postUser?.fullname}'s Post
-                    </h1>
-                  </div>
-                )}
-                <button
-                  onClick={handleBackToHome}
-                  className="w-10 h-10 flex justify-center items-center bg-gray-50 hover:bg-gray-200 rounded-full transition-all duration-300"
-                  // aria-label="Close"
-                >
-                  <i
-                    className={`${
-                      window.innerWidth >= 768
-                        ? "ri-close-line"
-                        : "ri-arrow-left-line"
-                    } text-2xl text-gray-600`}
-                  ></i>
-                </button>
-              </div>
-            </div>
-            {/* User Details Section */}
-            {!post ? (
-              <div className="flex items-center p-3 border-b">
-                <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
-                <div className="ml-2 flex-1">
-                  <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-                  <div className="h-3 bg-gray-200 rounded w-1/3"></div>
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center p-3 border-b">
-                {postUser && (
-                  <UserPhoto userId={postUser?._id} user={postUser} />
-                )}
-                <div className="ml-2">
-                  <h1 className="font-semibold text-gray-800 text-md">
-                    {postUser?.fullname}
+            {/* Sticky Header */}
+            <div className="sticky top-0 z-50 bg-white border-b p-3 flex justify-between items-center">
+              <div className="text-center w-full">
+                {post ? (
+                  <h1 className="text-lg font-semibold text-blue-800">
+                    {postUser?.fullname}'s Post
                   </h1>
-                  <p className="text-xs text-gray-500">
-                    {format(post?.createdAt)}
-                  </p>
-                </div>
+                ) : (
+                  <div className="h-6 w-[120px] bg-gray-200 rounded mx-auto"></div>
+                )}
               </div>
-            )}
-            {/* Post Description Section */}
-            {!post ? (
-              <div className="px-3 py-2">
-                <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-              </div>
-            ) : (
-              post?.desc && (
+              <button
+                onClick={handleBackToHome}
+                className="w-10 h-10 flex items-center justify-center bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-full transition"
+              >
+                <i
+                  className={`${
+                    window.innerWidth >= 768
+                      ? "ri-close-line"
+                      : "ri-arrow-left-line"
+                  } text-2xl`}
+                ></i>
+              </button>
+            </div>
+
+            {/* User Info */}
+            <div className="p-3 border-b flex items-center">
+              {!post ? (
+                <>
+                  <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
+                  <div className="ml-2 flex-1 space-y-1">
+                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                    <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {postUser && (
+                    <UserPhoto userId={postUser._id} user={postUser} />
+                  )}
+                  <div className="ml-2">
+                    <h2 className="font-semibold text-gray-800">
+                      {postUser.fullname}
+                    </h2>
+                    <p className="text-xs text-gray-500">
+                      {format(post.createdAt)}
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Description */}
+            {post ? (
+              post.desc && (
                 <div
-                  className={`px-3 py-2 ${
-                    post.img ? "text-sm" : "text-md"
-                  } text-gray-800`}
+                  className={`px-3 py-2 text-gray-800 ${
+                    post.img ? "text-sm" : "text-base"
+                  }`}
                 >
                   {(() => {
-                    const maxLength = post.img ? 89 : 150; // Adjust limit based on image presence
+                    const maxLength = post.img ? 89 : 150;
                     const isLongText = post.desc.length > maxLength;
 
                     if (isLongText && isPostDescHide) {
-                      const trimmedText = post.desc.slice(0, maxLength);
-                      const lastSpaceIndex = trimmedText.lastIndexOf(" ");
-                      const finalText =
-                        lastSpaceIndex > 0
-                          ? trimmedText.slice(0, lastSpaceIndex) + "..."
-                          : trimmedText + "...";
-
+                      const trimmed = post.desc.slice(0, maxLength);
+                      const cutIndex = trimmed.lastIndexOf(" ");
+                      const preview =
+                        cutIndex > 0
+                          ? trimmed.slice(0, cutIndex) + "..."
+                          : trimmed + "...";
                       return (
                         <>
-                          <span>{highlightText(finalText, searchInput)}</span>{" "}
+                          <span>{highlightText(preview, searchInput)}</span>{" "}
                           <button
                             onClick={handleSeeMore}
-                            className="text-blue-500 hover:text-blue-600 cursor-pointer focus:outline-none text-sm"
+                            className="text-blue-500 hover:text-blue-600 text-sm"
                           >
                             See more...
                           </button>
@@ -198,40 +191,49 @@ function postDetails() {
                   })()}
                 </div>
               )
-            )}
-            {/* Post Image Section */}
-            {!post ? (
-              <div className="px-3 py-2">
-                <div className="h-[300px] bg-gray-200 rounded-md"></div>
-              </div>
             ) : (
-              post?.img && (
+              <div className="px-3 py-2 space-y-2">
+                <div className="h-4 bg-gray-200 rounded w-full"></div>
+                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+              </div>
+            )}
+
+            {/* Image */}
+            {post ? (
+              post.img && (
                 <div className="px-3 py-2">
-                  <div className="rounded-md overflow-hidden hover:bg-gray-100 transition-all duration-300">
+                  <div className="overflow-hidden rounded-md hover:bg-blue-50 transition">
                     <img
                       src={post.img}
-                      alt="Post Image"
-                      className="w-full object-contain max-h-[400px]"
+                      alt="Post"
+                      className="w-full max-h-[400px] object-contain"
                     />
                   </div>
                 </div>
               )
+            ) : (
+              <div className="px-3 py-2">
+                <div className="h-[300px] bg-gray-200 rounded-md"></div>
+              </div>
             )}
-            {/* Post Buttons Section */}
+
+            {/* Post Buttons */}
             <div className="p-3 border-t">
               <PostButton post={post} postUser={postUser} />
             </div>
 
-            {/* Comment Box Section */}
+            {/* Comments */}
             {post && (
-              <CommentBox
-                post={post}
-                postDetails={true}
-                userId={user._id}
-                postUser={postUser}
-              />
+              <>
+                <CommentBox
+                  post={post}
+                  postDetails={true}
+                  userId={user._id}
+                  postUser={postUser}
+                />
+                <CommentSumbitForm post={post} isPostPage={isPostPage} />
+              </>
             )}
-            <CommentSumbitForm post={post} isPostPage={isPostPage} />
           </div>
         </>
       }
