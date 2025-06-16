@@ -35,9 +35,8 @@ function Navbar() {
   }, [searchedInput]);
 
   useEffect(() => {
-    setIsMenuVisible(false)
-  }, [location])
-  
+    setIsMenuVisible(false);
+  }, [location]);
 
   const handleInputChange = () => {
     if (searchInput.current) {
@@ -79,6 +78,7 @@ function Navbar() {
   };
 
   const handleClearInput = () => {
+    dispatch({ type: "SEARCHEDINPUT", payload: "" });
     if (searchedUsername.current) {
       searchedUsername.current.value = "";
     }
@@ -190,6 +190,7 @@ function Navbar() {
           <div
             className={` text-white border-black`}
             onClick={() => {
+              
               handleClearInput();
               handleReload();
             }}
@@ -329,7 +330,7 @@ function Navbar() {
                 className="w-[45px] h-[45px] lg:w-[55px] lg:h-[55px] flex items-center justify-center rounded-r-full text-white bg-blue-500 hover:bg-blue-600 transition-all"
                 onClick={handleMenu}
               >
-                <i class="ri-menu-line text-xl"></i>
+                <i className="ri-menu-line text-xl"></i>
 
                 {/* <i className="ri-search-2-line "></i> */}
               </button>
@@ -339,94 +340,118 @@ function Navbar() {
               <div
                 className={`${
                   isMenuVisible ? "h-screen border" : "h-0"
-                } fixed top-[62px] left-0 bg-gray-50 overflow-hidden transition-all duration-200 shadow-2xl rounded-xl w-full`}
+                } fixed top-[62px] left-0 bg-white overflow-hidden transition-all duration-200 shadow-2xl rounded-xl w-full`}
               >
                 <SearchButtonsForMobile />
                 <SearchSuggestions />
+
                 {!searchedInput && (
-                  <>
+                  <div className="divide-y divide-gray-200">
                     {/* User Info */}
                     <div
                       onClick={handleNavigateToProfile}
-                      className="flex items-center px-4 py-4 bg-gray-50 hover:bg-gray-100 transition-colors"
+                      className="flex items-center px-4 py-4 hover:bg-gray-100 transition-colors"
                     >
                       <CurrentUserPhoto />
                       <span className="ml-4 text-gray-800 text-lg font-semibold">
                         {user.fullname}
                       </span>
                     </div>
-                    <hr className="border-gray-200" />
 
-                    {/* Messages */}
-                    {/* <div className="px-4 py-3">
-                      <h3 className="text-gray-800 text-lg font-semibold">
-                        Messages
-                      </h3>
-                    </div> */}
-
-                    {/* <hr className="border-gray-200" /> */}
-
-                    {/* Settings */}
-                    <div
-                      onClick={handleNavigateToSettings}
-                      className="flex items-center px-4 py-3 hover:bg-gray-100 transition-colors"
-                    >
-                      <span className="flex items-center justify-center text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow-md rounded-full w-[55px] h-[55px]">
-                        <i className="ri-settings-2-fill text-2xl"></i>
-                      </span>
-                      <span className="ml-4 text-gray-700 text-lg font-medium">
-                        Setting & Privacy
-                      </span>
-                    </div>
-
-                    {/* Help & Support */}
-                    <div className="flex items-center px-4 py-3 hover:bg-gray-100 transition-colors">
-                      <span className="flex items-center justify-center text-white bg-gradient-to-r from-green-500 to-green-700 shadow-md rounded-full h-[45px] w-[45px]">
-                        <i className="ri-question-fill text-2xl"></i>
-                      </span>
-                      <span className="ml-4 text-gray-700 text-lg font-medium">
-                        Help & Support
-                      </span>
-                    </div>
-
-                    {/* Display & Accessibility */}
-                    <div className="flex items-center px-4 py-3 hover:bg-gray-100 transition-colors">
-                      <span className="flex items-center justify-center text-white bg-gradient-to-r from-purple-500 to-purple-700 shadow-md rounded-full h-[45px] w-[45px]">
-                        <i className="ri-moon-fill text-2xl"></i>
-                      </span>
-                      <span className="ml-4 text-gray-700 text-lg font-medium">
-                        Display & Accessibility
-                      </span>
-                    </div>
-
-                    {/* Feedback */}
-                    <div className="flex items-center px-4 py-3 hover:bg-gray-100 transition-colors">
-                      <span className="flex items-center justify-center text-white bg-gradient-to-r from-yellow-500 to-yellow-700 shadow-md rounded-full h-[45px] w-[45px]">
-                        <i className="ri-feedback-fill text-2xl"></i>
-                      </span>
-                      <div className="ml-4">
-                        <span className="text-gray-700 text-md font-medium">
-                          Give Feedback
+                    {/* --- Section: Communication --- */}
+                    <div className="py-2 px-2">
+                      <h4 className="text-gray-500 text-sm font-semibold px-2 mb-1">
+                        Communication
+                      </h4>
+                      <div
+                        onClick={() => navigate("/messages")}
+                        className="flex items-center px-2 py-3 hover:bg-gray-100 rounded-lg transition-colors"
+                      >
+                        <span className="flex items-center justify-center text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow rounded-full w-[45px] h-[45px]">
+                          <i className="ri-messenger-fill text-2xl"></i>
                         </span>
-                        <span className="block text-gray-500 text-sm font-light">
-                          CTRL + B
+                        <span className="ml-4 text-gray-700 text-base font-medium">
+                          Messenger
+                        </span>
+                      </div>
+
+                      <div
+                        onClick={() => navigate("/friends")}
+                        className="flex items-center px-2 py-3 hover:bg-gray-100 rounded-lg transition-colors"
+                      >
+                        <span className="flex items-center justify-center text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow rounded-full w-[45px] h-[45px]">
+                          <i className="ri-group-fill text-2xl"></i>
+                        </span>
+                        <span className="ml-4 text-gray-700 text-base font-medium">
+                          Friends
                         </span>
                       </div>
                     </div>
 
-                    {/* Logout */}
+                    {/* --- Section: Settings --- */}
+                    <div className="py-2 px-2">
+                      <h4 className="text-gray-500 text-sm font-semibold px-2 mb-1">
+                        Preferences
+                      </h4>
+
+                      <div
+                        onClick={handleNavigateToSettings}
+                        className="flex items-center px-2 py-3 hover:bg-gray-100 rounded-lg transition-colors"
+                      >
+                        <span className="flex items-center justify-center text-white bg-gradient-to-r from-gray-500 to-gray-700 shadow rounded-full w-[45px] h-[45px]">
+                          <i className="ri-settings-2-fill text-xl"></i>
+                        </span>
+                        <span className="ml-4 text-gray-700 text-base font-medium">
+                          Settings & Privacy
+                        </span>
+                      </div>
+
+                      <div className="flex items-center px-2 py-3 hover:bg-gray-100 rounded-lg transition-colors">
+                        <span className="flex items-center justify-center text-white bg-gradient-to-r from-gray-500 to-gray-700 shadow rounded-full w-[45px] h-[45px]">
+                          <i className="ri-question-fill text-2xl"></i>
+                        </span>
+                        <span className="ml-4 text-gray-700 text-base font-medium">
+                          Help & Support
+                        </span>
+                      </div>
+
+                      <div className="flex items-center px-2 py-3 hover:bg-gray-100 rounded-lg transition-colors">
+                        <span className="flex items-center justify-center text-white bg-gradient-to-r from-gray-500 to-gray-700 shadow rounded-full w-[45px] h-[45px]">
+                          <i className="ri-moon-fill text-2xl"></i>
+                        </span>
+                        <span className="ml-4 text-gray-700 text-base font-medium">
+                          Display & Accessibility
+                        </span>
+                      </div>
+
+                      <div className="flex items-center px-2 py-3 hover:bg-gray-100 rounded-lg transition-colors">
+                        <span className="flex items-center justify-center text-white bg-gradient-to-r from-gray-500 to-gray-700 shadow rounded-full w-[45px] h-[45px]">
+                          <i className="ri-feedback-fill text-2xl"></i>
+                        </span>
+                        <div className="ml-4">
+                          <span className="text-gray-700 text-base font-medium">
+                            Give Feedback
+                          </span>
+                          <span className="block text-gray-500 text-sm font-light">
+                            CTRL + B
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* --- Logout --- */}
                     <div
                       onClick={handleLogOut}
-                      className="flex items-center px-4 py-3 hover:bg-gray-100 transition-colors"
+                      className="flex items-center px-4 py-3 hover:bg-red-50 transition-colors"
                     >
-                      <span className="flex items-center justify-center text-white bg-gradient-to-r from-red-500 to-red-700 shadow-md rounded-full h-[45px] w-[45px]">
+                      <span className="flex items-center justify-center text-white bg-gradient-to-r from-red-500 to-red-700 shadow rounded-full h-[45px] w-[45px]">
                         <i className="ri-logout-box-r-fill text-2xl"></i>
                       </span>
-                      <span className="ml-4 text-gray-700 text-lg font-medium">
+                      <span className="ml-4 text-red-700 text-base font-medium">
                         Logout
                       </span>
                     </div>
-                  </>
+                  </div>
                 )}
               </div>
             }

@@ -182,7 +182,7 @@ function Options({ mainItems, userId }) {
           !friendsOptions
             ? "hidden lg:block"
             : friendsOptions
-            ? "w-[350px]"
+            ? "max-w-[350px] w-full"
             : "w-[260px]"
         } ${
           userId
@@ -202,10 +202,8 @@ function Options({ mainItems, userId }) {
       {/* Main Options Container */}
       <div
         className={`fixed bg-white left-0 top-[65px] custom-scrollbar transition-all duration-300 overflow-y-scroll ${
-          !friendsOptions
-            ? "lg:block hidden"
-            : "w-[260px]"
-        }  ${friendsOptions ? "w-[350px]" : "w-[260px]"} ${
+          !friendsOptions && "lg:block hidden"
+        }  ${friendsOptions ? "md:max-w-[350px] w-full" : "w-[260px]"} ${
           userId
             ? "hidden lg:block"
             : (!userId && !isFriendsRequestPage && friendsOptions) ||

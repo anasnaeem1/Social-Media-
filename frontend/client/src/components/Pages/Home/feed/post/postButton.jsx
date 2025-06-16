@@ -83,7 +83,6 @@ function postButton({ post, postUser }) {
     navigate(`/post/${post?._id}`);
   };
 
-  console.log(post?._id)
 
   return (
     <>

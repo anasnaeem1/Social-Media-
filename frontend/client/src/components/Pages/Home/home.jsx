@@ -16,6 +16,7 @@ import { UserContext } from "../../context/UserContext";
 
 function Home({ reload }) {
   const location = useLocation();
+  const isBirthdayPage = location.pathname.startsWith("/friends/birthdays");
   const isPostPage = location.pathname.startsWith("/post");
   const isSettingPage = location.pathname.startsWith("/settings");
   const { user, floatingBox, dispatch, mobileSearchInput } =
@@ -31,15 +32,18 @@ function Home({ reload }) {
           style={{ height: isPostPage && "calc(100vh - 65px)" }}
         >
           {/* Options Component */}
-            <div className="fixed  w-full top-[65px] left-0 bg-white z-50">
-              <SearchSuggestions forMobile={true} />
-            </div>
-          <Options
-            currentUserPhoto={currentUserPhoto}
-            mainItems={mainItems}
-            SeperatingLine={SeperatingLine}
-            // className="flex-shrink-0 hidden md:block md:w-[250px] lg:w-[300px] xl:w-[350px]"
-          />
+          <div className="fixed  w-full top-[65px] left-0 bg-white z-50">
+            <SearchSuggestions forMobile={true} />
+          </div>
+
+          {!isBirthdayPage && (
+            <Options
+              currentUserPhoto={currentUserPhoto}
+              mainItems={mainItems}
+              SeperatingLine={SeperatingLine}
+              // className="flex-shrink-0 hidden md:block md:w-[250px] lg:w-[300px] xl:w-[350px]"
+            />
+          )}
 
           {location.pathname.startsWith("/settings") ? (
             <SettingsPage />

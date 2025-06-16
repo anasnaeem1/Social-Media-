@@ -204,51 +204,43 @@ function User({
 
   return (
     <>
-      <div className="flex flex-col w-full max-w-[1170px] border-black">
+      <div className="flex flex-col w-full border-black">
         {profileLoading ? (
           <ProfilePicSkeleton />
         ) : (
-          <div className="relative flex flex-col gap-0">
-            {/* Cover Photo Section */}
+          <div className="relative flex flex-col w-full gap-0">
+            {/* Cover Photo */}
             <img
-              src={
-                profileUser.coverPic
-                  ? profileUser.coverPic
-                  : "/images/noCover.jpg"
-              }
+              src={profileUser.coverPic || "/images/noCover.jpg"}
               alt="Cover"
-              className="h-[200px] border-green-300 md:h-[300px] rounded-t-md mx-auto max-w-7xl w-full shadow-md object-cover"
+              className="h-[200px] md:h-[300px] w-full object-cover rounded-t-md shadow-md"
             />
-            {/* Profile and Info Section */}
-            <div className="absolute top-[120px] md:top-[270px] md:left-[20px] left-1/2 transform userDetailsBox -translate-x-1/2 md:-translate-x-0 max-w-7xl mx-auto  rounded-md  w-full">
-              <div className="flex flex-col items-center md:flex-row md:items-center gap-2">
+
+            {/* Profile + Info Container */}
+            <div className="absolute top-[120px] md:top-[270px] left-1/2 md:left-[20px] transform md:translate-x-0 -translate-x-1/2 w-full max-w-7xl px-4 md:px-0">
+              <div className="flex flex-col md:flex-row md:items-start items-center gap-4">
                 {/* Profile Picture */}
                 <div className="relative">
-                  {/* Profile Picture or Skeleton Loader */}
-                  {
-                    <img
-                      src={
-                        profileUser.profilePic
-                          ? profileUser.profilePic
-                          : "https://res.cloudinary.com/datcr1zua/image/upload/v1739709690/uploads/rindbm34tibrtqcgvpsd.png"
-                      }
-                      alt="Profile"
-                      className={`${
-                        userId === currentUser._id
-                          ? "border-[3px] border-white"
-                          : ""
-                      }${
-                        !profileUser.profilePic && "border-none"
-                      } border-[2px] border-white h-[140px] w-[140px] md:h-[156px] md:w-[156px] sm:h-[156px] sm:w-[156px] rounded-full shadow-lg mx-auto md:mx-0 object-cover`}
-                    />
-                  }
+                  <img
+                    src={
+                      profileUser.profilePic ||
+                      "https://res.cloudinary.com/datcr1zua/image/upload/v1739709690/uploads/rindbm34tibrtqcgvpsd.png"
+                    }
+                    alt="Profile"
+                    className={`${
+                      userId === currentUser._id
+                        ? "border-[3px] border-white"
+                        : ""
+                    } ${
+                      !profileUser.profilePic && "border-none"
+                    } h-[140px] w-[140px] md:h-[156px] md:w-[156px] rounded-full shadow-lg object-cover`}
+                  />
 
-                  {/* Circular Progress Bar (for non-current user) */}
+                  {/* Progress Circle */}
                   {userId !== currentUser._id && (
                     <svg
                       className="absolute top-0 left-0 h-[150px] w-[150px] sm:h-[166px] sm:w-[166px] transform -translate-y-[5px] -translate-x-[5px] rotate-[90deg]"
                       xmlns="http://www.w3.org/2000/svg"
-                      version="1.1"
                       viewBox="0 0 160 160"
                     >
                       <defs>
@@ -272,7 +264,7 @@ function User({
                     </svg>
                   )}
 
-                  {/* Follow Button or Edit Options */}
+                  {/* Follow or Edit Button */}
                   {userId !== currentUser._id ? (
                     <div
                       onClick={handleFollow}
@@ -291,38 +283,35 @@ function User({
                   ) : editVisibility ? (
                     <>
                       <input
-                        enctype="multipart/form-data"
-                        onChange={handleProfilePicChange}
                         type="file"
                         id="uploadProfilePicBtn"
                         accept=".png,.jpg,.jpeg"
                         className="hidden"
+                        onChange={handleProfilePicChange}
+                        encType="multipart/form-data"
                       />
-                      {/* Label wrapping everything to trigger file input */}
                       <label
                         htmlFor="uploadProfilePicBtn"
-                        className="absolute left-1/2 bottom-[-20px] transform -translate-x-1/2 cursor-pointer py-2 bg-white rounded-full flex items-center justify-between hover:bg-blue-100 px-4 shadow-lg border border-gray-200 hover:text-blue-600 transition"
+                        className="absolute left-1/2 bottom-[-20px] transform -translate-x-1/2 cursor-pointer py-2 bg-white rounded-full flex items-center gap-2 hover:bg-blue-100 px-4 shadow-lg border border-gray-200 hover:text-blue-600 transition"
                       >
-                        <i className="text-lg ri-image-edit-line text-gray-500"></i>
+                        <i className="ri-image-edit-line text-gray-500"></i>
                         <span className="text-sm font-medium text-gray-600">
                           Update
                         </span>
                       </label>
                     </>
-                  ) : (
-                    ""
-                  )}
+                  ) : null}
                 </div>
 
                 {/* User Info */}
-                <div className="text-center transform md:translate-x-2 mt-3 md:translate-y-[25px] md:text-left">
-                  <h1 className="text-xl font-semibold md:text-2xl">
+                <div className="mt-3 md:mt-10 text-center md:text-left">
+                  <h1 className="text-xl md:text-2xl font-semibold">
                     {profileUser.fullname}
                   </h1>
-                  <p className="text-sm text-gray-600 md:text-base">
+                  <p className="text-sm md:text-base text-gray-600">
                     {profileUser.bio}
                   </p>
-                  {/* Action Buttons */}
+
                   <div className="mt-4 flex flex-wrap gap-4 justify-center md:justify-start">
                     {userId !== currentUser._id ? (
                       <button
@@ -340,18 +329,26 @@ function User({
                       </button>
                     )}
                     <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg shadow hover:bg-gray-300 transition">
-                      {`${profileUser?.followers.length}
-          ${profileUser.followers.length === 1 ? "follower" : "Followers"}`}
+                      {`${profileUser?.followers.length} ${
+                        profileUser.followers.length === 1
+                          ? "follower"
+                          : "Followers"
+                      }`}
                     </button>
                     <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg shadow hover:bg-gray-300 transition">
-                      {`${profileUser?.followings.length} 
-          ${profileUser.followings.length === 1 ? "following" : "followings"}`}
+                      {`${profileUser?.followings.length} ${
+                        profileUser.followings.length === 1
+                          ? "following"
+                          : "followings"
+                      }`}
                     </button>
                   </div>
                 </div>
               </div>
             </div>
-            <div className=" h-[235px] md:h-[200px]"></div>
+
+            {/* Push content below profile box */}
+            <div className="h-[235px] md:h-[200px]"></div>
           </div>
         )}
 

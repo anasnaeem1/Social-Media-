@@ -6,7 +6,7 @@ const ProfileSkeleton = () => {
   return (
     <div className="relative flex flex-col gap-0">
       {/* Cover Image Skeleton */}
-      <div className="h-[200px] md:h-[300px] rounded-t-md mx-auto max-w-7xl w-full shadow-md">
+      <div className="h-[200px] md:h-[300px] rounded-t-md mx-auto w-full shadow-md">
         <Skeleton height="100%" width="100%" className="rounded-t-md" />
       </div>
 

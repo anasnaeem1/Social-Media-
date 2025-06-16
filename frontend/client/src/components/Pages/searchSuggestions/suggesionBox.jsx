@@ -98,7 +98,6 @@ function SuggestionBox({forMobile}) {
     searchingPost();
   }, [searchedInput]);
 
-  console.log(searchedInput)
 
   return (
     <div

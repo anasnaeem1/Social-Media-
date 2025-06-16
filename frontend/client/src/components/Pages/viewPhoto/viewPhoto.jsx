@@ -9,6 +9,7 @@ import { getUser } from "../../../apiCalls";
 import CommentBox from "../Home/feed/post/comments/commentBox";
 import CommentSumbitForm from "../Home/feed/post/comments/commentSubmitForm";
 import Reply from "../Home/feed/post/comments/reply";
+import PostButton from "../Home/feed/post/postButton";
 
 function ViewPhoto() {
   const { viewPhoto, photoId } = useParams();
@@ -239,32 +240,42 @@ function ViewPhoto() {
           className="relative overflow-hidden w-full flex bg-black justify-between bg-opacity-90"
         >
           {/* Fullscreen Image Section */}
-          <div className="flex-1 flex overflow-hidden justify-center items-center relative bg-black">
+          <div className="flex-1 relative bg-[#0f172a] flex items-center justify-center overflow-hidden">
+            {/* Image or Loader */}
             {photoDetailsLoading ? (
-              <div className="w-[80%] h-[80%] bg-gray-700 animate-pulse rounded-lg"></div>
+              <div className="w-[80%] h-[80%] bg-blue-950 animate-pulse rounded-lg" />
             ) : photoDetails?.img ? (
               <img
                 src={photoDetails.img}
                 alt="Fullscreen"
-                className="max-w-full max-h-full object-contain shadow-xl rounded-lg"
+                className="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl border border-blue-900"
               />
             ) : (
-              <p className="text-white text-xl">Image loading...</p>
+              <p className="text-white text-lg">Image loading...</p>
             )}
+
+            {/* Post Buttons for mobile view - fixed at bottom */}
+            <div className="w-full lg:hidden fixed bottom-0 left-0  px-4">
+              <PostButton
+                post={photoDetails}
+                isViewPhoto={true}
+                postUser={photoUser}
+              />
+            </div>
 
             {/* Close Button */}
             <button
               onClick={handleBackToPost}
-              className="absolute top-5 right-5 bg-gray-800 text-white rounded-full w-10 h-10 shadow-lg hover:bg-gray-700 transition-all"
+              className="absolute top-5 right-5 bg-blue-900 text-white rounded-full w-10 h-10 shadow-md hover:bg-blue-800 transition-all"
             >
-              <i className="ri-close-line text-2xl"></i>
+              <i className="ri-close-line text-2xl" />
             </button>
           </div>
 
           {/* Right Panel - Post Info + Comments */}
           <div
             style={{ height: "calc(100vh - 65px)" }}
-            className="w-[30%] relative overflow-y-scroll bg-white flex flex-col shadow-lg"
+            className="w-[30%] hidden lg:flex relative overflow-y-scroll bg-white flex-col shadow-lg"
           >
             {/* Post Uploader Info */}
             <div className="p-4 border-b bg-gray-50">
@@ -397,7 +408,7 @@ function ViewPhoto() {
             </div>
 
             {/* Comments Section */}
-            <div className="flex-1 border border-green-400 relative w-full h-[300px] flex flex-col">
+            <div className="flex-1 border-green-400 relative w-full h-[300px] flex flex-col">
               {/* Comments List */}
               {forPost ? (
                 photoDetails && (
@@ -499,80 +510,3 @@ function ViewPhoto() {
 }
 
 export default ViewPhoto;
-
-{
-  /* Under Development Tag */
-}
-{
-  //   /* <div className="absolute top-10 left-10 bg-yellow-500 text-black px-6 py-3 rounded-full shadow-lg animate-pulse">
-  //   <span className="font-bold text-xl">Under Development</span>
-  //   <div className="sticky bottom-0 left-0  bg-white w-full p-3 border-t border-gray-300 flex flex-col gap-2">
-  //     {/* Image Preview (If Selected) */}
-  //     {commentPicture && (
-  //       <div className="flex items-center gap-2">
-  //         <img
-  //           src={commentPicPreview}
-  //           alt="Seleh-screencted preview"
-  //           className="w-[90px] h-[90px] rounded-md object-cover border"
-  //         />
-  //         <button
-  //           type="button"
-  //           className="text-red-500 text-xs"
-  //           onClick={() => {
-  //             setCommentPicture(null);
-  //             setCommentPicPreview(null);
-  //           }}
-  //         >
-  //           Remove
-  //         </button>
-  //       </div>
-  //     )}
-  //     <form
-  //       onSubmit={handleCommentSubmit}
-  //       className="flex items-center gap-2"
-  //     >
-  //       {/* Text Area */}
-  //       <textarea
-  //         style={{ scrollbarWidth: "none" }}
-  //         id="comment-input"
-  //         placeholder="Write a comment..."
-  //         rows={1}
-  //         maxLength={300}
-  //         className="w-full  border border-gray-300 rounded-md p-2 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-  //         onKeyDown={(e) => {
-  //           if (e.key === "Enter" && !e.shiftKey) {
-  //             e.preventDefault();
-  //             if (e.target.value.trim()) {
-  //               handleCommentSubmit(e);
-  //             }
-  //           }
-  //         }}
-  //         onInput={(e) => {
-  //           e.target.style.height = "auto";
-  //           e.target.style.height = `${Math.min(
-  //             e.target.scrollHeight,
-  //             60
-  //           )}px`;
-  //         }}
-  //         ref={commentText}
-  //       ></textarea>
-  //       {/* Image Upload */}
-  //       <label className="cursor-pointer bg-gray-200 hover:bg-gray-300 p-2 rounded-md">
-  //         <i className="ri-image-add-line text-xl text-gray-600"></i>
-  //         <input
-  //           onChange={handleCommentFileChange}
-  //           type="file"
-  //           className="hidden"
-  //         />
-  //       </label>
-  //       {/* Post Button */}
-  //       <button
-  //         type="submit"
-  //         className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
-  //       >
-  //         Post
-  //       </button>
-  //     </form>
-  //   </div>
-  // </div> */
-}

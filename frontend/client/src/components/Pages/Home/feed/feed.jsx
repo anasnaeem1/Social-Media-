@@ -147,17 +147,8 @@ function Feed({
       )}
 
       <div className="flex w-full max-w-[550px]  relative mt-3 justify-center items-center flex-col gap-4 overflow-x-hidden">
-        {/* CreatePost section */}
-        {userId ? (
-          userId === user._id && (
-            <CreatePost
-              userId={userId}
-              cPostFile={cPostFile}
-              ShareOptions={ShareOptions}
-              currentUserPhoto={currentUserPhoto}
-              SeperatingLine={SeperatingLine}
-            />
-          )
+        {userId && userId !== user._id ? (
+          ""
         ) : (
           <CreatePost
             userId={userId}
@@ -170,15 +161,15 @@ function Feed({
         {/* Display posts */}
         {posts.length > 0 ? (
           posts.map((post) => (
-            <React.Fragment key={post._id}>
-              {Array.isArray(post?.likes) && (
-                <Post
-                  userId={userId}
-                  isBackNavigation={isBackNavigation}
-                  post={post}
-                />
-              )}
-            </React.Fragment>
+              <React.Fragment key={post._id}>
+                {Array.isArray(post?.likes) && (
+                  <Post
+                    userId={userId}
+                    isBackNavigation={isBackNavigation}
+                    post={post}
+                  />
+                )}
+              </React.Fragment>
           ))
         ) : (
           <div

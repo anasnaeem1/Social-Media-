@@ -12,7 +12,7 @@ function followButton({ otherUser, text, icon }) {
     if (otherUser._id) {
       setFollowed(isUserFollowed(currentUser, otherUser));
     }
-    console.log(isUserFollowed(currentUser, otherUser));
+    // console.log(isUserFollowed(currentUser, otherUser));
   }, [currentUser?.followings, otherUser?._id]);
 
   const handleFollow = async () => {
@@ -27,6 +27,8 @@ function followButton({ otherUser, text, icon }) {
       setFollowLoading(false);
     }
   };
+
+  const isTextLong = text.length > 6;
 
   return (
     <>
@@ -58,14 +60,8 @@ function followButton({ otherUser, text, icon }) {
           ) : (
             <FaUserPlus className={`h-4 w-4 text-white`} />
           ))}
-        <span>
-          {!followed
-            ? !followLoading
-              ? text
-              : text.length > 6
-              ? `${text.slice(0, 6)}...`
-              : text
-            : "Unfollow"}
+        <span className="truncate max-w-[100px] block">
+          {!followed ? text : "Unfollow"}
         </span>
       </button>
     </>

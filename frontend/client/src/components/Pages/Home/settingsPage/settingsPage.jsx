@@ -173,7 +173,7 @@ function settingsPage() {
         {/* User Info List */}
         <div className="space-y-5">
           {userInfo.map((info) => (
-            <div className="flex flex-col gap-4">
+            <div key={info.id} className="flex flex-col gap-4">
               <div className="flex items-center justify-between">
                 {/* Info Key */}
                 <span className="text-md pr-2 font-medium text-gray-700">

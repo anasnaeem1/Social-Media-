@@ -46,55 +46,51 @@ function singleUser({ isFriendsListPage, isFriendsRequestPage, user }) {
 
   return (
     <div
-      key={user?._id}
-      className="bg-gray-50 rounded-xl w-full px-2 py-2 relative flex items-center gap-4"
-    >
-      {/* User Photo */}
-      <UserPhoto lg={true} userId={user?._id} user={user} />
-      {/* User Info and Buttons */}
-      <div className="flex flex-col gap-3 flex-1">
-        {/* Full Name */}
-        <Link to={`/profile/${user?._id}`}>
-          <p className="cursor-pointer text-gray-800 text-base font-semibold hover:text-blue-500 transition-all duration-200">
-            {user?.fullname}
-          </p>
-        </Link>
-
-        {isFriendsListPage && (
-          <div>
-            {!mutualFriendsLoading && mutualFriends.length > 0 ? (
-              <h1 className="text-xs text-gray-800">
-                {mutualFriends.length} {""}
-                mutual friends
-              </h1>
-            ) : (
-              ""
-              // <div className="h-3 w-2"></div>
-            )}
-          </div>
-        )}
-
-        {/* Buttons */}
-        {isFriendsRequestPage && (
-          <div className="flex gap-3">
-            {/* Follow Back Button */}
-            <FollowButton otherUser={user} text="Follow back" />
-            <button
-              onClick={handleDelete}
-              className="flex items-center justify-center gap-2 text-sm font-semibold text-gray-700 bg-gray-100 border border-gray-300 rounded-md px-4 py-1 hover:bg-gray-200 hover:border-gray-400 transition-all duration-200"
-            >
-              <i className="ri-delete-bin-line text-lg"></i>
-              Delete
-            </button>
-          </div>
-        )}
-      </div>
-      {isFriendsListPage && (
-        <div className="flex items-center justify-center rounded-full absolute w-8 h-8 cursor-pointer transition-all duration-300 hover:bg-gray-100 right-0 top-4">
-          <i className="text-lg text-black ri-more-line"></i>
+    key={user?._id}
+    className="bg-white border border-gray-200 rounded-xl w-full px-4 py-4 shadow-sm hover:shadow-md transition-shadow duration-200 relative flex items-center gap-4"
+  >
+    {/* User Photo */}
+    <UserPhoto lg={true} userId={user?._id} user={user} />
+  
+    {/* User Info and Buttons */}
+    <div className="flex flex-col gap-2 flex-1">
+      {/* Full Name */}
+      <Link to={`/profile/${user?._id}`}>
+        <p className="cursor-pointer text-gray-800 text-[15px] font-semibold hover:text-blue-600 transition-colors duration-200">
+          {user?.fullname}
+        </p>
+      </Link>
+  
+      {/* Mutual Friends (only on friends list page) */}
+      {isFriendsListPage && !mutualFriendsLoading && mutualFriends.length > 0 && (
+        <p className="text-xs text-gray-500">
+          {mutualFriends.length} mutual friend{mutualFriends.length > 1 && 's'}
+        </p>
+      )}
+  
+      {/* Buttons (only on friend requests page) */}
+      {isFriendsRequestPage && (
+        <div className="flex gap-3 mt-1">
+          <FollowButton otherUser={user} text="Follow back" />
+          <button
+            onClick={handleDelete}
+            className="flex items-center gap-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md px-2 py-1 hover:bg-gray-200 hover:border-gray-400 transition-all"
+          >
+            <i className="ri-delete-bin-line text-base"></i>
+            Delete
+          </button>
         </div>
       )}
     </div>
+  
+    {/* Options Icon (3 dots) - only on friends list */}
+    {isFriendsListPage && (
+      <div className="absolute right-3 top-3 rounded-full p-2 hover:bg-gray-100 cursor-pointer transition-all duration-200">
+        <i className="text-gray-600 ri-more-line text-lg"></i>
+      </div>
+    )}
+  </div>
+  
   );
 }
 
