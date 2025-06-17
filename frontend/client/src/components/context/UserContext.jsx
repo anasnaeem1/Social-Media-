@@ -4,6 +4,7 @@ import UserReducer from "./UserReducer";
 const INITIAL_STATE = {
   user: JSON.parse(localStorage.getItem("user")) || null,
   postDetails: {},
+  PhotoCommentsOpen : false,
   SearchedUser: null,
   reload: false,
   uploadProfileBox: false,

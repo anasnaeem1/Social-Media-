@@ -155,3 +155,7 @@ export const toggleFloatingBox = (purpose) => ({
   type: "TOGGLEFLOATINGBOX",
   payload: purpose,
 });
+export const togglePhotoComments = (visiblility) => ({
+  type: "TOGGLE_PHOTO_COMMENTS",
+  payload: visiblility,
+});

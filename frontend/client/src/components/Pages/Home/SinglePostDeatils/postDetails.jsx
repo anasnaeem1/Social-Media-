@@ -91,21 +91,18 @@ function postDetails() {
       {
         <>
           <div
-            className={`${!isPostPage ? "hidden" : "block"}  ${
-              endingAnimation ? "animate-fadeOut" : ""
-            } fixed inset-0 po bg-blue-50 bg-opacity-50 z-40`}
+            className={`${!isPostPage ? "hidden" : "block"} fixed inset-0 po bg-blue-50 bg-opacity-50 z-40`}
           ></div>
 
           {/* Centered Post Component */}
           <div
             className={`
-     ${isPostPage ? "block" : "hidden"} 
-     ${endingAnimation ? "hidden" : ""}
+     ${isPostPage ? "block" : "hidden"}
      fixed transition-all max-w-[800px] w-full md:h-[600px] h-full duration-300 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg z-50 shadow-2xl border border-gray-300 overflow-y-auto custom-scrollbar
   `}
           >
             {/* Sticky Header */}
-            <div className="sticky top-0 z-50 bg-white border-b p-3 flex justify-between items-center">
+            <div className="sticky top-0 z-50 bg-white flex-row-reverse border-b p-3 flex justify-between items-center">
               <div className="text-center w-full">
                 {post ? (
                   <h1 className="text-lg font-semibold text-blue-800">

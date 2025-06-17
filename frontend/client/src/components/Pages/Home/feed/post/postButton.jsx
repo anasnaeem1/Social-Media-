@@ -4,7 +4,7 @@ import * as mainItems from "../../../../../constants/index";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-function postButton({ post, postUser }) {
+function postButton({ isViewPhoto, photoDetails, post, postUser }) {
   const { Friends, Shares } = mainItems;
   const [isProcessing, setIsProcessing] = useState(false);
   const {
@@ -74,11 +74,20 @@ function postButton({ post, postUser }) {
     },
   ];
 
+console.log("viewPhoto is :", isViewPhoto)
+
   const handleCommentBox = async (e) => {
     e.preventDefault();
+    if(isViewPhoto){
+      dispatch({
+        type: "TOGGLE_PHOTO_COMMENTS",
+        payload: true,
+      });
+      return;
+    }
     dispatch({
       type: "UPDATEPOSTDETAILS",
-      payload: { post: post, postUser: postUser },
+      payload: { post: post, postUser: postUser, },
     });
     navigate(`/post/${post?._id}`);
   };

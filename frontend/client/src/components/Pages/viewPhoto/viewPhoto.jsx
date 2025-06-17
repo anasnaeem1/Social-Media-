@@ -13,9 +13,9 @@ import PostButton from "../Home/feed/post/postButton";
 
 function ViewPhoto() {
   const { viewPhoto, photoId } = useParams();
-  const { dispatch, user, reload } = useContext(UserContext);
+  const { dispatch, user, reload, PhotoCommentsOpen } = useContext(UserContext);
   const [isLiked, setIsLiked] = useState(false);
-  const navigate = useNavigate();
+  const Navigate = useNavigate();
   const [photoDetails, setPhotoDetails] = useState(null);
   const [photoUser, setPhotoUser] = useState(null);
   const [likes, setLikes] = useState(null);
@@ -147,7 +147,7 @@ function ViewPhoto() {
   };
 
   const handleBackToPost = () => {
-    navigate(-1);
+    Navigate(-1);
     dispatch({ type: "UNRELOAD", payload: false });
   };
 
@@ -231,6 +231,15 @@ function ViewPhoto() {
     setReplyPicPreview(null);
     setReplyPicture(null);
   };
+  
+  const handleBackClick = (e) => {
+    e.preventDefault();
+    dispatch({
+      type: "TOGGLE_PHOTO_COMMENTS",
+      payload: false,
+    });
+    Navigate(-1); // Go back to the previous page
+  };
 
   return (
     <>
@@ -239,8 +248,12 @@ function ViewPhoto() {
           style={{ height: "calc(100vh - 65px)" }}
           className="relative overflow-hidden w-full flex bg-black justify-between bg-opacity-90"
         >
-          {/* Fullscreen Image Section */}
-          <div className="flex-1 relative bg-[#0f172a] flex items-center justify-center overflow-hidden">
+          {/* Left Fullscreen Image Section */}
+          <div
+            className={`${
+              PhotoCommentsOpen ? "hidden" : ""
+            } flex-1  relative bg-[#0f172a] flex items-center justify-center overflow-hidden`}
+          >
             {/* Image or Loader */}
             {photoDetailsLoading ? (
               <div className="w-[80%] h-[80%] bg-blue-950 animate-pulse rounded-lg" />
@@ -257,6 +270,7 @@ function ViewPhoto() {
             {/* Post Buttons for mobile view - fixed at bottom */}
             <div className="w-full lg:hidden fixed bottom-0 left-0  px-4">
               <PostButton
+                photoDetails={photoDetails}
                 post={photoDetails}
                 isViewPhoto={true}
                 postUser={photoUser}
@@ -275,7 +289,9 @@ function ViewPhoto() {
           {/* Right Panel - Post Info + Comments */}
           <div
             style={{ height: "calc(100vh - 65px)" }}
-            className="w-[30%] hidden lg:flex relative overflow-y-scroll bg-white flex-col shadow-lg"
+            className={`${
+              PhotoCommentsOpen ? "flex w-full" : "hidden lg:flex w-[30%]"
+            }   relative overflow-y-scroll bg-white flex-col shadow-lg`}
           >
             {/* Post Uploader Info */}
             <div className="p-4 border-b bg-gray-50">
@@ -291,6 +307,13 @@ function ViewPhoto() {
                 photoDetails?.userId &&
                 photoUser && (
                   <div className="flex items-center gap-3">
+                    {/* Back Button */}
+                    <div
+                      onClick={handleBackClick}
+                      className="flex justify-center items-center h-10 w-10 bg-gray-100 rounded-full hover:bg-gray-200 transition duration-300 cursor-pointer group"
+                    >
+                      <i className="ri-arrow-left-line text-xl text-gray-600 group-hover:text-gray-800 transition duration-300"></i>
+                    </div>
                     <UserPhoto userId={photoDetails.userId} user={photoUser} />
                     <div>
                       <p className="text-gray-800 font-semibold">
@@ -501,7 +524,9 @@ function ViewPhoto() {
                 </div>
               )}
             </div>
-            <CommentSumbitForm post={photoDetails} viewPhoto={true} />
+            {!forComment && (
+              <CommentSumbitForm post={photoDetails} viewPhoto={true} />
+            )}
           </div>
         </div>
       }

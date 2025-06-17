@@ -66,7 +66,7 @@ function commentSubmitForm({ ViewPhoto, isPostPage, post }) {
     <form
       className={`
       ${
-        ViewPhoto ? "absolute" : "sticky"
+        ViewPhoto ? "absolute" : "fixed"
       } bottom-0 left-0 gap-2 w-full p-2 border-t bg-white rounded-lg shadow-sm`}
       onSubmit={handleCommentSubmit}
     >

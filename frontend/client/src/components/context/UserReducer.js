@@ -180,6 +180,11 @@ const AuthReducer = (state, action) => {
         ...state,
         floatingBox: action.payload,
       };
+    case "TOGGLE_PHOTO_COMMENTS":
+      return {
+        ...state,
+        PhotoCommentsOpen: action.payload,
+      };
 
     default:
       return state;
