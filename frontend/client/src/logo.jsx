@@ -3,22 +3,21 @@ import logoPic from "../assets/images/mainLogo.png";
 
 function logo() {
   return (
-    <div className="pl-2">
-      <h1
-        style={{
-          fontFamily: "'Merienda', cursive",
-          fontSize: "2rem",
-        }}
-        className="text-blue-500 opacity-95 font-bold"
+    <button className="logo" data-text="Awesome">
+      <span
+        style={{ fontFamily: "montserrat, sans-serif" }}
+        className=" actual-text"
       >
-        Social
-      </h1>
-    </div>
-    // <img
-    //     src="https://res.cloudinary.com/datcr1zua/image/upload/v1738707170/uploads/ros8l0e0ol53ibhng2sl.png"
-    //     alt="Logo"
-    //     className="h-[50px] "
-    //   />
+        &nbsp;Social&nbsp;
+      </span>
+      <span
+        style={{ fontFamily: "montserrat, sans-serif" }}
+        aria-hidden="true"
+        className="hover-text"
+      >
+        &nbsp;Social&nbsp;
+      </span>
+    </button>
   );
 }
 export default logo;

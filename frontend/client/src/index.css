@@ -302,17 +302,48 @@
 .skeleton-image {
   flex-shrink: 0;
 }
-/* .message-container {
-  @apply flex self-start max-w-[75%] py-3 px-4 rounded-lg mb-4 gap-2 shadow-md transition-transform;
-}
-.sender-message {
-  @apply self-end flex-row-reverse bg-blue-900 text-white;
-}
-.receiver-message {
-  @apply bg-white text-black;
-} */
 
-/* :root {
-    background-color: rgb(245, 244, 244);
-    color: black;
-} */
+/* Logo Css */
+
+.logo {
+  margin: 0;
+  height: auto;
+  background: transparent;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+}
+
+/* button styling */
+.logo {
+  --border-right: 6px;
+  --text-stroke-color: rgb(19, 103, 239);
+  --animation-color: rgb(59 130 246);
+  --fs-size: 2em;
+  letter-spacing: 3px;
+  text-decoration: none;
+  font-size: var(--fs-size);
+  position: relative;
+  text-transform: uppercase;
+  -webkit-text-stroke: 1px var(--text-stroke-color);
+}
+/* this is the text, when you hover on button */
+.hover-text {
+  position: absolute;
+  box-sizing: border-box;
+  content: attr(data-text);
+  color: var(--animation-color);
+  width: 0%;
+  inset: 0;
+  border-right: var(--border-right) solid var(--animation-color);
+  overflow: hidden;
+  transition: 0.5s;
+  -webkit-text-stroke: 1px var(--animation-color);
+}
+/* hover */
+.logo:hover .hover-text {
+  width: 100%;
+  filter: drop-shadow(0 0 23px var(--animation-color))
+}
+
+/* Logo css End here */

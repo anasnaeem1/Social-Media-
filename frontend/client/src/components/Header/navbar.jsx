@@ -130,6 +130,10 @@ function Navbar() {
           type: "MOBILESEARCHINPUT",
           payload: false,
         });
+        dispatch({
+          type: "TOGGLE_PHOTO_COMMENTS",
+          payload: false,
+        });
         setIsMenuVisible(false);
       }
       if (isScreenWide && searchedInput) {

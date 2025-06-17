@@ -52,7 +52,7 @@ function CommentBox({ post, postDetails, postUser, userId, ViewPhoto }) {
       <div
         id="comment-box"
         className={`${
-          postDetails || ViewPhoto ? "max-w-full" : "max-w-[540px]"
+          postDetails || ViewPhoto ? " max-w-full" : "max-w-[540px]"
         } relative flex flex-col w-full max-w-[540px] px-2 border-t border-gray-300`}
       >
         {/* Header Section */}

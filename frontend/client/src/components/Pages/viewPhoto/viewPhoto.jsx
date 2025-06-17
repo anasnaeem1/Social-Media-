@@ -231,7 +231,7 @@ function ViewPhoto() {
     setReplyPicPreview(null);
     setReplyPicture(null);
   };
-  
+
   const handleBackClick = (e) => {
     e.preventDefault();
     dispatch({
@@ -289,9 +289,9 @@ function ViewPhoto() {
           {/* Right Panel - Post Info + Comments */}
           <div
             style={{ height: "calc(100vh - 65px)" }}
-            className={`${
+            className={`${ 
               PhotoCommentsOpen ? "flex w-full" : "hidden lg:flex w-[30%]"
-            }   relative overflow-y-scroll bg-white flex-col shadow-lg`}
+            } relative overflow-y-scroll bg-white flex-col shadow-lg`}
           >
             {/* Post Uploader Info */}
             <div className="p-4 border-b bg-gray-50">
@@ -431,7 +431,7 @@ function ViewPhoto() {
             </div>
 
             {/* Comments Section */}
-            <div className="flex-1 border-green-400 relative w-full h-[300px] flex flex-col">
+            <div className="flex-1 relative border-green-400 w-full h-[300px] flex flex-col">
               {/* Comments List */}
               {forPost ? (
                 photoDetails && (
@@ -523,10 +523,11 @@ function ViewPhoto() {
                   </form>
                 </div>
               )}
+
+              {!forComment && (
+                <CommentSumbitForm post={photoDetails} viewPhoto={true} />
+              )}
             </div>
-            {!forComment && (
-              <CommentSumbitForm post={photoDetails} viewPhoto={true} />
-            )}
           </div>
         </div>
       }
