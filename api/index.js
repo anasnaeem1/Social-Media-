@@ -81,6 +81,11 @@ app.use("/*", async (_req, res, _next) => {
     .send(readFileSync(path.join(STATIC_PATH, "index.html")));
 });
 
-app.listen(PORT, () => {
-  console.log(`Backend server is running on port ${PORT}`);
-});
+/** Vercel runs the app as a serverless function — no listen(). */
+if (process.env.VERCEL) {
+  module.exports = app;
+} else {
+  app.listen(PORT, () => {
+    console.log(`Backend server is running on port ${PORT}`);
+  });
+}

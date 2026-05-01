@@ -7,7 +7,8 @@ const isProd = process.env.NODE_ENV === "production";
  *  @type {import('vite').UserConfig}
  */
 const config = defineConfig({
-  base: "./",
+  /** Absolute base so JS/CSS load on nested routes (Vercel / SPA). */
+  base: "/",
   plugins: [react()],
   build: {
     outDir: "../../api/src/public/dist",
