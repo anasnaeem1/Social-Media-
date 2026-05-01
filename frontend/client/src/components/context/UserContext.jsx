@@ -14,7 +14,6 @@ const INITIAL_STATE = {
   birthdayFriends: [],
   error: false,
   searchedInput: null,
-  postId: null,
   loadedPosts: [],
   yourNewPost: null,
   newComment: null,

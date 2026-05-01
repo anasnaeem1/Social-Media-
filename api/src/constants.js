@@ -1,2 +1,2 @@
-module.exports.DB_NAME = "socials";
+module.exports.DB_NAME = "social";
 

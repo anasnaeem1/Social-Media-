@@ -8,14 +8,14 @@ import {
 import { SkeletonTheme } from "react-loading-skeleton";
 import { UserContext } from "./components/context/UserContext";
 import io from "socket.io-client";
-import Home from "./components/Pages/Home/home";
-import ViewPhoto from "./components/Pages/viewPhoto/viewPhoto";
-import Profile from "./components/Pages/Profile/profile";
-// import Search from "./components/Pages/Search/search";
-import Login from "./components/Pages/signingPage/login/login";
-import Register from "./components/Pages/signingPage/register/register";
+import Home from "./pages/Home";
+import ViewPhoto from "./pages/ViewPhoto";
+import Profile from "./pages/Profile";
+// import Search from "./components/Search/search";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Navbar from "./components/Header/navbar";
-import MessagesPage from "./components/Pages/MessagePage/messagesMain";
+import MessagesPage from "./pages/MessagesPage";
 
 function App() {
   const { user, dispatch } = useContext(UserContext);

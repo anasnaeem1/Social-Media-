@@ -1,32 +1,28 @@
-import { navItems } from "../../constants/index.jsx";
-import UserPhoto from "../currentUserPhoto.jsx";
-import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../logo.jsx";
-import { useContext, useEffect, useRef, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useContext, useEffect, useRef, useState, useCallback } from "react";
 import { UserContext } from "../context/UserContext.jsx";
 import { Logout } from "../context/UserActions.js";
-import CurrentUserPhoto from "../currentUserPhoto.jsx";
-// import { searchUser } from "../../apiCalls.js";
 import SearchButtonsForMobile from "./SearchButtonsForMobile.jsx";
-import SearchSuggestions from "../Pages/searchSuggestions/suggesionBox.jsx";
-import { useParams } from "react-router-dom";
+import SearchSuggestions from "../searchSuggestions/suggesionBox.jsx";
+import { FeedContext } from "../context/FeedContext.jsx";
 
 function Navbar() {
-  // const { controlsIcons } = navItems;
-  const { dispatch, SearchedUser, user, searchedInput, mobileSearchInput } =
-    useContext(UserContext);
-  const searchedUsername = useRef(null);
+  const { dispatch, user, searchedInput } = useContext(UserContext);
   const location = useLocation();
-  const isPostPage = location.pathname.startsWith("/post");
-  const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [isMobileSheetOpen, setIsMobileSheetOpen] = useState(false);
+  const [isDesktopProfileOpen, setIsDesktopProfileOpen] = useState(false);
   const navigate = useNavigate();
-  const params = useParams();
-  const [isMenuClicked, setIsMenuClicked] = useState(false);
+  const [avatarPressed, setAvatarPressed] = useState(false);
   const searchInput = useRef(null);
-  const { postId } = useParams();
-  const [isSmScreen, setIsSmScreen] = useState(false);
+  const [isWideScreen, setIsWideScreen] = useState(
+    typeof window !== "undefined" ? window.innerWidth >= 640 : false
+  );
+
+  const desktopMenuRef = useRef(null);
 
   useEffect(() => {
+    if (!searchInput.current) return;
     if (!searchedInput) {
       searchInput.current.value = "";
     } else {
@@ -34,98 +30,72 @@ function Navbar() {
     }
   }, [searchedInput]);
 
+  const closeAllMenus = useCallback(() => {
+    setIsMobileSheetOpen(false);
+    setIsDesktopProfileOpen(false);
+  }, []);
+
   useEffect(() => {
-    setIsMenuVisible(false);
-  }, [location]);
+    closeAllMenus();
+  }, [location.pathname, closeAllMenus]);
 
   const handleInputChange = () => {
-    if (searchInput.current) {
-      const inputValue = searchInput.current.value || "";
+    if (!searchInput.current) return;
+    const inputValue = searchInput.current.value || "";
 
-      if (inputValue === "") {
-        dispatch({ type: "SEARCHEDINPUT", payload: inputValue });
-        return;
-      }
-
+    if (inputValue === "") {
       dispatch({ type: "SEARCHEDINPUT", payload: inputValue });
+      return;
     }
+
+    dispatch({ type: "SEARCHEDINPUT", payload: inputValue });
   };
 
-  const handleMenuClick = () => {
-    setIsMenuClicked(true);
-    setTimeout(() => setIsMenuClicked(false), 200); // Reset the state after 0.3 seconds
+  const pulseAvatar = () => {
+    setAvatarPressed(true);
+    setTimeout(() => setAvatarPressed(false), 200);
   };
 
   const handleLogOut = () => {
     dispatch(Logout());
+    closeAllMenus();
     navigate("/login");
   };
 
   const handleSearch = async (e) => {
     e.preventDefault();
 
-    const input = searchInput.current.value;
+    const input = searchInput.current?.value;
 
     if (input) {
-      // Replace spaces with hyphens for clarity
       const formattedInput = input.trim().replace(/\s+/g, "-");
 
       navigate(`/search/${formattedInput}`);
       dispatch({ type: "SEARCHEDINPUT", payload: "" });
-    } else {
-      console.log("Search input is not available");
     }
   };
 
   const handleClearInput = () => {
     dispatch({ type: "SEARCHEDINPUT", payload: "" });
-    if (searchedUsername.current) {
-      searchedUsername.current.value = "";
-    }
   };
 
-  useEffect(() => {
-    if (SearchedUser && SearchedUser[0] && SearchedUser[0].username) {
-      const username = searchedUsername.current.value;
-      if (SearchedUser[0].username === username) {
-        navigate(`/search/${SearchedUser[0].id}`);
-        searchedUsername.current.value = "";
-      }
-    }
-  }, [SearchedUser]);
-
-  useEffect(() => {
-    if (SearchedUser && SearchedUser[0] && SearchedUser[0].username) {
-      const username = searchedUsername.current.value;
-      if (SearchedUser[0].username === username) {
-        navigate(`/search/${SearchedUser[0].id}`);
-        searchedUsername.current.value = "";
-      }
-    }
-  }, [SearchedUser]);
-
-  const handleReload = () => {
-    setIsMenuVisible(false);
-    dispatch({ type: "RELOAD", payload: true });
-    dispatch({ type: "UPDATELOADEDPOST", payload: [] });
+  const handleNavigateToProfile = (e) => {
+    if (e) e.preventDefault();
+    closeAllMenus();
+    navigate(`/profile/${user?._id}`);
   };
 
-  // const handleMenu = (e) => {
-  //   e.preventDefault();
-  //   setIsMenuVisible((prev) => !prev);
-  // };
-
-  const handleUserProfile = (e) => {
-    e.preventDefault();
-    navigate(`/profile/${user._id}`);
-    setIsMenuVisible(false);
+  const handleNavigateToSettings = (e) => {
+    e?.preventDefault();
+    closeAllMenus();
+    navigate(`/settings`);
   };
 
   useEffect(() => {
     const handleResize = () => {
-      const isScreenWide = window.innerWidth >= 640;
-      setIsSmScreen(isScreenWide);
-      if (isScreenWide && dispatch) {
+      const wide = window.innerWidth >= 640;
+      setIsWideScreen(wide);
+      if (wide && dispatch) {
         dispatch({
           type: "MOBILESEARCHINPUT",
           payload: false,
@@ -134,17 +104,18 @@ function Navbar() {
           type: "TOGGLE_PHOTO_COMMENTS",
           payload: false,
         });
-        setIsMenuVisible(false);
+        setIsMobileSheetOpen(false);
       }
-      if (isScreenWide && searchedInput) {
-        setIsMenuVisible(false);
+      if (wide && searchedInput) {
+        setIsMobileSheetOpen(false);
         dispatch({
           type: "MOBILESEARCHINPUT",
           payload: true,
         });
       }
-      // console.log("Current Width:", window.innerWidth);
-      // console.log("Is Small Screen:", isScreenWide);
+      if (!wide) {
+        setIsDesktopProfileOpen(false);
+      }
     };
 
     handleResize();
@@ -152,61 +123,213 @@ function Navbar() {
     window.addEventListener("resize", handleResize);
 
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [searchedInput, dispatch]);
 
-  const handleNavigateToProfile = (e) => {
-    e.preventDefault();
-    setIsMenuVisible(false);
-    navigate(`/profile/${user._id}`);
+  const { setFeedReload } = useContext(FeedContext);
+
+  const handleLogoClick = () => {
+    handleClearInput();
+    setFeedReload(true);
   };
 
-  const handleMenu = (e) => {
+  const handleAvatarClick = (e) => {
     e.preventDefault();
-    setIsMenuVisible(!isMenuVisible);
+    pulseAvatar();
+    if (typeof window !== "undefined" && window.innerWidth >= 640) {
+      setIsDesktopProfileOpen((v) => !v);
+      setIsMobileSheetOpen(false);
+    } else {
+      setIsMobileSheetOpen((v) => !v);
+      setIsDesktopProfileOpen(false);
+    }
   };
 
-  const handleNavigateToSettings = (e) => {
-    e.preventDefault();
-    setIsMenuVisible(false);
-    navigate(`/settings`);
+  const toggleMobileSheetOnly = (e) => {
+    e?.preventDefault();
+    setIsMobileSheetOpen((v) => !v);
+    setIsDesktopProfileOpen(false);
   };
+
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") closeAllMenus();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [closeAllMenus]);
+
+  useEffect(() => {
+    const onPointerDown = (e) => {
+      if (
+        desktopMenuRef.current &&
+        !desktopMenuRef.current.contains(e.target)
+      ) {
+        setIsDesktopProfileOpen(false);
+      }
+    };
+    if (isDesktopProfileOpen) {
+      document.addEventListener("pointerdown", onPointerDown);
+    }
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, [isDesktopProfileOpen]);
+
+  const renderLogo = () => (
+    <div className="text-white border-black" onClick={handleLogoClick}>
+      <Link to="/">
+        <Logo />
+      </Link>
+    </div>
+  );
+
+  const dropdownClass =
+    "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-[15px] font-medium text-slate-700 transition-colors hover:bg-slate-100 active:bg-slate-200/80";
+
+  const sectionLabelClass =
+    "px-3 pb-2 pt-1 text-[11px] font-semibold uppercase tracking-wider text-slate-400";
+
+  const IconWrap = ({ children, gradient }) => (
+    <span
+      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white shadow-sm ${gradient}`}
+    >
+      {children}
+    </span>
+  );
+
+  const accountMenu = !searchedInput ? (
+    <div className="divide-y divide-slate-100">
+      <div className="px-3 py-3">
+        <button
+          type="button"
+          onClick={handleNavigateToProfile}
+          className={`${dropdownClass} -mx-1`}
+        >
+          <div className="h-11 w-11 shrink-0 overflow-hidden rounded-full border-2 border-slate-100 shadow-sm ring-2 ring-white">
+            <img
+              src={
+                user?.profilePic ||
+                "https://res.cloudinary.com/datcr1zua/image/upload/v1739709690/uploads/rindbm34tibrtqcgvpsd.png"
+              }
+              alt=""
+              className="h-full w-full object-cover"
+            />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-[15px] font-semibold text-slate-900">
+              {user?.fullname ?? "Account"}
+            </p>
+            <p className="truncate text-xs font-normal text-slate-500">
+              View profile
+            </p>
+          </div>
+          <i className="ri-arrow-right-s-line text-lg text-slate-400" />
+        </button>
+      </div>
+
+      <div className="py-2">
+        <p className={sectionLabelClass}>Communication</p>
+        <nav className="flex flex-col gap-0.5 px-2">
+          <button
+            type="button"
+            className={dropdownClass}
+            onClick={() => {
+              closeAllMenus();
+              navigate("/messages");
+            }}
+          >
+            <IconWrap gradient="bg-gradient-to-br from-blue-500 to-blue-600">
+              <i className="ri-messenger-fill text-xl" />
+            </IconWrap>
+            Messenger
+          </button>
+          <button
+            type="button"
+            className={dropdownClass}
+            onClick={() => {
+              closeAllMenus();
+              navigate("/friends");
+            }}
+          >
+            <IconWrap gradient="bg-gradient-to-br from-emerald-500 to-teal-600">
+              <i className="ri-group-fill text-xl" />
+            </IconWrap>
+            Friends
+          </button>
+        </nav>
+      </div>
+
+      <div className="py-2">
+        <p className={sectionLabelClass}>Preferences</p>
+        <nav className="flex flex-col gap-0.5 px-2">
+          <button
+            type="button"
+            className={dropdownClass}
+            onClick={handleNavigateToSettings}
+          >
+            <IconWrap gradient="bg-gradient-to-br from-slate-500 to-slate-600">
+              <i className="ri-settings-4-fill text-lg" />
+            </IconWrap>
+            Settings &amp; Privacy
+          </button>
+          <button type="button" className={dropdownClass}>
+            <IconWrap gradient="bg-gradient-to-br from-slate-400 to-slate-500">
+              <i className="ri-question-fill text-xl" />
+            </IconWrap>
+            Help &amp; Support
+          </button>
+          <button type="button" className={dropdownClass}>
+            <IconWrap gradient="bg-gradient-to-br from-indigo-500 to-violet-600">
+              <i className="ri-moon-fill text-lg" />
+            </IconWrap>
+            Display &amp; Accessibility
+          </button>
+        </nav>
+      </div>
+
+      <div className="p-2">
+        <button
+          type="button"
+          onClick={handleLogOut}
+          className={`${dropdownClass} text-red-600 hover:bg-red-50 hover:text-red-700`}
+        >
+          <IconWrap gradient="bg-gradient-to-br from-red-500 to-rose-600">
+            <i className="ri-logout-box-r-fill text-xl" />
+          </IconWrap>
+          Log out
+        </button>
+      </div>
+    </div>
+  ) : null;
+
+  const mobileSearchBlock = (
+    <div className="border-slate-100 bg-slate-50/80 px-1 py-2 sm:border-t">
+      <SearchButtonsForMobile />
+      <SearchSuggestions />
+    </div>
+  );
+
+  useEffect(() => {
+    if (!isWideScreen && isMobileSheetOpen) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = prev;
+      };
+    }
+  }, [isWideScreen, isMobileSheetOpen]);
+
+  const hideNavSpacer = location.pathname.includes("/photo/");
 
   return (
     <>
-      <div
-        className={`${params === "/photo" ? "hidden" : "block"} h-[65px]`}
-      ></div>
+      <div className={`${hideNavSpacer ? "hidden" : "block"} h-[65px]`}></div>
 
-      {/* Navbar */}
       <header
         style={{ fontFamily: "montserrat, sans-serif" }}
-        className={` border-b fixed top-0 z-[10] text-black justify-between w-full bg-white flex items-center h-[65px]`}
+        className="fixed top-0 z-[100] flex h-[65px] w-full items-center justify-between border-b border-slate-200/80 bg-white text-black shadow-sm"
       >
-        {/* Mobile Search Input */}
-        {/* {mobileSearchInput && (
-          <div className="relative w-full px-4">
-            <SearchButtonsForMobile />
-          </div>
-        )} */}
+        {renderLogo()}
 
-        {/* Other Navbar Content (Logo and Links) */}
-        {
-          <div
-            className={` text-white border-black`}
-            onClick={() => {
-              
-              handleClearInput();
-              handleReload();
-            }}
-          >
-            <Link to="/">
-              <Logo />
-            </Link>
-          </div>
-        }
-
-        {/* Search Functionality for Desktop */}
-        <div className="hidden md:block md:text-sm text-xsm lg:flex items-center px-2 py-2">
+        <div className="hidden items-center px-2 py-2 text-xsm md:block md:flex md:text-sm lg:flex">
           <form
             onSubmit={handleSearch}
             onKeyDown={(e) => {
@@ -217,90 +340,96 @@ function Navbar() {
             }}
             className="relative flex"
           >
-            {/* Desktop Search Input */}
             <input
               ref={searchInput}
               onChange={handleInputChange}
               type="text"
               placeholder="Search..."
-              className="border-gray-300 border focus:outline-gray-400 focus:px-6 transition-all duration-300 text-black bg-transparent w-full px-3 py-2 rounded-full"
+              className="w-full rounded-full border border-gray-300 bg-transparent px-3 py-2 text-black transition-all duration-300 focus:px-6 focus:outline-none focus:ring-2 focus:ring-blue-400/30"
             />
 
-            {/* Search Button */}
             <button
               type="submit"
-              className="border-gray-300 border absolute right-0 top-0 bottom-0 bg-blue-500 hover:bg-blue-600 text-white rounded-r-full px-4 flex items-center justify-center"
+              className="absolute right-0 top-0 bottom-0 flex items-center justify-center rounded-r-full border border-gray-300 border-l-0 bg-blue-500 px-4 text-white transition-colors hover:bg-blue-600"
+              aria-label="Search"
             >
               <i className="ri-search-line text-lg"></i>
             </button>
           </form>
         </div>
 
-        <div className="flex border-black gap-5 justify-center items-center">
-          {/* Controls */}
-
+        <div className="flex items-center justify-center gap-3 border-black sm:gap-5">
           <>
             <div>
-              <ul className="flex gap-2 text-lg">
+              <ul className="flex gap-3 text-lg sm:gap-2">
                 <Link
                   to={user ? "/profile/" + user._id : undefined}
                   className="hidden sm:flex"
+                  onClick={closeAllMenus}
                 >
-                  <li className="text-md">Home</li>
+                  <li className="text-md text-slate-700 transition-colors hover:text-blue-600">
+                    Home
+                  </li>
                 </Link>
 
-                <Link to="/" className="hidden sm:flex">
-                  <li className="text-md">Timeline</li>
+                <Link to="/" className="hidden sm:flex" onClick={closeAllMenus}>
+                  <li className="text-md text-slate-700 transition-colors hover:text-blue-600">
+                    Timeline
+                  </li>
                 </Link>
               </ul>
             </div>
 
-            {/* Controls Icons */}
-            <div className="hidden border-black  md:flex">
-              <ul className="flex text-2xl items-center">
-                {/* User Icon */}
-                <li className="relative group px-2 cursor-pointer">
-                  <span
-                    className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-sky-400 to-green-300 group-hover:bg-gradient-to-r group-hover:from-green-300 group-hover:via-sky-400 group-hover:to-blue-500 transition duration-300"
-                    style={{ WebkitTextFillColor: "transparent" }}
+            <div className="hidden border-black md:flex">
+              <ul className="flex items-center text-2xl">
+                <li className="group relative cursor-pointer px-2">
+                  <Link
+                    to={user ? `/profile/${user._id}` : "#"}
+                    onClick={closeAllMenus}
+                    className="inline-block"
+                    aria-label="Profile"
                   >
-                    <i className="ri-user-fill text-2xl"></i>
-                  </span>
-                  <span className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-gray-600 opacity-0 group-hover:opacity-100 group-hover:translate-y-1 transition duration-300">
+                    <span
+                      className="bg-gradient-to-r from-blue-500 via-sky-400 to-green-300 bg-clip-text text-transparent transition duration-300 group-hover:bg-gradient-to-r group-hover:from-green-300 group-hover:via-sky-400 group-hover:to-blue-500"
+                      style={{ WebkitTextFillColor: "transparent" }}
+                    >
+                      <i className="ri-user-fill text-2xl"></i>
+                    </span>
+                  </Link>
+                  <span className="pointer-events-none absolute -bottom-6 left-1/2 -translate-x-1/2 transform text-sm text-gray-600 opacity-0 transition duration-300 group-hover:translate-y-1 group-hover:opacity-100">
                     Profile
                   </span>
                 </li>
 
-                {/* Message Icon */}
                 <Link
                   to={`/messages`}
-                  className=" px-2  relative group cursor-pointer"
+                  className="relative group cursor-pointer px-2"
+                  onClick={closeAllMenus}
                 >
                   <li>
                     <span
-                      className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-sky-400 to-green-300 group-hover:bg-gradient-to-r group-hover:from-green-300 group-hover:via-sky-400 group-hover:to-blue-500 transition duration-300"
+                      className="bg-gradient-to-r from-blue-500 via-sky-400 to-green-300 bg-clip-text text-transparent transition duration-300 group-hover:bg-gradient-to-r group-hover:from-green-300 group-hover:via-sky-400 group-hover:to-blue-500"
                       style={{ WebkitTextFillColor: "transparent" }}
                     >
                       <i className="text-2xl ri-message-2-fill"></i>
                     </span>
-                    <span className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-gray-600 opacity-0 group-hover:opacity-100 group-hover:translate-y-1 transition duration-300">
+                    <span className="pointer-events-none absolute -bottom-6 left-1/2 -translate-x-1/2 transform text-sm text-gray-600 opacity-0 transition duration-300 group-hover:translate-y-1 group-hover:opacity-100">
                       Messages
                     </span>
                   </li>
                 </Link>
 
-                {/* Notifications Icon */}
-                <li className="relative group px-2  cursor-pointer">
+                <li className="group relative cursor-pointer px-2">
                   <span
-                    className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-sky-400 to-green-300 group-hover:bg-gradient-to-r group-hover:from-green-300 group-hover:via-sky-400 group-hover:to-blue-500 transition duration-300"
+                    className="bg-gradient-to-r from-blue-500 via-sky-400 to-green-300 bg-clip-text text-transparent transition duration-300 group-hover:bg-gradient-to-r group-hover:from-green-300 group-hover:via-sky-400 group-hover:to-blue-500"
                     style={{ WebkitTextFillColor: "transparent" }}
                   >
                     <i className="ri-notification-2-fill text-2xl"></i>
                   </span>
-                  <span className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-gray-600 opacity-0 group-hover:opacity-100 group-hover:translate-y-1 transition duration-300">
+                  <span className="pointer-events-none absolute -bottom-6 left-1/2 -translate-x-1/2 transform text-sm text-gray-600 opacity-0 transition duration-300 group-hover:translate-y-1 group-hover:opacity-100">
                     Notifications
                   </span>
-                  <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+                  <span className="absolute -top-1.5 -right-1 rounded-full bg-red-500 px-1.5 py-0.5 text-xs font-bold text-white shadow-sm">
                     1
                   </span>
                 </li>
@@ -308,160 +437,94 @@ function Navbar() {
             </div>
           </>
 
-          <div
-            className={`  rounded-full cursor-pointer w-full  border-2 sm:border-none border-blue-500 flex justify-start items-center relative`}
-          >
-            <Link>
+          <div className="relative flex items-center gap-2" ref={desktopMenuRef}>
+            <button
+              type="button"
+              onClick={handleAvatarClick}
+              aria-expanded={isWideScreen ? isDesktopProfileOpen : isMobileSheetOpen}
+              aria-haspopup="true"
+              className={`relative shrink-0 overflow-hidden rounded-full border-2 border-slate-200 shadow-md outline-none ring-offset-2 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-blue-500 ${avatarPressed ? "scale-95 opacity-80" : "scale-100"}`}
+              title="Account menu"
+            >
               <img
-                onClick={handleMenuClick}
                 src={
                   user?.profilePic ||
                   "https://res.cloudinary.com/datcr1zua/image/upload/v1739709690/uploads/rindbm34tibrtqcgvpsd.png"
                 }
                 alt="Profile"
-                className={`w-[45px] h-[45px] sm:w-[50px] sm:h-[50px] border shadow-xl border-gray-300 sm:rounded-full rounded-l-full transition-all duration-300 object-cover ${
-                  isMenuClicked
-                    ? "scale-90 shadow-inner opacity-70"
-                    : "scale-100"
-                }`}
+                className="block h-[45px] w-[45px] object-cover sm:h-[50px] sm:w-[50px]"
               />
-            </Link>
+            </button>
 
-            {/* Search Functionality for Mobile */}
-            {!isSmScreen && (
+            {!isWideScreen && (
               <button
                 type="button"
-                className="w-[45px] h-[45px] lg:w-[55px] lg:h-[55px] flex items-center justify-center rounded-r-full text-white bg-blue-500 hover:bg-blue-600 transition-all"
-                onClick={handleMenu}
+                onClick={toggleMobileSheetOnly}
+                aria-expanded={isMobileSheetOpen}
+                aria-label="Open menu"
+                className="flex h-[45px] w-[45px] shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-700 shadow-sm transition hover:bg-slate-100 lg:h-[52px] lg:w-[52px]"
               >
-                <i className="ri-menu-line text-xl"></i>
-
-                {/* <i className="ri-search-2-line "></i> */}
+                <i className={`ri-menu-line text-xl transition-transform ${isMobileSheetOpen ? "rotate-90" : ""}`} />
               </button>
             )}
 
-            {
-              <div
-                className={`${
-                  isMenuVisible ? "h-screen border" : "h-0"
-                } fixed top-[62px] left-0 bg-white overflow-hidden transition-all duration-200 shadow-2xl rounded-xl w-full`}
-              >
-                <SearchButtonsForMobile />
-                <SearchSuggestions />
-
-                {!searchedInput && (
-                  <div className="divide-y divide-gray-200">
-                    {/* User Info */}
-                    <div
-                      onClick={handleNavigateToProfile}
-                      className="flex items-center px-4 py-4 hover:bg-gray-100 transition-colors"
-                    >
-                      <CurrentUserPhoto />
-                      <span className="ml-4 text-gray-800 text-lg font-semibold">
-                        {user.fullname}
-                      </span>
-                    </div>
-
-                    {/* --- Section: Communication --- */}
-                    <div className="py-2 px-2">
-                      <h4 className="text-gray-500 text-sm font-semibold px-2 mb-1">
-                        Communication
-                      </h4>
-                      <div
-                        onClick={() => navigate("/messages")}
-                        className="flex items-center px-2 py-3 hover:bg-gray-100 rounded-lg transition-colors"
-                      >
-                        <span className="flex items-center justify-center text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow rounded-full w-[45px] h-[45px]">
-                          <i className="ri-messenger-fill text-2xl"></i>
-                        </span>
-                        <span className="ml-4 text-gray-700 text-base font-medium">
-                          Messenger
-                        </span>
-                      </div>
-
-                      <div
-                        onClick={() => navigate("/friends")}
-                        className="flex items-center px-2 py-3 hover:bg-gray-100 rounded-lg transition-colors"
-                      >
-                        <span className="flex items-center justify-center text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow rounded-full w-[45px] h-[45px]">
-                          <i className="ri-group-fill text-2xl"></i>
-                        </span>
-                        <span className="ml-4 text-gray-700 text-base font-medium">
-                          Friends
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* --- Section: Settings --- */}
-                    <div className="py-2 px-2">
-                      <h4 className="text-gray-500 text-sm font-semibold px-2 mb-1">
-                        Preferences
-                      </h4>
-
-                      <div
-                        onClick={handleNavigateToSettings}
-                        className="flex items-center px-2 py-3 hover:bg-gray-100 rounded-lg transition-colors"
-                      >
-                        <span className="flex items-center justify-center text-white bg-gradient-to-r from-gray-500 to-gray-700 shadow rounded-full w-[45px] h-[45px]">
-                          <i className="ri-settings-2-fill text-xl"></i>
-                        </span>
-                        <span className="ml-4 text-gray-700 text-base font-medium">
-                          Settings & Privacy
-                        </span>
-                      </div>
-
-                      <div className="flex items-center px-2 py-3 hover:bg-gray-100 rounded-lg transition-colors">
-                        <span className="flex items-center justify-center text-white bg-gradient-to-r from-gray-500 to-gray-700 shadow rounded-full w-[45px] h-[45px]">
-                          <i className="ri-question-fill text-2xl"></i>
-                        </span>
-                        <span className="ml-4 text-gray-700 text-base font-medium">
-                          Help & Support
-                        </span>
-                      </div>
-
-                      <div className="flex items-center px-2 py-3 hover:bg-gray-100 rounded-lg transition-colors">
-                        <span className="flex items-center justify-center text-white bg-gradient-to-r from-gray-500 to-gray-700 shadow rounded-full w-[45px] h-[45px]">
-                          <i className="ri-moon-fill text-2xl"></i>
-                        </span>
-                        <span className="ml-4 text-gray-700 text-base font-medium">
-                          Display & Accessibility
-                        </span>
-                      </div>
-
-                      <div className="flex items-center px-2 py-3 hover:bg-gray-100 rounded-lg transition-colors">
-                        <span className="flex items-center justify-center text-white bg-gradient-to-r from-gray-500 to-gray-700 shadow rounded-full w-[45px] h-[45px]">
-                          <i className="ri-feedback-fill text-2xl"></i>
-                        </span>
-                        <div className="ml-4">
-                          <span className="text-gray-700 text-base font-medium">
-                            Give Feedback
-                          </span>
-                          <span className="block text-gray-500 text-sm font-light">
-                            CTRL + B
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* --- Logout --- */}
-                    <div
-                      onClick={handleLogOut}
-                      className="flex items-center px-4 py-3 hover:bg-red-50 transition-colors"
-                    >
-                      <span className="flex items-center justify-center text-white bg-gradient-to-r from-red-500 to-red-700 shadow rounded-full h-[45px] w-[45px]">
-                        <i className="ri-logout-box-r-fill text-2xl"></i>
-                      </span>
-                      <span className="ml-4 text-red-700 text-base font-medium">
-                        Logout
-                      </span>
-                    </div>
-                  </div>
-                )}
+            {/* Desktop account dropdown */}
+            <div
+              className={`absolute right-0 top-[calc(100%+10px)] z-[120] hidden w-[min(calc(100vw-24px),20rem)] sm:block origin-top-right transition-[opacity,transform] duration-200 ease-out ${isDesktopProfileOpen ? "pointer-events-auto scale-100 opacity-100" : "pointer-events-none scale-95 opacity-0"}`}
+              style={{ visibility: isDesktopProfileOpen ? "visible" : "hidden" }}
+              role="menu"
+              aria-hidden={!isDesktopProfileOpen}
+            >
+              <div className="max-h-[min(70vh,520px)] overflow-y-auto overflow-x-hidden rounded-2xl border border-slate-200/90 bg-white py-2 shadow-xl shadow-slate-200/50 ring-1 ring-black/5">
+                {accountMenu}
               </div>
-            }
+            </div>
           </div>
         </div>
-        {/* {isPostPage && <div className="fixed inset-0 bg-black opacity-50"></div>} */}
+
+        {/* Mobile sheet + backdrop */}
+        {!isWideScreen && isMobileSheetOpen ? (
+          <div
+            role="presentation"
+            className="fixed inset-x-0 top-[65px] bottom-0 z-[105] transition-opacity duration-200"
+            aria-hidden={!isMobileSheetOpen}
+          >
+            <div
+              className="absolute inset-0 bg-slate-900/25 backdrop-blur-[2px] transition-opacity duration-200"
+              onClick={() => setIsMobileSheetOpen(false)}
+              onKeyDown={(e) =>
+                e.key === "Escape" && setIsMobileSheetOpen(false)
+              }
+              tabIndex={-1}
+            />
+            <div
+              className="absolute inset-x-0 top-0 mx-auto mt-2 max-h-[calc(100%-1rem)] w-[calc(100%-16px)] max-w-lg overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-2xl ring-1 ring-black/5"
+              role="dialog"
+              aria-modal="false"
+              aria-label="Account and search"
+            >
+              <div className="scrollbar-thin max-h-[calc(100vh-5.5rem)] overflow-y-auto">
+                <div className="sticky top-0 z-[1] flex items-center justify-between border-b border-slate-100 bg-white/95 px-4 py-3 backdrop-blur-sm">
+                  <span className="text-sm font-semibold text-slate-800">
+                    Menu
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setIsMobileSheetOpen(false)}
+                    className="flex h-9 w-9 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
+                    aria-label="Close menu"
+                  >
+                    <i className="ri-close-line text-2xl" />
+                  </button>
+                </div>
+                <div className="p-0 pb-3">
+                  {mobileSearchBlock}
+                  {accountMenu}
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : null}
       </header>
     </>
   );
